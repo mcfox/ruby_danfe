@@ -1,6 +1,6 @@
 Gem::Specification.new do |s|
   s.name        = 'ruby_danfe'
-  s.version     = '0.0.1'
+  s.version     = '0.0.2'
   s.summary     = "DANFE generator for Brazilian NFE."
   s.authors     = ["Eduardo Rebouças"]
   s.email       = 'eduardo.reboucas@gmail.com'

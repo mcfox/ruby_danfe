@@ -4,7 +4,7 @@ require 'nokogiri'
 
 module RubyDanfe
 
-  version = "0.0.1"
+  version = "0.0.2"
 
   class XML
     def initialize(xml_filename)
@@ -22,8 +22,6 @@ module RubyDanfe
 
     Prawn::Document.generate(pdf_filename) do |pdf|
 
-      pdf.set_margin [14, 14, 14, 14]
-      
       # rectangle
       pdf.stroke_rectangle [328, 653], 222, 22
 
