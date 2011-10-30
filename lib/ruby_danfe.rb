@@ -1,11 +1,25 @@
 require 'rubygems'
 require 'prawn'
 require 'prawn/measurement_extensions'
+require 'barby'
+require 'barby/barcode/code_128'
+require 'barby/outputter/prawn_outputter'
 require 'nokogiri'
+
+def numerify(number, decimals = 2)
+  return '' if !number || number == ''
+  int, frac = ("%.#{decimals}f" % number).split('.')
+  int.gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1\.")  
+  int + "," + frac
+end
+
+def invert(y)
+  28.7.cm - y
+end
 
 module RubyDanfe
 
-  version = "0.0.3"
+  version = "0.9.0"
 
   class XML
     def initialize(xml)
@@ -18,672 +32,293 @@ module RubyDanfe
     def render
       RubyDanfe.render @xml.to_s
     end
+    def collect(xpath, &block)
+      result = []
+      @xml.xpath(xpath).each do |det|
+        result << yield(det)
+      end
+      result
+    end
   end
   
-  def self.generatePDFFromXML(xml)
+  class Document < Prawn::Document
   
-    pdf = Prawn::Document.new(
+       
+    def ititle(h, w, x, y, title)
+      self.text_box title, :size => 10, :at => [x.cm, invert(y.cm) - 2], :width => w.cm, :height => h.cm, :style => :bold
+    end
+   
+    def ibarcode(h, w, x, y, info)
+      Barby::Code128C.new(info).annotate_pdf(self, :x => x.cm, :y => invert(y.cm), :width => w.cm, :height => h.cm) if info != ''
+    end
+     
+    def irectangle(h, w, x, y)
+      self.stroke_rectangle [x.cm, invert(y.cm)], w.cm, h.cm
+    end
+    
+    def ibox(h, w, x, y, title = '', info = '', options = {})
+      box [x.cm, invert(y.cm)], w.cm, h.cm, title, info, options
+    end
+    
+    def idate(h, w, x, y, title = '', info = '', options = {})
+      tt = info.split('-')
+      ibox h, w, x, y, title, "#{tt[2]}/#{tt[1]}/#{tt[0]}", options
+    end
+    
+    def box(at, w, h, title = '', info = '', options = {})
+      options = {
+        :align => :left,
+        :size => 10,
+        :style => nil,
+        :valign => :top,
+        :border => 1
+      }.merge(options)
+      self.stroke_rectangle at, w, h if options[:border] == 1
+      self.text_box title, :size => 6, :at => [at[0] + 2, at[1] - 2], :width => w - 4, :height => 8 if title != ''
+      self.text_box info, :size => options[:size], :at => [at[0] + 2, at[1] - (title != '' ? 14 : 4) ], :width => w - 4, :height => h - (title != '' ? 14 : 4), :align => options[:align], :style => options[:style], :valign => options[:valign]
+    end
+    
+    def inumeric(h, w, x, y, title = '', info = '', options = {})
+      numeric [x.cm, invert(y.cm)], w.cm, h.cm, title, info, options
+    end
+
+    def numeric(at, w, h, title = '', info = '', options = {})
+      options = {:decimals => 2}.merge(options)
+      info = numerify(info, options[:decimals]) if info != ''
+      box at, w, h, title, info, options.merge({:align => :right})
+    end
+       
+    def itable(h, w, x, y, data, options = {}, &block)
+      self.bounding_box [x.cm, invert(y.cm)], :width => w.cm, :height => h.cm do
+        self.table data, options do |table|
+          yield(table)
+        end
+      end
+    end
+  end
+  
+  def self.generatePDF(xml)
+  
+    pdf = Document.new(
       :page_size => 'A4',
       :page_layout => :portrait,
-      :left_margin => 0.5.cm,
-      :right_margin => 0.5.cm,
-      :top_margin => 0.5.cm,
-      :botton_margin => 0.5.cm
+      :left_margin => 0,
+      :right_margin => 0,
+      :top_margin => 0,
+      :botton_margin => 0
     )
-
-    # rectangle
-	pdf.stroke_rectangle [342, 693], 222, 22
-
-    # rectangle
-	pdf.stroke_rectangle [342, 737], 222, 84
-
-    # rectangle
-	pdf.stroke_rectangle [361, 497], 96, 18
-
-    # rectangle
-	pdf.stroke_rectangle [457, 789], 107, 37
-
-    # rectangle
-	pdf.stroke_rectangle [126, 566], 63, 44
-
-    # rectangle
-	pdf.stroke_rectangle [63, 566], 63, 44
-
-    # rectangle
-	pdf.stroke_rectangle [0, 566], 63, 44
-
-    # rectangle
-	pdf.stroke_rectangle [443, 471], 24, 18
-
-    # rectangle
+ 
+    pdf.font "Times-Roman" # Official font   
     
-	pdf.stroke_rectangle [179, 471], 59, 18
-
-    # rectangle
-	pdf.stroke_rectangle [227, 464], 9, 9
-
-    # rectangle
-	pdf.stroke_rectangle [378, 653], 186, 18
-
-    # rectangle
-	pdf.stroke_rectangle [189, 653], 189, 18
-
-    # rectangle
-	pdf.stroke_rectangle [342, 713], 222, 18
-
-    # rectangle
-	pdf.stroke_rectangle [342, 737], 222, 24
-
-    # rectangle
-	pdf.stroke_rectangle [278, 737], 64, 66
-
-    # rectangle
-	pdf.stroke_rectangle [326, 708], 9, 10
-
-    # rectangle
-	pdf.stroke_rectangle [0, 471], 179, 18
-
-    # rectangle
-	pdf.stroke_rectangle [0, 515], 134, 18
-
-    # rectangle
-	pdf.stroke_rectangle [0, 497], 91, 18
-
-    # rectangle
-	pdf.stroke_rectangle [0, 627], 373, 20
-
-    # rectangle
-	pdf.stroke_rectangle [238, 471], 75, 18
-
-    # rectangle
-	pdf.stroke_rectangle [133, 515], 115, 18
-
-    # rectangle
-	pdf.stroke_rectangle [247, 515], 115, 18
-
-    # rectangle
-	pdf.stroke_rectangle [361, 515], 97, 18
-
-    # rectangle
-	pdf.stroke_rectangle [457, 515], 107, 18
-
-    # rectangle
-	pdf.stroke_rectangle [0, 608], 305, 18
-
-    # rectangle
-	pdf.stroke_rectangle [485, 627], 79, 20
-
-    # rectangle
-	pdf.stroke_rectangle [372, 627], 113, 20
-
-    # rectangle
-	pdf.stroke_rectangle [304, 608], 125, 18
-
-    # rectangle
-	pdf.stroke_rectangle [428, 608], 57, 18
-
-    # rectangle
-	pdf.stroke_rectangle [227, 591], 111, 18
-
-    # rectangle
-	pdf.stroke_rectangle [337, 591], 32, 18
-
-    # rectangle
-	pdf.stroke_rectangle [485, 608], 79, 18
-
-    # rectangle
-	pdf.stroke_rectangle [485, 591], 79, 18
-
-    # rectangle
-	pdf.stroke_rectangle [368, 591], 117, 18
-
-    # rectangle
-	pdf.stroke_rectangle [0, 591], 228, 18
-
-    # rectangle
-	pdf.stroke_rectangle [269, 497], 92, 18
-
-    # rectangle
-	pdf.stroke_rectangle [90, 497], 90, 18
-
-    # rectangle
-	pdf.stroke_rectangle [179, 497], 90, 18
-
-    # rectangle
-	pdf.stroke_rectangle [457, 497], 107, 18
-
-    # rectangle
-	pdf.stroke_rectangle [312, 471], 131, 18
-
-    # rectangle
-	pdf.stroke_rectangle [259, 453], 185, 18
-
-    # rectangle
-	pdf.stroke_rectangle [467, 471], 97, 18
-
-    # rectangle
-	pdf.stroke_rectangle [0, 453], 260, 18
-
-    # rectangle
-	pdf.stroke_rectangle [0, 435], 67, 18
-
-    # rectangle
-	pdf.stroke_rectangle [67, 435], 117, 18
-
-    # rectangle
-	pdf.stroke_rectangle [184, 435], 107, 18
-
-    # rectangle
-	pdf.stroke_rectangle [291, 435], 109, 18
-
-    # rectangle
-	pdf.stroke_rectangle [443, 453], 24, 18
-
-    # rectangle
-	pdf.stroke_rectangle [467, 453], 97, 18
-
-    # rectangle
-	pdf.stroke_rectangle [400, 435], 81, 18
-
-    # rectangle
-	pdf.stroke_rectangle [481, 435], 83, 18
-
-    # rectangle
-	pdf.stroke_rectangle [0, 671], 342, 18
-
-    # rectangle
-	pdf.stroke_rectangle [0, 653], 189, 18
-
-    # rectangle
-	pdf.stroke_rectangle [0, 789], 457, 20
-
-    # rectangle
-	pdf.stroke_rectangle [0, 769], 74, 17
-
-    # rectangle
-	pdf.stroke_rectangle [74, 769], 383, 17
-
-    # rectangle
-	pdf.stroke_rectangle [189, 566], 63, 44
-
-    # rectangle
-	pdf.stroke_rectangle [252, 566], 63, 44
-
-    # rectangle
-	pdf.stroke_rectangle [315, 566], 63, 44
-
-    # rectangle
-	pdf.stroke_rectangle [378, 566], 63, 44
-
-    # rectangle
-	pdf.stroke_rectangle [441, 566], 63, 44
-
-    # rectangle
-	pdf.stroke_rectangle [504, 566], 60, 44
-
-    # rectangle
-	pdf.stroke_rectangle [0, 407], 564, 213
-
-    # rectangle
-	pdf.stroke_rectangle [0, 157], 341, 173
-
-    # rectangle
-	pdf.stroke_rectangle [341, 157], 223, 173
-
-    # rectangle
-	pdf.stroke_rectangle [0, 186], 112, 20
-
-    # rectangle
-	pdf.stroke_rectangle [111, 186], 145, 20
-
-    # rectangle
-	pdf.stroke_rectangle [255, 186], 145, 20
-
-    # rectangle
-	pdf.stroke_rectangle [399, 186], 165, 20
-
-    # staticText
-    pdf.draw_text "PROTOCOLO DE AUTORIZAÇÃO DE USO", :size => 5, :at => [346, 666], :width => 142, :height => 7
-
-    # textField xml['infProt/nProt'] + ' ' + xml['infProt/dhRecbto']
-    pdf.draw_text xml['infProt/nProt'] + ' ' + xml['infProt/dhRecbto'], :size => 6, :at => [347, 657], :width => 215, :height => 9
-
-    # staticText
-    pdf.draw_text "Consulta de autenticidade no portal nacional da NF-e www.nfe.fazenda.gov.br/portal ou no site da Sefaz Autorizadora", :size => 6, :at => [344, 678], :width => 218, :height => 17
-
-    # staticText
-    pdf.draw_text "N°.", :size => 7, :at => [460, 768], :width => 9, :height => 9
-
-    # staticText
-    pdf.draw_text "DESTINATÁRIO / REMETENTE", :size => 5, :at => [0, 631], :width => 109, :height => 8
-
-    # staticText
-    pdf.draw_text "CNPJ/CPF", :size => 5, :at => [375, 622], :width => 46, :height => 7
-
-    # staticText
-    pdf.draw_text "DATA DA EMISSÃO", :size => 5, :at => [488, 622], :width => 49, :height => 7
-
-    # staticText
-    pdf.draw_text "NOME/RAZÃO SOCIAL", :size => 5, :at => [3, 622], :width => 107, :height => 7
-
-    # staticText
-    pdf.draw_text "ENDEREÇO", :size => 5, :at => [3, 603], :width => 107, :height => 7
-
-    # staticText
-    pdf.draw_text "BAIRRO / DISTRITO", :size => 5, :at => [307, 603], :width => 69, :height => 7
-
-    # staticText
-    pdf.draw_text "CEP", :size => 5, :at => [429, 603], :width => 30, :height => 7
-
-    # staticText
-    pdf.draw_text "FONE/FAX", :size => 5, :at => [231, 586], :width => 49, :height => 7
-
-    # staticText
-    pdf.draw_text "UF", :size => 5, :at => [340, 586], :width => 17, :height => 7
-
-    # staticText
-    pdf.draw_text "FATURA / DUPLICATAS", :size => 5, :at => [0, 570], :width => 109, :height => 7
-
-    # staticText
-    pdf.draw_text "CÁLCULO DO IMPOSTO", :size => 5, :at => [0, 519], :width => 109, :height => 7
-
-    # staticText
-    pdf.draw_text "BASE DE CÁLCULO DO ICMS", :size => 5, :at => [3, 510], :width => 73, :height => 7
-
-    # staticText
-    pdf.draw_text "VALOR DO ICMS", :size => 5, :at => [136, 510], :width => 78, :height => 7
-
-    # staticText
-    pdf.draw_text "BASE DE CÁLCULO DO ICMS ST", :size => 5, :at => [250, 510], :width => 80, :height => 7
-
-    # staticText
-    pdf.draw_text "VALOR DO ICMS ST", :size => 5, :at => [364, 510], :width => 59, :height => 7
-
-    # staticText
-    pdf.draw_text "VALOR TOTAL DOS PRODUTOS", :size => 5, :at => [460, 510], :width => 79, :height => 7
-
-    # staticText
-    pdf.draw_text "TRANSPORTADOR / VOLUMES TRANSPORTADOS DADOS DO PRODUTO / SERVIÇODADOS DO PRODUTO / SERVIÇODADOS DO PRODUTO / SERVIÇO", :size => 5, :at => [0, 475], :width => 134, :height => 8
-
-    # staticText
-    pdf.draw_text "RAZÃO SOCIAL", :size => 5, :at => [3, 466], :width => 64, :height => 7
-
-    # staticText
-    pdf.draw_text "FRETE POR CONTA", :size => 5, :at => [181, 466], :width => 49, :height => 7
-
-    # staticText
-    pdf.draw_text "CÓDIGO ANTT", :size => 5, :at => [241, 466], :width => 49, :height => 7
-
-    # staticText
-    pdf.draw_text "0-EMITENTE 1-DESTINATÁRIO", :size => 4, :at => [181, 456], :width => 44, :height => 12
-
-    # textField dest/xNome
-    pdf.draw_text xml['dest/xNome'], :size => 7, :at => [3, 612], :width => 366, :height => 9
-
-    # textField enderDest/xLgr enderDest/nro
-    pdf.draw_text xml['enderDest/xLgr'] + " " + xml['enderDest/nro'], :size => 7, :at => [3, 595], :width => 298, :height => 9
-
-    # textField dest/CNPJ
-    pdf.draw_text xml['dest/CNPJ'], :size => 7, :at => [375, 612], :width => 107, :height => 9
-
-    # textField ide/dEmi
-    pdf.draw_text xml['ide/dEmi'], :size => 7, :at => [488, 612], :width => 74, :height => 9
-
-    # textField enderDest/xBairro
-    pdf.draw_text xml['enderDest/xBairro'], :size => 7, :at => [307, 595], :width => 119, :height => 9
-
-    # textField enderDest/CEP
-    pdf.draw_text xml['enderDest/CEP'], :size => 7, :at => [429, 595], :width => 55, :height => 9
-
-    # textField enderDest/UF
-    pdf.draw_text xml['enderDest/UF'], :size => 7, :at => [340, 577], :width => 26, :height => 9
-
-    # textField enderDest/fone
-    pdf.draw_text xml['enderDest/fone'], :size => 7, :at => [231, 577], :width => 104, :height => 9
-
-    # textField total/vBC
-    pdf.draw_text xml['total/vBC'], :size => 7, :at => [3, 501], :width => 127, :height => 9
-
-    # textField total/vICMS
-    pdf.draw_text xml['total/vICMS'], :size => 7, :at => [136, 501], :width => 108, :height => 9
-
-    # textField total/vBCST
-    pdf.draw_text xml['total/vBCST'], :size => 7, :at => [250, 501], :width => 108, :height => 9
-
-    # textField total/vST
-    pdf.draw_text xml['total/vST'], :size => 7, :at => [364, 501], :width => 90, :height => 9
-
-    # textField total/vProd
-    pdf.draw_text xml['total/vProd'], :size => 7, :at => [460, 501], :width => 101, :height => 9
-
-    # textField transporta/xNome
-    pdf.draw_text xml['transporta/xNome'], :size => 7, :at => [3, 457], :width => 174, :height => 9
-
-    # textField transp/modFrete
-    pdf.draw_text xml['transp/modFrete'], :size => 5, :at => [228, 460], :width => 7, :height => 7
-
-    # textField veicTransp/RNTC
-    pdf.draw_text xml['veicTransp/RNTC'], :size => 5, :at => [241, 457], :width => 69, :height => 9
-
-    # staticText DATA DA SAÍDA/ENTRADA
-    pdf.draw_text "DATA DA SAÍDA/ENTRADA", :size => 5, :at => [488, 603], :width => 69, :height => 7
-
-    # staticText HORA DE SAÍDA
-    pdf.draw_text "HORA DE SAÍDA", :size => 5, :at => [488, 586], :width => 53, :height => 7
-
-    # staticText INSCRIÇÃO ESTADUAL
-    pdf.draw_text "INSCRIÇÃO ESTADUAL", :size => 5, :at => [371, 586], :width => 79, :height => 7
-
-    # textField $F{NR_IE_DESTINO}
-    pdf.draw_text xml['dest/IE'], :size => 7, :at => [371, 577], :width => 111, :height => 9
-
-    # textField $F{DS_MUNICIPIO_DESTINO}
-    pdf.draw_text xml['enderDest/xMun'], :size => 7, :at => [3, 577], :width => 222, :height => 9
-
-    # staticText MUNICÍPIO
-    pdf.draw_text "MUNICÍPIO", :size => 5, :at => [3, 586], :width => 107, :height => 7
-
-    # staticText Número
-    pdf.draw_text "Número", :size => 5, :at => [3, 562], :width => 57, :height => 7
-
-    # staticText Vencimento
-    pdf.draw_text "Vencimento", :size => 5, :at => [67, 562], :width => 56, :height => 7
-
-    # staticText Valor
-    pdf.draw_text "Valor", :size => 5, :at => [130, 562], :width => 55, :height => 7
-
-    # textField $F{VL_OUTROS}
-    pdf.draw_text xml['total/vOutros'], :size => 7, :at => [272, 483], :width => 86, :height => 9
-
-    # staticText OUTRAS DESPESAS ACESSÓRIAS
-    pdf.draw_text "OUTRAS DESPESAS ACESSÓRIAS", :size => 5, :at => [272, 492], :width => 84, :height => 7
-
-    # textField $F{VL_SEGURO}
-    pdf.draw_text xml['total/vSeg'], :size => 7, :at => [93, 483], :width => 83, :height => 9
-
-    # staticText VALOR DO SEGURO
-    pdf.draw_text "VALOR DO SEGURO", :size => 5, :at => [93, 492], :width => 59, :height => 7
-
-    # staticText DESCONTO
-    pdf.draw_text "DESCONTO", :size => 5, :at => [182, 492], :width => 35, :height => 7
-
-    # textField $F{VL_DESCONTO}
-    pdf.draw_text xml['total/vDesc'], :size => 7, :at => [182, 483], :width => 85, :height => 9
-
-    # staticText VALOR DO FRETE
-    pdf.draw_text "VALOR DO FRETE", :size => 5, :at => [3, 492], :width => 50, :height => 7
-
-    # textField $F{VL_FRETE}
-    pdf.draw_text xml['total/vlFrete'], :size => 7, :at => [3, 483], :width => 84, :height => 9
-
-    # textField $F{VL_NF}
-    pdf.draw_text xml['total/vNF'], :size => 7, :at => [461, 483], :width => 99, :height => 9
-
-    # staticText VALOR TOTAL DA NOTA
-    pdf.draw_text "VALOR TOTAL DA NOTA", :size => 5, :at => [461, 492], :width => 61, :height => 7
-
-    # staticText PLACA DO VEÍCULO
-    pdf.draw_text "PLACA DO VEÍCULO", :size => 5, :at => [315, 466], :width => 69, :height => 7
-
-    # staticText CNPJ / CPF
-    pdf.draw_text "CNPJ / CPF", :size => 5, :at => [469, 466], :width => 69, :height => 7
-
-    # textField transporta/CNPJ
-    pdf.draw_text xml['transporta/CNPJ'], :size => 7, :at => [469, 457], :width => 92, :height => 9
-
-    # textField transporta/xMun
-    pdf.draw_text xml['transporta/xMun'], :size => 7, :at => [263, 439], :width => 177, :height => 10
-
-    # staticText
-    pdf.draw_text "MUNICÍPIO", :size => 5, :at => [263, 448], :width => 64, :height => 7
-
-    # textField transporta/xEnder
-    pdf.draw_text xml['transporta/xEnder'], :size => 7, :at => [3, 439], :width => 255, :height => 9
-
-    # staticText
-    pdf.draw_text "ENDEREÇO", :size => 5, :at => [3, 448], :width => 64, :height => 7
-
-    # staticText
-    pdf.draw_text "QUANTIDADE", :size => 5, :at => [3, 430], :width => 39, :height => 7
-
-    # textField vol/qVol
-    pdf.draw_text xml['vol/qVol'], :size => 7, :at => [3, 421], :width => 60, :height => 9
-
-    # textField vol/esp
-    pdf.draw_text xml['vol/esp'], :size => 7, :at => [70, 421], :width => 111, :height => 9
-
-    # staticText
-    pdf.draw_text "ESPÉCIE", :size => 5, :at => [70, 430], :width => 29, :height => 7
-
-    # staticText
-    pdf.draw_text "MARCA", :size => 5, :at => [187, 430], :width => 62, :height => 7
-
-    # textField vol/marca
-    pdf.draw_text xml['vol/marca'], :size => 7, :at => [187, 421], :width => 97, :height => 9
-
-    # staticText
-    pdf.draw_text "NUMERAÇÃO", :size => 5, :at => [294, 430], :width => 62, :height => 7
-
-    # textField
-    pdf.draw_text "", :size => 7, :at => [294, 421], :width => 103, :height => 9
-
-    # staticText UF
-    pdf.draw_text "UF", :size => 5, :at => [446, 448], :width => 14, :height => 7
-
-    # textField tranporta/UF
-    pdf.draw_text xml['tranporta/UF'], :size => 7, :at => [446, 439], :width => 19, :height => 9
-
-    # textField transporta/IE
-    pdf.draw_text xml['transporta/IE'], :size => 7, :at => [470, 439], :width => 91, :height => 9
-
-    # staticText
-    pdf.draw_text "INSCRIÇÃO ESTADUAL", :size => 5, :at => [470, 448], :width => 69, :height => 7
-
-    # staticText
-    pdf.draw_text "PESO BRUTO", :size => 5, :at => [403, 430], :width => 76, :height => 7
-
-    # textField vol/pesoB
-    pdf.draw_text xml['vol/pesoB'], :size => 7, :at => [403, 421], :width => 76, :height => 9
-
-    # textField 'vol/pesoL'
-    pdf.draw_text xml['vol/pesoL'], :size => 7, :at => [484, 421], :width => 77, :height => 9
-
-    # staticText
-    pdf.draw_text "PESO LÍQUIDO", :size => 5, :at => [484, 430], :width => 76, :height => 7
-
-    # textField transp/pĺaca
-    pdf.draw_text xml['transp/pĺaca'], :size => 7, :at => [315, 457], :width => 125, :height => 9
-
-    # staticText UF
-    pdf.draw_text "UF", :size => 5, :at => [446, 466], :width => 8, :height => 7
-
-    # textField transp/UF
-    pdf.draw_text xml['transp/UF'], :size => 7, :at => [446, 457], :width => 18, :height => 9
-
-    # staticText
-    pdf.draw_text "VALOR DO IPI", :size => 5, :at => [364, 492], :width => 43, :height => 7
-
-    # textField total/vIPI
-    pdf.draw_text xml['total/vIPI'], :size => 7, :at => [364, 483], :width => 90, :height => 9
-
-    # staticText
-    pdf.draw_text "DANFE", :size => 10, :at => [281, 729], :width => 58, :height => 12
-
-    # staticText
-    pdf.draw_text "DOCUMENTO AUXILIAR DA NOTA FISCAL ELETRÔNICA", :size => 5, :at => [280, 715], :width => 60, :height => 17
-
-    # staticText
-    pdf.draw_text "0 - ENTRADA 1 - SAÍDA", :size => 5, :at => [286, 699], :width => 34, :height => 14
-
-    # staticText
-    pdf.draw_text "NATUREZA DA OPERAÇÃO", :size => 5, :at => [3, 666], :width => 107, :height => 7
-
-    # staticText
-    pdf.draw_text "INSCRIÇÃO ESTADUAL", :size => 5, :at => [3, 648], :width => 69, :height => 7
-
-    # staticText
-    pdf.draw_text "INSC.ESTADUAL DO SUBST. TRIBUTÁRIO", :size => 5, :at => [192, 648], :width => 107, :height => 7
-
-    # staticText
-    pdf.draw_text "CNPJ", :size => 5, :at => [381, 648], :width => 16, :height => 7
-
-    # textField ide/natOp
-    pdf.draw_text xml['ide/natOp'], :size => 7, :at => [3, 657], :width => 336, :height => 9
-
-    # textField emit/IE
-    pdf.draw_text xml['emit/IE'], :size => 7, :at => [3, 639], :width => 183, :height => 9
-
-    # textField emit/IE_ST
-    pdf.draw_text xml['emit/IE_ST'], :size => 7, :at => [192, 639], :width => 183, :height => 9
-
-    # textField emit/CNPJ
-    pdf.draw_text xml['emit/CNPJ'], :size => 7, :at => [381, 639], :width => 181, :height => 9
-
-    # textField ide/dSaiEnt
-    pdf.draw_text xml['ide/dSaiEnt'], :size => 5, :at => [328, 704], :width => 5, :height => 6
-
-    # textField ide/serie
-    pdf.draw_text xml['ide/serie'], :size => 6, :at => [301, 683], :width => 38, :height => 7
-
-    # staticText 
-    pdf.draw_text "SÉRIE", :size => 6, :at => [282, 683], :width => 19, :height => 7
-
-    # textField ide/nNF
-    pdf.draw_text xml['ide/nNF'], :size => 7, :at => [291, 690], :width => 48, :height => 9
-
-    # staticText
-    pdf.draw_text "DATA DE RECEBIMENTO", :size => 5, :at => [3, 764], :width => 65, :height => 7
-
-    # staticText
-    pdf.draw_text "IDENTIFICAÇÃO E ASSINATURA DO RECEBEDOR", :size => 5, :at => [77, 764], :width => 259, :height => 7
-
-    # staticText
-    pdf.draw_text "NF-e", :size => 9, :at => [460, 778], :width => 102, :height => 12
-
-    # textField ide/serie
-    pdf.draw_text xml['ide/serie'], :size => 7, :at => [486, 759], :width => 76, :height => 9
-
-    # textField ide/nNF
-    pdf.draw_text xml['ide/nNF'], :size => 7, :at => [469, 768], :width => 93, :height => 9
-
-    # textField
-    pdf.draw_text "RECEBEMOS DE " + xml['emit/xNome'] + " OS PRODUTOS CONSTANTES DA NOTA FISCAL INDICADA A BAIXO", :size => 5, :at => [3, 784], :width => 450, :height => 8
-
-    # staticText
-    pdf.draw_text "SÉRIE", :size => 7, :at => [460, 759], :width => 26, :height => 9
-
-    # staticText
-    pdf.draw_text "CHAVE DE ACESSO", :size => 5, :at => [345, 708], :width => 67, :height => 7
-
-    # staticText
-    pdf.draw_text "FOLHA", :size => 6, :at => [282, 676], :width => 19, :height => 7
-
-    # textField
-    pdf.draw_text " 1 / 1", :size => 6, :at => [301, 676], :width => 9, :height => 7
-
-    # textField chNFe
-    pdf.draw_text xml['chNFe'], :size => 6, :at => [345, 699], :width => 217, :height => 9
-
-    # staticText
-    pdf.draw_text "DADOS DO PRODUTO / SERVIÇO", :size => 5, :at => [0, 412], :width => 134, :height => 8
-
-    # staticText
-    pdf.draw_text "N°", :size => 7, :at => [282, 690], :width => 10, :height => 9
-
-    # textField emit/xNome
-    pdf.draw_text xml['emit/xNome'], :size => 7, :at => [76, 720], :width => 198, :height => 21
-
-    # textField enderEmit/xLgr enderEmit/nro
-    pdf.draw_text xml['enderEmit/xLgr'] + ", " + xml['enderEmit/nro'], :size => 7, :at => [76, 709], :width => 198, :height => 10
-
-    # textField enderEmit/xBairro
-    pdf.draw_text xml['enderEmit/xBairro'] + " - " + xml['enderEmit/CEP'], :size => 7, :at => [76, 699], :width => 198, :height => 10
-
-    # textField enderEmit/xMun enderEmit/UF
-    pdf.draw_text xml['enderEmit/xMun'] + "/" + xml['enderEmit/UF'], :size => 6, :at => [76, 689], :width => 198, :height => 10
-
-    # textField enderEmit/fone enderEmit/email
-    pdf.draw_text xml['enderEmit/fone'] + " " + xml['enderEmit/email'], :size => 6, :at => [76, 679], :width => 198, :height => 10
-
-    # textField ide/dSaiEnt
-    pdf.draw_text xml['ide/dSaiEnt'], :size => 7, :at => [488, 595], :width => 74, :height => 9
-
-    # textField ide/dSaiEnt
-    pdf.draw_text xml['ide/dSaiEnt'], :size => 7, :at => [488, 577], :width => 74, :height => 9
-
-    # staticText
-    pdf.draw_text "Número", :size => 5, :at => [192, 562], :width => 57, :height => 7
-
-    # staticText
-    pdf.draw_text "Vencimento", :size => 5, :at => [256, 562], :width => 56, :height => 7
-
-    # staticText
-    pdf.draw_text "Valor", :size => 5, :at => [319, 562], :width => 55, :height => 7
-
-    # staticText
-    pdf.draw_text "Número", :size => 5, :at => [381, 562], :width => 57, :height => 7
-
-    # staticText
-    pdf.draw_text "Vencimento", :size => 5, :at => [445, 562], :width => 56, :height => 7
-
-    # staticText
-    pdf.draw_text "Valor", :size => 5, :at => [508, 562], :width => 50, :height => 7
-
-    # textField infAdic/infCpl
-    pdf.draw_text xml['infAdic/infCpl'], :size => 6, :at => [-10, -50], :width => 334, :height => 161
-
-    # staticText
-    pdf.draw_text "DADOS ADICIONAIS", :size => 5, :at => [0, 161], :width => 134, :height => 7
-
-    # staticText
-    pdf.draw_text "CÁLCULO DO ISSQN", :size => 5, :at => [0, 190], :width => 134, :height => 8
-
-    # staticText
-    pdf.draw_text "INSCRIÇÃO MUNICIPAL", :size => 5, :at => [3, 181], :width => 83, :height => 8
-
-    # staticText
-    pdf.draw_text "VALOR TOTAL DOS SERVIÇOS", :size => 5, :at => [114, 181], :width => 103, :height => 8
-
-    # textField total/vServ
-    pdf.draw_text xml['total/vServ'], :size => 7, :at => [114, 170], :width => 138, :height => 10
-
-    # textField emit/IM
-    pdf.draw_text xml['emit/IM'], :size => 7, :at => [3, 170], :width => 105, :height => 10
-
-    # staticText 
-    pdf.draw_text "BASE DE CÁLCULO DO ISSQN", :size => 5, :at => [258, 181], :width => 103, :height => 8
-
-    # textField total/vBCISS
-    pdf.draw_text xml['total/vBCISS'], :size => 7, :at => [258, 170], :width => 138, :height => 10
-
-    # staticText 
-    pdf.draw_text "VALOR DO ISSQN", :size => 5, :at => [402, 181], :width => 103, :height => 8
-
-    # textField total/ISSTot
-    pdf.draw_text xml['total/ISSTot'], :size => 7, :at => [402, 170], :width => 159, :height => 10
-
-    # textField 
-    pdf.draw_text "", :size => 6, :at => [331, -50], :width => 216, :height => 163
-
-    # staticText
-    pdf.draw_text "RESERVADO AO FISCO", :size => 5, :at => [345, 153], :width => 96, :height => 7
-
-    # staticText
-    pdf.draw_text "INFORMAÇÕES COMPLEMENTARES", :size => 5, :at => [3, 152], :width => 93, :height => 7
-
+    pdf.repeat :all do
+    
+    # CANHOTO
+        
+    pdf.ibox 0.85, 16.10, 0.25, 0.42, "RECEBEMOS DE " + xml['emit/xNome'] + " OS PRODUTOS CONSTANTES DA NOTA FISCAL INDICADA ABAIXO"
+    pdf.ibox 0.85, 4.10, 0.25, 1.27, "DATA DE RECEBIMENTO"
+  	pdf.ibox 0.85, 12.00, 4.35, 1.27, "IDENTIFICAÇÃO E ASSINATURA DO RECEBEDOR"
+
+  	pdf.ibox 1.70, 4.50, 16.35, 0.42, '', 
+  	  "NF-e\n" +
+  	  "N°. " + xml['ide/nNF'] + "\n" +
+  	  "SÉRIE " + xml['ide/serie'], {:align => :center, :valign => :center}
+
+    # EMITENTE
+    
+    pdf.ibox 3.92, 7.46, 0.25, 2.54, '', 
+      xml['emit/xNome'] + "\n" +
+      xml['enderEmit/xLgr'] + ", " + xml['enderEmit/nro'] + "\n" + 
+      xml['enderEmit/xBairro'] + " - " + xml['enderEmit/CEP'] + "\n" +
+      xml['enderEmit/xMun'] + "/" + xml['enderEmit/UF'] + "\n" +
+      xml['enderEmit/fone'] + " " + xml['enderEmit/email'], {:align => :center, :valign => :center}
+      
+    pdf.ibox 3.92, 3.08, 7.71, 2.54
+    
+    pdf.ibox 0.60, 3.08, 7.71, 2.54, '', "DANFE", {:size => 12, :align => :center, :border => 0, :style => :bold}
+    pdf.ibox 1.20, 3.08, 7.71, 3.14, '', "DOCUMENTO AUXILIAR DA NOTA FISCAL ELETRÔNICA", {:size => 8, :align => :center, :border => 0}
+    pdf.ibox 0.60, 3.08, 7.71, 4.34, '', "#{xml['ide/tpNF']} - " + (xml['ide/tpNF'] == '0' ? 'ENTRADA' : 'SAÍDA'), {:size => 8, :align => :center, :border => 0}
+
+    pdf.ibox 1.00, 3.08, 7.71, 4.94, '', 
+  	  "N°. " + xml['ide/nNF'] + "\n" +
+  	  "SÉRIE " + xml['ide/serie'], {:size => 8, :align => :center, :valign => :center, :border => 0, :style => :bold}
+        
+    pdf.ibox 2.20, 10.02, 10.79, 2.54
+    pdf.ibarcode 1.50, 8.00, 10.9010, 4.44, xml['chNFe']
+    pdf.ibox 0.85, 10.02, 10.79, 4.74, "CHAVE DE ACESSO", xml['chNFe'].gsub(/(\d)(?=(\d\d\d\d)+(?!\d))/, "\\1 "), {:style => :bold, :align => :center}
+    pdf.ibox 0.85, 10.02, 10.79, 5.60 , '', "Consulta de autenticidade no portal nacional da NF-e www.nfe.fazenda.gov.br/portal ou no site da Sefaz Autorizadora", {:align => :center, :size => 8}
+	  pdf.ibox 0.85, 10.54, 0.25, 6.46, "NATUREZA DA OPERAÇÃO", xml['ide/natOp']
+	  pdf.ibox 0.85, 10.02, 10.79, 6.46, "PROTOCOLO DE AUTORIZAÇÃO DE USO", xml['infProt/nProt'] + ' ' + xml['infProt/dhRecbto'], {:align => :center}
+
+	  pdf.ibox 0.85, 6.86, 0.25, 7.31, "INSCRIÇÃO ESTADUAL", xml['emit/IE']
+	  pdf.ibox 0.85, 6.86, 7.11, 7.31, "INSC.ESTADUAL DO SUBST. TRIBUTÁRIO", xml['emit/IE_ST']
+	  pdf.ibox 0.85, 6.84, 13.97, 7.31, "CNPJ", xml['emit/CNPJ']
+            
+    # TITULO
+    
+    pdf.ititle 0.42, 10.00, 0.25, 8.16, "DESTINATÁRIO / REMETENTE"
+
+	  pdf.ibox 0.85, 12.32, 0.25, 8.58, "NOME/RAZÃO SOCIAL", xml['dest/xNome']
+	  pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", xml['dest/CNPJ'] if xml['dest/CNPJ'] != ''
+	  pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", xml['dest/CPF'] if xml['dest/CPF'] != ''
+	  pdf.idate 0.85, 2.92, 17.90, 8.58, "DATA DA EMISSÃO", xml['ide/dEmi'], {:align => :right}
+	  pdf.ibox 0.85, 10.16, 0.25, 9.43, "ENDEREÇO", xml['enderDest/xLgr'] + " " + xml['enderDest/nro']
+	  pdf.ibox 0.85, 4.83, 10.41, 9.43, "BAIRRO", xml['enderDest/xBairro']
+	  pdf.ibox 0.85, 2.67, 15.24, 9.43, "CEP", xml['enderDest/CEP']
+	  pdf.idate 0.85, 2.92, 17.90, 9.43, "DATA DA SAÍDA/ENTRADA", xml['ide/dSaiEnt'], {:align => :right}
+	  pdf.ibox 0.85, 7.11, 0.25, 10.28, "MUNICÍPIO", xml['enderDest/xMun']
+	  pdf.ibox 0.85, 4.06, 7.36, 10.28, "FONE/FAX", xml['enderDest/fone']
+	  pdf.ibox 0.85, 1.14, 11.42, 10.28, "UF", xml['enderDest/UF']
+	  pdf.ibox 0.85, 5.33, 12.56, 10.28, "INSCRIÇÃO ESTADUAL", xml['dest/IE']
+	  pdf.idate 0.85, 2.92, 17.90, 10.28, "HORA DE SAÍDA", xml['ide/dSaiEnt'], {:align => :right}
+
+    # FATURAS
+    
+    pdf.ititle 0.42, 10.00, 0.25, 11.12, "FATURA / DUPLICATAS"
+    pdf.ibox 0.85, 20.57, 0.25, 11.51
+
+    if false
+	  pdf.box [0, 563], 63, 44, "Número"
+	  pdf.box [63, 563], 63, 44, "Vencimento"	
+	  pdf.box [126, 563], 63, 44, "Valor"
+	  pdf.box [189, 563], 63, 44, "Número"
+	  pdf.box [252, 563], 63, 44, "Vencimento"	
+	  pdf.box [315, 563], 63, 44, "Valor"
+	  pdf.box [378, 563], 63, 44, "Número"
+	  pdf.box [441, 563], 63, 44, "Vencimento"
+	  pdf.box [504, 563], 60, 44, "Valor"
+    end
+    
+    pdf.ititle 0.42, 5.60, 0.25, 12.36, "CÁLCULO DO IMPOSTO"
+
+  	pdf.inumeric 0.85, 4.06, 0.25, 12.78, "BASE DE CÁLCULO DO ICMS", xml['ICMSTot/vBC']
+  	pdf.inumeric 0.85, 4.06, 4.31, 12.78, "VALOR DO ICMS", xml['ICMSTot/vICMS']
+  	pdf.inumeric 0.85, 4.06, 8.37, 12.78, "BASE DE CÁLCULO DO ICMS ST", xml['ICMSTot/vBCST']
+  	pdf.inumeric 0.85, 4.06, 12.43, 12.78, "VALOR DO ICMS ST", xml['ICMSTot/vST']
+  	pdf.inumeric 0.85, 4.32, 16.49, 12.78, "VALOR TOTAL DOS PRODUTOS", xml['ICMSTot/vProd']
+	  pdf.inumeric 0.85, 3.46, 0.25, 13.63, "VALOR DO FRETE", xml['ICMSTot/vFrete']
+	  pdf.inumeric 0.85, 3.46, 3.71, 13.63, "VALOR DO SEGURO", xml['ICMSTot/vSeg']
+	  pdf.inumeric 0.85, 3.46, 7.17, 13.63, "DESCONTO", xml['ICMSTot/vDesc']
+	  pdf.inumeric 0.85, 3.46, 10.63, 13.63, "OUTRAS DESPESAS ACESSORIAS", xml['ICMSTot/vOutro']
+	  pdf.inumeric 0.85, 3.46, 14.09, 13.63, "VALOR DO IPI", xml['ICMSTot/vIPI']
+	  pdf.inumeric 0.85, 3.27, 17.55, 13.63, "VALOR TOTAL DA NOTA", xml['ICMSTot/vNF'], :style => :bold
+	
+    pdf.ititle 0.42, 10.00, 0.25, 14.48, "TRANSPORTADOR / VOLUMES TRANSPORTADOS"
+
+  	pdf.ibox 0.85, 9.02, 0.25, 14.90, "RAZÃO SOCIAL", xml['transporta/xNome']
+	  pdf.ibox 0.85, 2.79, 9.27, 14.90, "FRETE POR CONTA", xml['transp/modFrete'] == '0' ? ' 0 - EMITENTE' : '1 - DEST.'
+	  pdf.ibox 0.85, 1.78, 12.06, 14.90, "CODIGO ANTT", xml['veicTransp/RNTC']
+	  pdf.ibox 0.85, 2.29, 13.84, 14.90, "PLACA DO VEÍCULO", xml['veicTransp/placa']
+	  pdf.ibox 0.85, 0.76, 16.13, 14.90, "UF", xml['veicTransp/UF']
+	  pdf.ibox 0.85, 3.94, 16.89, 14.90, "CNPJ/CPF", xml['transporta/CNPJ'] 
+  	pdf.ibox 0.85, 9.02, 0.25, 15.75, "ENDEREÇO", xml['transporta/xEnder']
+  	pdf.ibox 0.85, 6.86, 9.27, 15.75, "MUNICÍPIO", xml['transporta/xMun']
+    pdf.ibox 0.85, 0.76, 16.13, 15.75, "UF", xml['transporta/UF']
+  	pdf.ibox 0.85, 3.94, 16.89, 15.75, "INSCRIÇÂO ESTADUAL", xml['transporta/IE']
+	  pdf.ibox 0.85, 2.92, 0.25, 16.60, "QUANTIDADE", xml['vol/qVol']
+	  pdf.ibox 0.85, 3.05, 3.17, 16.60, "ESPÉCIE", xml['vol/esp']
+	  pdf.ibox 0.85, 3.05, 6.22, 16.60, "MARCA", xml['vol/marca']
+	  pdf.ibox 0.85, 4.83, 9.27, 16.60, "NUMERAÇÃO"
+	  pdf.inumeric 0.85, 3.43, 14.10, 16.60, "PESO BRUTO", xml['vol/pesoB'], {:decimals => 3}
+	  pdf.inumeric 0.85, 3.30, 17.53, 16.60, "PESO LÍQUIDO", xml['vol/pesoL'], {:decimals => 3}
+
+    pdf.ititle 0.42, 10.00, 0.25, 17.45, "DADOS DO PRODUTO / SERVIÇO"
+
+    pdf.ibox 6.77, 2.00, 0.25, 17.87, "CÓDIGO"
+    pdf.ibox 6.77, 4.50, 2.25, 17.87, "DESCRIÇÃO"
+    pdf.ibox 6.77, 1.50, 6.75, 17.87, "NCM"
+    pdf.ibox 6.77, 0.80, 8.25, 17.87, "CST"
+    pdf.ibox 6.77, 1.00, 9.05, 17.87, "CFOP"
+    pdf.ibox 6.77, 1.00, 10.05, 17.87, "UNID"
+    pdf.ibox 6.77, 1.50, 11.05, 17.87, "QUANT"
+    pdf.ibox 6.77, 1.50, 12.55, 17.87, "VALOR UNIT"
+    pdf.ibox 6.77, 1.50, 14.05, 17.87, "VALOR TOT"
+    pdf.ibox 6.77, 1.50, 15.55, 17.87, "BASE CÁLC"
+    pdf.ibox 6.77, 1.00, 17.05, 17.87, "VL ICMS"
+    pdf.ibox 6.77, 1.00, 18.05, 17.87, "VL IPI"
+    pdf.ibox 6.77, 0.90, 19.05, 17.87, "% ICMS"
+    pdf.ibox 6.77, 0.86, 19.95, 17.87, "% IPI"
+
+    pdf.horizontal_line 0.25.cm, 21.50.cm, :at => invert(18.17.cm)
+	  
+    pdf.ititle 0.42, 10.00, 0.25, 24.64, "CÁLCULO DO ISSQN"
+
+	  pdf.ibox 0.85, 5.08, 0.25, 25.06, "INSCRIÇÃO MUNICIPAL", xml['emit/IM']
+	  pdf.ibox 0.85, 5.08, 5.33, 25.06, "VALOR TOTAL DOS SERVIÇOS", xml['total/vServ']
+	  pdf.ibox 0.85, 5.08, 10.41, 25.06, "BASE DE CÁLCULO DO ISSQN", xml['total/vBCISS']
+	  pdf.ibox 0.85, 5.28, 15.49, 25.06, "VALOR DO ISSQN", xml['total/ISSTot']
+
+    pdf.ititle 0.42, 10.00, 0.25, 25.91, "DADOS ADICIONAIS"
+
+	  pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", xml['infAdic/infCpl'], {:size => 8, :valign => :top}
+	  
+	  pdf.ibox 3.07, 7.62, 13.17, 26.33, "RESERVADO AO FISCO"
+
+    end
+
+    
+    pdf.font_size(6) do
+      pdf.itable 6.37, 21.50, 0.25, 18.17, 
+        xml.collect('//xmlns:det') { |det|
+          [
+            det.css('prod/cProd').text, #I02
+            det.css('prod/xProd').text, #I04
+            det.css('prod/NCM').text, #I05
+            det.css('ICMS/*/orig').text, #N11
+            det.css('prod/CFOP').text, #I08
+            det.css('prod/uCom').text, #I09
+            numerify(det.css('prod/qCom').text), #I10 
+            numerify(det.css('prod/vUnCom').text), #I10a
+            numerify(det.css('prod/vProd').text), #I11
+            numerify(det.css('ICMS/*/vBC').text), #N15
+            numerify(det.css('ICMS/*/vICMS').text), #N17   
+            numerify(det.css('IPI/*/vIPI').text), #O14
+            numerify(det.css('ICMS/*/pICMS').text), #N16
+            numerify(det.css('IPI/*/pIPI').text) #O13 
+          ]
+        },
+        :column_widths => {
+          0 => 2.00.cm, 
+          1 => 4.50.cm,
+          2 => 1.50.cm,
+          3 => 0.80.cm,
+          4 => 1.00.cm,
+          5 => 1.00.cm,
+          6 => 1.50.cm,
+          7 => 1.50.cm,
+          8 => 1.50.cm,
+          9 => 1.50.cm,
+          10 => 1.00.cm,
+          11 => 1.00.cm,
+          12 => 0.90.cm,
+          13 => 0.86.cm
+        },
+        :cell_style => {:padding => 2, :border_width => 0} do |table|
+          pdf.dash(5);
+          table.column(6..13).style(:align => :right)
+          table.column(0..13).border_width = 1
+          table.column(0..13).borders = [:bottom]
+        end
+    end
+    
+    pdf.page_count.times do |i|
+      pdf.go_to_page(i + 1)
+      pdf.ibox 1.00, 3.08, 7.71, 5.54, '', 
+  	  "FOLHA #{i + 1} de #{pdf.page_count}", {:size => 8, :align => :center, :valign => :center, :border => 0, :style => :bold}
+    end
+    
     return pdf
       
   end
   
   def self.render(xml_string)  
     xml = XML.new(xml_string)
-    pdf = generatePDFFromXML(xml)
+    pdf = generatePDF(xml)
     return pdf.render
   end
   
   def self.generate(pdf_filename, xml_filename)
     xml = XML.new(File.new(xml_filename))
-    pdf = generatePDFFromXML(xml)
+    pdf = generatePDF(xml)
     pdf.render_file pdf_filename
   end
   
