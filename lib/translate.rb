@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 # Help translating elements on code
 
 # Q: Why don't use variables for offset or set margins?!
