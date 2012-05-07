@@ -1,3 +1,4 @@
+# -*- encoding : utf-8 -*-
 Gem::Specification.new do |s|
   s.name        = 'ruby_danfe'
   s.version     = '0.9.0'
