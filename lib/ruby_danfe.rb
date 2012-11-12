@@ -322,5 +322,11 @@ module RubyDanfe
     pdf = generatePDF(xml)
     pdf.render_file pdf_filename
   end
-  
+
+  def self.render_file(pdf_filename, xml_string)
+    xml = XML.new(xml_string)
+    pdf = generatePDF(xml)
+    pdf.render_file pdf_filename
+  end
+
 end
