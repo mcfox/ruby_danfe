@@ -310,22 +310,73 @@ module RubyDanfe
     return pdf
       
   end
+
+  def self.generatePDFDacte(xml)
   
-  def self.render(xml_string)  
+    pdf = Document.new(
+      :page_size => 'A4',
+      :page_layout => :portrait,
+      :left_margin => 0,
+      :right_margin => 0,
+      :top_margin => 0,
+      :botton_margin => 0
+    )
+ 
+    pdf.font "Times-Roman" # Official font   
+    
+    pdf.repeat :all do
+      # h, w, x, y, title = '', info = '', options = {}
+      # logo
+
+      # emitente
+      pdf.ibox 3.92, 8.00, 0.25, 2.54
+
+      pdf.ibox 3.92, 8.00, 0.25, 2.84, '', xml['emit/xNome'], {:align => :center, :size => 8, :style => :bold, :border => 0 }
+      pdf.ibox 3.92, 8.00, 0.25, 3.14, '', xml['enderEmit/xLgr'] + ", " + xml['enderEmit/nro'] + " " + xml['enderEmit/xCpl'], {:align => :center, :size => 8, :border => 0 }
+      pdf.ibox 3.92, 8.00, 0.25, 3.44, '', xml['enderEmit/xBairro'] + " - " + xml['enderEmit/CEP'], {:align => :center, :size => 8, :border => 0 }
+      pdf.ibox 3.92, 8.00, 0.25, 3.74, '', xml['enderEmit/xMun'] + " - " + xml['enderEmit/UF'] + " " + xml['enderEmit/xPais'], {:align => :center, :size => 8, :border => 0 }
+      pdf.ibox 3.92, 8.00, 0.25, 4.04, '', "Fone/Fax: " + xml['enderEmit/fone'], {:align => :center, :size => 8, :border => 0 }
+      
+
+
+      # xml['emit/xNome'] + "\n" +
+      # xml['enderEmit/xBairro'] + " - " + xml['enderEmit/CEP'] + "\n" +
+      # xml['enderEmit/xMun'] + "/" + xml['enderEmit/UF'] + "\n" +
+      # xml['enderEmit/fone'] + " " + xml['enderEmit/email'], {:align => :center, :valign => :center}
+
+    end
+
+    return pdf
+  end
+
+  
+  def self.render(xml_string, type = :danfe)  
     xml = XML.new(xml_string)
-    pdf = generatePDF(xml)
+    pdf = if type == :danfe 
+            generatePDF(xml)
+          elsif type == :dacte
+            generatePDFDacte(xml)
+          end
     return pdf.render
   end
   
-  def self.generate(pdf_filename, xml_filename)
+  def self.generate(pdf_filename, xml_filename, type = :danfe)
     xml = XML.new(File.new(xml_filename))
-    pdf = generatePDF(xml)
+    pdf = if type == :danfe
+            generatePDF(xml)
+          elsif type == :dacte
+            generatePDFDacte(xml)
+          end
     pdf.render_file pdf_filename
   end
 
-  def self.render_file(pdf_filename, xml_string)
+  def self.render_file(pdf_filename, xml_string, type = :danfe)
     xml = XML.new(xml_string)
-    pdf = generatePDF(xml)
+    pdf = if type == :danfe 
+            generatePDF(xml)
+          elsif type == :dacte
+            generatePDFDacte(xml)
+          end
     pdf.render_file pdf_filename
   end
 
