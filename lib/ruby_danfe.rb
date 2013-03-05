@@ -329,21 +329,86 @@ module RubyDanfe
       # logo
 
       # emitente
-      pdf.ibox 3.92, 8.00, 0.25, 2.54
-
-      pdf.ibox 3.92, 8.00, 0.25, 2.84, '', xml['emit/xNome'], {:align => :center, :size => 8, :style => :bold, :border => 0 }
-      pdf.ibox 3.92, 8.00, 0.25, 3.14, '', xml['enderEmit/xLgr'] + ", " + xml['enderEmit/nro'] + " " + xml['enderEmit/xCpl'], {:align => :center, :size => 8, :border => 0 }
-      pdf.ibox 3.92, 8.00, 0.25, 3.44, '', xml['enderEmit/xBairro'] + " - " + xml['enderEmit/CEP'], {:align => :center, :size => 8, :border => 0 }
-      pdf.ibox 3.92, 8.00, 0.25, 3.74, '', xml['enderEmit/xMun'] + " - " + xml['enderEmit/UF'] + " " + xml['enderEmit/xPais'], {:align => :center, :size => 8, :border => 0 }
-      pdf.ibox 3.92, 8.00, 0.25, 4.04, '', "Fone/Fax: " + xml['enderEmit/fone'], {:align => :center, :size => 8, :border => 0 }
+      pdf.ibox 2.27, 7.67, 0.25, 0.54
+      pdf.ibox 2.27, 7.67, 0.25, 0.84, '', xml['emit/xNome'], { :align => :center, :size => 8, :style => :bold, :border => 0 }
+      pdf.ibox 2.27, 7.67, 0.25, 1.14, '', xml['enderEmit/xLgr'] + ", " + xml['enderEmit/nro'] + " " + xml['enderEmit/xCpl'], { :align => :center, :size => 8, :border => 0 }
+      pdf.ibox 2.27, 7.67, 0.25, 1.44, '', xml['enderEmit/xBairro'] + " - " + xml['enderEmit/CEP'], { :align => :center, :size => 8, :border => 0 }
+      pdf.ibox 2.27, 7.67, 0.25, 1.74, '', xml['enderEmit/xMun'] + " - " + xml['enderEmit/UF'] + " " + xml['enderEmit/xPais'], { :align => :center, :size => 8, :border => 0 }
+      pdf.ibox 2.27, 7.67, 0.25, 2.04, '', "Fone/Fax: " + xml['enderEmit/fone'], { :align => :center, :size => 8, :border => 0 }
       
+      # tipo ct-e
+      tpCTe = case xml['ide/tpCTe']
+        when '0' then 'Normal'
+        when '1' then 'Complemento de Valores'
+        when '2' then 'Anulação de Valores'
+        when '3' then 'Substituto'
+        else ''
+      end
+      pdf.ibox 0.90, 3.84, 0.25, 2.04, 'TIPO DE CT-E', tpCTe
 
+      # tipo servico
+      tpServ = case xml['ide/tpServ']
+        when '0' then 'Normal'
+        when '1' then 'Subcontratação'
+        when '2' then 'Redespacho'
+        when '3' then 'Redespacho Intermediário'
+        else ''
+      end
+      pdf.ibox 0.90, 3.83, 4.08, 2.04, 'TIPO DE SERVIÇO', tpServ
+
+      # tomador
+      toma = case xml['ide/toma']
+        when '0' then 'Remetente'
+        when '1' then 'Expedidor'
+        when '2' then 'Recebedor'
+        when '3' then 'Destinatário'
+        when '4' then 'Outros'
+        else ''
+      end
+      pdf.ibox 0.90, 3.83, 0.25, 2.94, 'TOMADOR DO SERVIÇO', toma
+
+
+      # sem valor fiscal | ambiente de homolocação
+
+
+      # forma de pagamento
+      forma = case xml['ide/forPag']
+        when '0' then 'Pago'
+        when '1' then 'A pagar'
+        when '2' then 'Outros'
+        else ''
+      end
+      pdf.ibox 0.90, 3.83, 4.08, 2.94, 'FORMA DE PAGAMENTO', forma
+
+      # infobox
+      pdf.ibox 0.90, 9.39, 7.92, 0.54, '', 'DACTE', { :align => :center, :style => :bold, :size => 8}
+      pdf.ibox 0.90, 9.39, 7.92, 0.84, '', 'Documento auxiliar do Conhecimento', { :align => :center, :border => 0, :size => 6 }
+      pdf.ibox 0.90, 9.39, 7.92, 1.04, '', 'de Transporte Eletrônico', { :align => :center, :border => 0, :size => 6 }
+
+      # tipo
+      pdf.ibox 0.90, 3.43, 17.31, 0.54, '', 'MODAL', { :align => :center, :size => 6 }
+
+      # modal
+      # modal = case xml['ide/modal']
+      #   when '1' then 'Rodoviário'
+      #   when '2' then 'Aéreo'
+      #   when '3' then 'Aquaviário'
+      #   when '4' then 'Ferroviário'
+      #   when '5' then 'Dutoviário'
+      #   else ''
+      # end
+      pdf.ibox 0.90, 3.43, 17.31, 0.84, '', 'RODOVIÁRIO', { :align => :center, :size => 8, :border => 0 }
+
+      # modelo
+      pdf.ibox 0.90, 1.98, 7.92, 1.34, 'MODELO', xml['ide/mod']
+
+      # serie
+      pdf.ibox 0.90, 0.73, 9.90, 1.34, 'SERIE', xml['ide/serie']
 
       # xml['emit/xNome'] + "\n" +
       # xml['enderEmit/xBairro'] + " - " + xml['enderEmit/CEP'] + "\n" +
       # xml['enderEmit/xMun'] + "/" + xml['enderEmit/UF'] + "\n" +
       # xml['enderEmit/fone'] + " " + xml['enderEmit/email'], {:align => :center, :valign => :center}
-
     end
 
     return pdf
