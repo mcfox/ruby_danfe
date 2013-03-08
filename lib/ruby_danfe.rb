@@ -40,6 +40,13 @@ module RubyDanfe
       end
       result
     end
+    def attrib(node, attrib)
+      begin
+        return @xml.css(node).attr(attrib).text
+      rescue
+        ''
+      end
+    end
   end
   
   class Document < Prawn::Document
@@ -330,11 +337,16 @@ module RubyDanfe
 
       # emitente
       pdf.ibox 2.27, 7.67, 0.25, 0.54
-      pdf.ibox 2.27, 7.67, 0.25, 0.84, '', xml['emit/xNome'], { :align => :center, :size => 8, :style => :bold, :border => 0 }
-      pdf.ibox 2.27, 7.67, 0.25, 1.14, '', xml['enderEmit/xLgr'] + ", " + xml['enderEmit/nro'] + " " + xml['enderEmit/xCpl'], { :align => :center, :size => 8, :border => 0 }
-      pdf.ibox 2.27, 7.67, 0.25, 1.44, '', xml['enderEmit/xBairro'] + " - " + xml['enderEmit/CEP'], { :align => :center, :size => 8, :border => 0 }
-      pdf.ibox 2.27, 7.67, 0.25, 1.74, '', xml['enderEmit/xMun'] + " - " + xml['enderEmit/UF'] + " " + xml['enderEmit/xPais'], { :align => :center, :size => 8, :border => 0 }
-      pdf.ibox 2.27, 7.67, 0.25, 2.04, '', "Fone/Fax: " + xml['enderEmit/fone'], { :align => :center, :size => 8, :border => 0 }
+      pdf.ibox 2.27, 7.67, 0.25, 0.84, '', 
+        xml['emit/xNome'] + "\n" +
+        xml['enderEmit/xLgr'] + ", " + xml['enderEmit/nro'] + " " + xml['enderEmit/xCpl'] + "\n" +
+        xml['enderEmit/xMun'] + " - " + xml['enderEmit/UF'] + " " + xml['enderEmit/xPais'] + "\n" +
+        "Fone/Fax: " + xml['enderEmit/fone'],
+        { :align => :center, :size => 8, :border => 0 }
+#      pdf.ibox 2.27, 7.67, 0.25, 1.14, '', xml['enderEmit/xLgr'] + ", " + xml['enderEmit/nro'] + " " + xml['enderEmit/xCpl'], { :align => :center, :size => 8, :border => 0 }
+#      pdf.ibox 2.27, 7.67, 0.25, 1.44, '', xml['enderEmit/xBairro'] + " - " + xml['enderEmit/CEP'], { :align => :center, :size => 8, :border => 0 }
+#      pdf.ibox 2.27, 7.67, 0.25, 1.74, '', xml['enderEmit/xMun'] + " - " + xml['enderEmit/UF'] + " " + xml['enderEmit/xPais'], { :align => :center, :size => 8, :border => 0 }
+#      pdf.ibox 2.27, 7.67, 0.25, 2.04, '', "Fone/Fax: " + xml['enderEmit/fone'], { :align => :center, :size => 8, :border => 0 }
       
       # tipo ct-e
       tpCTe = case xml['ide/tpCTe']
@@ -344,7 +356,7 @@ module RubyDanfe
         when '3' then 'Substituto'
         else ''
       end
-      pdf.ibox 0.90, 3.84, 0.25, 2.04, 'TIPO DE CT-E', tpCTe
+      pdf.ibox 0.90, 3.84, 0.25, 2.81, 'TIPO DE CT-E', tpCTe
 
       # tipo servico
       tpServ = case xml['ide/tpServ']
@@ -354,7 +366,7 @@ module RubyDanfe
         when '3' then 'Redespacho Intermediário'
         else ''
       end
-      pdf.ibox 0.90, 3.83, 4.08, 2.04, 'TIPO DE SERVIÇO', tpServ
+      pdf.ibox 0.90, 3.83, 4.08, 2.81, 'TIPO DE SERVIÇO', tpServ
 
       # tomador
       toma = case xml['ide/toma']
@@ -365,11 +377,9 @@ module RubyDanfe
         when '4' then 'Outros'
         else ''
       end
-      pdf.ibox 0.90, 3.83, 0.25, 2.94, 'TOMADOR DO SERVIÇO', toma
-
+      pdf.ibox 0.90, 3.83, 0.25, 3.71, 'TOMADOR DO SERVIÇO', toma
 
       # sem valor fiscal | ambiente de homolocação
-
 
       # forma de pagamento
       forma = case xml['ide/forPag']
@@ -378,7 +388,7 @@ module RubyDanfe
         when '2' then 'Outros'
         else ''
       end
-      pdf.ibox 0.90, 3.83, 4.08, 2.94, 'FORMA DE PAGAMENTO', forma
+      pdf.ibox 0.90, 3.83, 4.08, 3.71, 'FORMA DE PAGAMENTO', forma
 
       # infobox
       pdf.ibox 0.90, 9.39, 7.92, 0.54, '', 'DACTE', { :align => :center, :style => :bold, :size => 8}
@@ -398,12 +408,95 @@ module RubyDanfe
       #   else ''
       # end
       pdf.ibox 0.90, 3.43, 17.31, 0.84, '', 'RODOVIÁRIO', { :align => :center, :size => 8, :border => 0 }
+      pdf.ibox 0.91, 1.98, 7.92, 1.44, 'MODELO', xml['ide/mod'], {:size => 8}
+      pdf.ibox 0.91, 0.75, 9.90, 1.44, 'SERIE', xml['ide/serie'], {:size => 8}
+      pdf.ibox 0.91, 2.48, 10.65, 1.44, 'NúMERO', xml['ide/nCT'], {:size => 8}
+      pdf.ibox 0.91, 0.97, 13.13, 1.44, 'FL', '1/1', {:size => 8}
+      emiss = xml['ide/dhEmi'][8, 2] + '/' + xml['ide/dhEmi'][5, 2] + '/' + xml['ide/dhEmi'][0, 4] + " " +
+        xml['ide/dhEmi'][11, 8]
 
-      # modelo
-      pdf.ibox 0.90, 1.98, 7.92, 1.34, 'MODELO', xml['ide/mod']
+      pdf.ibox 0.91, 3.21, 14.10, 1.44, 'DATA E HORA DE EMISSÃO', emiss, {:size => 8}
+      pdf.ibox 0.91, 3.43, 17.31, 1.44, 'INSC. SUFRAMA DESTINATÁRIO', xml['dest/ISUF'], {:size => 8} 
+      pdf.ibox 1.13, 12.82, 7.92, 2.35
+      pdf.ibarcode 0.85, 12.82, 9.25, 3.35, xml.attrib('infCte', 'Id')[3..-1]
+      pdf.ibox 0.62, 12.82, 7.92, 3.48, 'Chave de acesso', ''
+      pdf.ibox 0.90, 12.82, 7.92, 3.62, '', xml.attrib('infCte', 'Id')[3..-1].gsub(/(\d)(?=(\d\d\d\d)+(?!\d))/, "\\1 "), {:style => :bold, :align => :center, :size => 8, :border => 0} 
+      pdf.ibox 1.13, 12.82, 7.92, 4.10, '', 'Consulta de autenticidade no portal do CT-e, no site da Sefaz Autorizadora, ou em http://www.cte.fazenda.gov.br/portal', 
+        { :align => :center, :valign => :center, :style => :bold, :size => 8 }
+      pdf.ibox 0.71, 12.82, 7.92, 5.23, 'Protocolo de Autorização de Uso'
+      pdf.ibox 0.90, 12.82, 7.92, 5.38, '', xml['protCTe/nProt'], { :style => :bold, :align => :center, :border => 0, :size => 8 }
+      pdf.ibox 1.33, 7.67, 0.25, 4.61, 'CFOP - NATUREZA DA PRESTAÇÃO', xml['ide/CFOP'] + ' - ' + xml['ide/natOp']
+      # UFIni -xMunIni
+      pdf.ibox 0.92, 10.25, 0.25, 5.94, 'Início da Prestação', xml['ide/UFIni'] + ' - ' + xml['ide/xMunIni']
+      # UFFim -cMunFim – xMunFim
+      pdf.ibox 0.92, 10.24, 10.50, 5.94, 'Término da Prestação', xml['ide/UFFim'] + ' - ' + xml['ide/cMunFim'] + ' - ' + xml['ide/xMunFim']
 
-      # serie
-      pdf.ibox 0.90, 0.73, 9.90, 1.34, 'SERIE', xml['ide/serie']
+      # remetente
+      pdf.ibox 2.76, 10.25, 0.25, 6.86
+      pdf.ibox 0.90, 10.00, 0.28, 7.05, '', 'REMETENTE: ' + xml['rem/xNome'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 10.00, 0.28, 7.51, '', 'ENDEREÇO: ' + xml ['enderReme/xLgr'] + ', ' + xml['enderReme/nro'] + (xml['enderReme/xCpl'] != '' ? ' - ' + xml['enderReme/xCpl'] : ''), { :size => 7, :border => 0 } 
+      pdf.ibox 0.90, 3.00, 0.45, 7.73, '', xml['enderReme/xBairro'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 10.00, 0.28, 7.97, '', 'MUNICÍPIO: ' + xml['enderReme/xMun'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 3.00, 6.75, 7.97, '', 'CEP: ' + xml['enderReme/CEP'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 10.00, 0.28, 8.46, '', 'CNPJ/CPF: ' + xml['rem/CNPJ'], { :size => 7, :border => 0 } if xml['rem/CNPJ'] != ''
+      pdf.ibox 0.90, 10.00, 0.28, 8.46, '', 'CNPJ/CPF: ' + xml['rem/CPF'], { :size => 7, :border => 0 } if xml['rem/CPF'] != ''
+      pdf.ibox 0.90, 3.50, 4.50, 8.46, '', 'INSCR. EST.: ' + xml['rem/IE'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 6.00, 0.28, 8.92, '', 'UF: ' + xml['enderReme/UF'] + '       ' + 'PAÍS: ' + xml['enderReme/xPais'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 3.00, 6.75, 8.92, '', 'FONE: ' + xml['rem/fone'], { :size => 7, :border => 0 }
+
+      # destinatário
+      pdf.ibox 2.76, 10.24, 10.50, 6.86
+      pdf.ibox 0.90, 10.00, 10.53, 7.05, '', 'DESTINATÁRIO: ' + xml['dest/xNome'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 10.00, 10.53, 7.51, '', 'ENDEREÇO: ' + xml ['enderDest/xLgr'] + ', ' + xml['enderDest/nro'] + (xml['enderDest/xCpl'] != '' ? ' - ' + xml['enderDest/xCpl'] : ''), { :size => 7, :border => 0 } 
+      pdf.ibox 0.90, 3.00, 10.70, 7.73, '', xml['enderDest/xBairro'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 10.00, 10.53, 7.97, '', 'MUNICÍPIO: ' + xml['enderDest/xMun'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 3.00, 17.00, 7.97, '', 'CEP: ' + xml['enderDest/CEP'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 10.00, 10.53, 8.43, '', 'CNPJ/CPF: ' + xml['dest/CNPJ'], { :size => 7, :border => 0 } if xml['dest/CNPJ'] != ''
+      pdf.ibox 0.90, 10.00, 10.53, 8.43, '', 'CNPJ/CPF: ' + xml['dest/CPF'], { :size => 7, :border => 0 } if xml['dest/CPF'] != ''
+      pdf.ibox 0.90, 3.50, 14.75, 8.43, '', 'INSCR. EST.: ' + xml['dest/IE'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 6.00, 10.53, 8.89, '', 'UF: ' + xml['enderDest/UF'] + '       ' + 'PAÍS: ' + xml['enderDest/xPais'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 3.00, 17.00, 8.89, '', 'FONE: ' + xml['dest/fone'], { :size => 7, :border => 0 }
+
+      # expedidor
+      pdf.ibox 2.76, 10.25, 0.25, 9.62
+      pdf.ibox 0.90, 10.00, 0.28, 9.81, '', 'EXPEDIDOR: ' + xml['exped/xNome'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 10.00, 0.28, 10.27, '', 'ENDEREÇO: ' + xml ['enderExped/xLgr'] + ', ' + xml['enderExped/nro'] + (xml['enderExped/xCpl'] != '' ? ' - ' + xml['enderExped/xCpl'] : ''), { :size => 7, :border => 0 } 
+      pdf.ibox 0.90, 3.00, 0.45, 10.49, '', xml['enderExped/xBairro'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 10.00, 0.28, 10.73, '', 'MUNICÍPIO: ' + xml['enderExped/xMun'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 3.00, 6.75, 10.73, '', 'CEP: ' + xml['enderExped/CEP'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 10.00, 0.28, 11.19, '', 'CNPJ/CPF: ' + xml['exped/CNPJ'], { :size => 7, :border => 0 } if xml['exped/CNPJ'] != ''
+      pdf.ibox 0.90, 10.00, 0.28, 11.19, '', 'CNPJ/CPF: ' + xml['exped/CPF'], { :size => 7, :border => 0 } if xml['exped/CPF'] != ''
+      pdf.ibox 0.90, 3.50, 4.50, 11.19, '', 'INSCR. EST.: ' + xml['exped/IE'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 6.00, 0.28, 11.65, '', 'UF: ' + xml['enderExped/UF'] + '       ' + 'PAÍS: ' + xml['enderExped/xPais'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 3.00, 6.75, 11.65, '', 'FONE: ' + xml['exped/fone'], { :size => 7, :border => 0 }
+
+      # recebedor
+      pdf.ibox 2.76, 10.24, 10.50, 9.62
+      pdf.ibox 0.90, 10.00, 10.53, 9.81, '', 'RECEBEDOR: ' + xml['receb/xNome'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 10.00, 10.53, 10.27, '', 'ENDEREÇO: ' + xml ['enderReceb/xLgr'] + ', ' + xml['enderReceb/nro'] + (xml['enderReceb/xCpl'] != '' ? ' - ' + xml['enderReceb/xCpl'] : ''), { :size => 7, :border => 0 } 
+      pdf.ibox 0.90, 3.00, 10.70, 10.49, '', xml['enderReceb/xBairro'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 10.00, 10.53, 10.73, '', 'MUNICÍPIO: ' + xml['enderReceb/xMun'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 3.00, 17.00, 10.73, '', 'CEP: ' + xml['enderReceb/CEP'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 10.00, 10.53, 11.19, '', 'CNPJ/CPF: ' + xml['receb/CNPJ'], { :size => 7, :border => 0 } if xml['receb/CNPJ'] != ''
+      pdf.ibox 0.90, 10.00, 10.53, 11.19, '', 'CNPJ/CPF: ' + xml['receb/CPF'], { :size => 7, :border => 0 } if xml['receb/CPF'] != ''
+      pdf.ibox 0.90, 3.50, 14.75, 11.19, '', 'INSCR. EST.: ' + xml['receb/IE'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 6.00, 10.53, 11.65, '', 'UF: ' + xml['enderReceb/UF'] + '       ' + 'PAÍS: ' + xml['enderReceb/xPais'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 3.00, 17.00, 11.65, '', 'FONE: ' + xml['receb/fone'], { :size => 7, :border => 0 }
+
+      # tomador
+      pdf.ibox 1.45, 20.49, 0.25, 12.38
+      pdf.ibox 0.90, 10.00, 0.28, 12.45, '', 'TOMADOR DO SERVIÇO: ' + xml['toma/xNome'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 10.00, 10.50, 12.45, '', 'MUNICÍPIO: ' + xml['enderToma/xMun'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 4.00, 18.00, 12.45, '', 'CEP: ' + xml['enderToma/CEP'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 10.00, 0.28, 12.91, '', 'ENDEREÇO: ' + xml['enderToma/XLgr'] + ', ' + xml['enderToma/nro'] + (xml['enderToma/XCpl'] != '' ? ' - ' + xml['enderToma/XCpl'] : '') + xml['enderToma/xBairro'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 2.00, 13.50, 12.91, '', 'UF: ' + xml['enderToma/UF'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 5.00, 16.50, 12.91, '', 'PAÍS: ' + xml['enderToma/XPais'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 5.00, 0.28, 13.37, '', 'CNPJ/CPF: ' + xml['toma/cnpj'], { :size => 7, :border => 0 } if xml['toma/cnpj'] != ''
+      pdf.ibox 0.90, 5.00, 0.28, 13.37, '', 'CNPJ/CPF: ' + xml['toma/cpf'], { :size => 7, :border => 0 } if xml['toma/cpf'] != ''
+      pdf.ibox 0.90, 5.00, 5.60, 13.37, '', 'INSCR. EST.: ' + xml['toma/IE'], { :size => 7, :border => 0 }
+      pdf.ibox 0.90, 5.00, 10.50, 13.37, '', 'FONE: ' + xml['toma/fone'], { :size => 7, :border => 0 }
+
+
 
       # xml['emit/xNome'] + "\n" +
       # xml['enderEmit/xBairro'] + " - " + xml['enderEmit/CEP'] + "\n" +
@@ -413,7 +506,6 @@ module RubyDanfe
 
     return pdf
   end
-
   
   def self.render(xml_string, type = :danfe)  
     xml = XML.new(xml_string)
