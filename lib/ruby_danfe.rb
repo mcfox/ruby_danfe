@@ -385,8 +385,8 @@ module RubyDanfe
       pdf.ibox 0.90, 3.83, 4.08, 2.81, 'TIPO DE SERVIÇO', tpServ, { :align => :center, :size => 8, :style => :bold }
 
       # tomador
-      xml['ide/toma03'] != '' ? tomador = 'ide/toma03' : tomador = 'ide/toma04'
-      toma = case xml[tomador]
+      xml['ide/toma3'] != '' ? tomador = 'toma3' : tomador = 'toma4'
+      toma = case xml[tomador + '/toma']
         when '0' then 'Remetente'
         when '1' then 'Expedidor'
         when '2' then 'Recebedor'
@@ -454,7 +454,7 @@ module RubyDanfe
       pdf.ibox 0.90, 10.00, 1.88, 7.05, '', xml['rem/xNome'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 10.00, 0.28, 7.41, '', 'Endereço: ', { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 1.88, 7.41, '', xml['enderReme/xLgr'] + ', ' + xml['enderReme/nro'] + (xml['enderReme/xCpl'] != '' ? ' - ' + xml['enderReme/xCpl'] : ''), { :size => 7, :border => 0, :style => :bold }
-      pdf.ibox 0.90, 3.00, 1.88, 7.68, '', xml['enderReme/xBairro'], { :size => 7, :border => 0, :style => :bold }
+      pdf.ibox 0.90, 5.00, 1.88, 7.68, '', xml['enderReme/xBairro'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 10.00, 0.28, 8.02, '', 'Município: ', { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 1.88, 8.02, '', xml['enderReme/xMun'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 3.00, 6.50, 8.02, '', 'CEP: ', { :size => 7, :border => 0, :style => :italic }
@@ -482,7 +482,7 @@ module RubyDanfe
       pdf.ibox 0.90, 10.00, 12.10, 7.05, '', xml['dest/xNome'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 10.00, 10.53, 7.41, '', 'Endereço: ', { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 12.10, 7.41, '', xml['enderDest/xLgr'] + ', ' + xml['enderDest/nro'] + (xml['enderDest/xCpl'] != '' ? ' - ' + xml['enderDest/xCpl'] : ''), { :size => 7, :border => 0, :style => :bold }
-      pdf.ibox 0.90, 3.00, 12.10, 7.68, '', xml['enderDest/xBairro'], { :size => 7, :border => 0, :style => :bold }
+      pdf.ibox 0.90, 5.00, 12.10, 7.68, '', xml['enderDest/xBairro'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 10.00, 10.53, 8.02, '', 'Município: ', { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 12.10, 8.02, '', xml['enderDest/xMun'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 3.00, 16.75, 8.02, '', 'CEP: ' , { :size => 7, :border => 0, :style => :italic }
@@ -510,7 +510,7 @@ module RubyDanfe
       pdf.ibox 0.90, 10.00, 1.88, 9.81, '', xml['exped/xNome'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 10.00, 0.28, 10.17, '', 'Endereço: ', { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 1.88, 10.17, '', xml['enderExped/xLgr'] + ', ' + xml['enderExped/nro'] + (xml['enderExped/xCpl'] != '' ? ' - ' + xml['enderExped/xCpl'] : ''), { :size => 7, :border => 0, :style => :bold }
-      pdf.ibox 0.90, 3.00, 1.88, 10.44, '', xml['enderExped/xBairro'], { :size => 7, :border => 0, :style => :bold }
+      pdf.ibox 0.90, 5.00, 1.88, 10.44, '', xml['enderExped/xBairro'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 10.00, 0.28, 10.78, '', 'Município: ', { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 1.88, 10.78, '', xml['enderExped/xMun'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 3.00, 6.50, 10.78, '', 'CEP: ', { :size => 7, :border => 0, :style => :italic }
@@ -538,7 +538,7 @@ module RubyDanfe
       pdf.ibox 0.90, 10.00, 12.10, 9.81, '', xml['receb/xNome'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 10.00, 10.53, 10.17, '', 'Endereço: ', { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 12.10, 10.17, '', xml['enderReceb/xLgr'] + ', ' + xml['enderReceb/nro'] + (xml['enderReceb/xCpl'] != '' ? ' - ' + xml['enderReceb/xCpl'] : ''), { :size => 7, :border => 0, :style => :bold }
-      pdf.ibox 0.90, 3.00, 12.10, 10.44, '', xml['enderReceb/xBairro'], { :size => 7, :border => 0, :style => :bold }
+      pdf.ibox 0.90, 5.00, 12.10, 10.44, '', xml['enderReceb/xBairro'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 10.00, 10.53, 10.78, '', 'Município: ' , { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 12.10, 10.78, '', xml['enderReceb/xMun'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 3.00, 16.75, 10.78, '', 'CEP: ', { :size => 7, :border => 0, :style => :italic }
@@ -562,8 +562,8 @@ module RubyDanfe
 
       # tomador
       pdf.ibox 1.45, 20.49, 0.25, 12.38
-      xml['ide/toma03'] != '' ? tomador = 'ide/toma03' : tomador = 'ide/toma04'
-      toma = case xml[tomador]
+      xml['ide/toma3'] != '' ? tomador = 'toma3' : tomador = 'toma4'
+      toma = case xml[tomador + '/toma']
                when '0' then 'rem'
                when '1' then 'exped'
                when '2' then 'receb'
@@ -571,7 +571,7 @@ module RubyDanfe
                when '4' then 'Outros'
                else ''
              end
-      endereco = case xml[tomador]
+      endereco = case xml[tomador + '/toma']
                      when '0' then 'enderReme'
                      when '1' then 'enderExped'
                      when '2' then 'enderReceb'
@@ -581,29 +581,29 @@ module RubyDanfe
                    end
       if toma == 'Outros'
         pdf.ibox 0.90, 10.00, 0.28, 12.45, '', 'Tomador do Serviço: ', { :size => 7, :border => 0, :style => :italic }
-        pdf.ibox 0.90, 10.00, 0.28, 12.45, '', xml['toma4/xNome'], { :size => 7, :border => 0, :style => :bold }
+        pdf.ibox 0.90, 10.00, 2.58, 12.45, '', xml['toma4/xNome'], { :size => 7, :border => 0, :style => :bold }
         pdf.ibox 0.90, 10.00, 10.50, 12.45, '', 'Município: ', { :size => 7, :border => 0, :style => :italic }
-        pdf.ibox 0.90, 10.00, 10.50, 12.45, '', xml['enderToma/xMun'], { :size => 7, :border => 0, :style => :bold }
+        pdf.ibox 0.90, 10.00, 11.80, 12.45, '', xml['enderToma/xMun'], { :size => 7, :border => 0, :style => :bold }
         pdf.ibox 0.90, 4.00, 18.00, 12.45, '', 'CEP: ', { :size => 7, :border => 0, :style => :italic }
-        pdf.ibox 0.90, 4.00, 18.00, 12.45, '', xml['enderToma/CEP'][0,2] + '.' + xml['enderToma/CEP'][3,3] + '-' + xml['enderToma/CEP'][5,3], { :size => 7, :border => 0, :style => :bold } if xml['enderToma/CEP'] != ''
+        pdf.ibox 0.90, 4.00, 18.70, 12.45, '', xml['enderToma/CEP'][0,2] + '.' + xml['enderToma/CEP'][3,3] + '-' + xml['enderToma/CEP'][5,3], { :size => 7, :border => 0, :style => :bold } if xml['enderToma/CEP'] != ''
         pdf.ibox 0.90, 10.00, 0.28, 12.81, '', 'Endereço: ', { :size => 7, :border => 0, :style => :italic }
-        pdf.ibox 0.90, 10.00, 0.28, 12.81, '', xml['enderToma/xLgr'] + ', ' + xml['enderToma/nro'] + (xml['enderToma/xCpl'] != '' ? ' - ' + xml['enderToma/xCpl'] : '') + ' - ' + xml['enderToma/xBairro'], { :size => 7, :border => 0, :style => :bold }
+        pdf.ibox 0.90, 10.00, 1.88, 12.81, '', xml['enderToma/xLgr'] + ', ' + xml['enderToma/nro'] + (xml['enderToma/xCpl'] != '' ? ' - ' + xml['enderToma/xCpl'] : '') + ' - ' + xml['enderToma/xBairro'], { :size => 7, :border => 0, :style => :bold }
         pdf.ibox 0.90, 2.00, 13.50, 12.81, '', 'UF: ' , { :size => 7, :border => 0, :style => :italic }
-        pdf.ibox 0.90, 2.00, 13.50, 12.81, '', xml['enderToma/UF'], { :size => 7, :border => 0, :style => :bold }
+        pdf.ibox 0.90, 2.00, 14.50, 12.81, '', xml['enderToma/UF'], { :size => 7, :border => 0, :style => :bold }
         pdf.ibox 0.90, 5.00, 16.50, 12.81, '', 'País: ' , { :size => 7, :border => 0, :style => :italic }
-        pdf.ibox 0.90, 5.00, 16.50, 12.81, '', xml['enderToma/xPais'], { :size => 7, :border => 0, :style => :bold }
+        pdf.ibox 0.90, 5.00, 17.50, 12.81, '', xml['enderToma/xPais'], { :size => 7, :border => 0, :style => :bold }
         pdf.ibox 0.90, 5.00, 0.28, 13.17, '', 'CNPJ/CPF: ' , { :size => 7, :border => 0, :style => :italic }
-        pdf.ibox 0.90, 5.00, 0.28, 13.17, '', xml['toma4/CNPJ'][0,2] + '.' + xml['toma4/CNPJ'][2,3] + '.' + xml['toma4/CNPJ'][5,3] + '/' + xml['toma4/CNPJ'][8,4] + '-' + xml['toma4/CNPJ'][12,2], { :size => 7, :border => 0, :style => :bold } if xml['toma4/CNPJ'] != ''
-        pdf.ibox 0.90, 5.00, 0.28, 13.17, '', xml['toma4/CPF'][0,3] + '.' + xml['toma4/CPF'][3,3] + '.' + xml['toma4/CPF'][6,3] + '-' + xml['toma4/CPF'][9,2], { :size => 7, :border => 0, :style => :bold } if xml['toma4/CPF'] != ''
+        pdf.ibox 0.90, 5.00, 1.88, 13.17, '', xml['toma4/CNPJ'][0,2] + '.' + xml['toma4/CNPJ'][2,3] + '.' + xml['toma4/CNPJ'][5,3] + '/' + xml['toma4/CNPJ'][8,4] + '-' + xml['toma4/CNPJ'][12,2], { :size => 7, :border => 0, :style => :bold } if xml['toma4/CNPJ'] != ''
+        pdf.ibox 0.90, 5.00, 1.88, 13.17, '', xml['toma4/CPF'][0,3] + '.' + xml['toma4/CPF'][3,3] + '.' + xml['toma4/CPF'][6,3] + '-' + xml['toma4/CPF'][9,2], { :size => 7, :border => 0, :style => :bold } if xml['toma4/CPF'] != ''
         pdf.ibox 0.90, 5.00, 5.60, 13.17, '', 'Inscr. Est.: ', { :size => 7, :border => 0, :style => :italic }
-        pdf.ibox 0.90, 5.00, 5.60, 13.17, '', xml['toma4/IE'], { :size => 7, :border => 0, :style => :bold }
+        pdf.ibox 0.90, 5.00, 7.20, 13.17, '', xml['toma4/IE'], { :size => 7, :border => 0, :style => :bold }
         pdf.ibox 0.90, 5.00, 10.50, 13.17, '', 'Fone: ' , { :size => 7, :border => 0, :style => :italic }
         fone = xml['toma4/fone']
         unless fone.eql?('')
           if fone.size > 8
-            pdf.ibox 0.90, 5.00, 10.50, 13.17, '', '(' + xml['toma4/fone'][0,2] + ')' + xml['toma4/fone'][2,4] + '-' + xml['toma4/fone'][6,4], { :size => 7, :border => 0, :style => :bold }
+            pdf.ibox 0.90, 5.00, 11.80, 13.17, '', '(' + xml['toma4/fone'][0,2] + ')' + xml['toma4/fone'][2,4] + '-' + xml['toma4/fone'][6,4], { :size => 7, :border => 0, :style => :bold }
           else
-            pdf.ibox 0.90, 5.00, 10.50, 13.17, '', xml['toma4/fone'][0,4] + '-' + xml['toma4/fone'][4,4], { :size => 7, :border => 0, :style => :bold }
+            pdf.ibox 0.90, 5.00, 11.80, 13.17, '', xml['toma4/fone'][0,4] + '-' + xml['toma4/fone'][4,4], { :size => 7, :border => 0, :style => :bold }
           end
         end
       else
