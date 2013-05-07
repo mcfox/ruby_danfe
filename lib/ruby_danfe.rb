@@ -6,7 +6,6 @@ require 'barby'
 require 'barby/barcode/code_128'
 require 'barby/outputter/prawn_outputter'
 require 'nokogiri'
-require 'pry'
 
 def numerify(number, decimals = 2)
   return '' if !number || number == ''

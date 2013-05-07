@@ -9,6 +9,5 @@ Gem::Specification.new do |s|
   s.add_dependency('nokogiri')
   s.add_dependency('prawn')
   s.add_dependency('barby')
-  s.add_development_dependency('pry')
   s.homepage    = 'https://github.com/taxweb/ruby_danfe'
 end
