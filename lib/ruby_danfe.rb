@@ -32,7 +32,11 @@ module RubyDanfe
       return node ? node.text : ''
     end
     def render
-      RubyDanfe.render @xml.to_s
+      if @xml.at_css('infNFe')
+         RubyDanfe.render @xml.to_s, :danfe
+      else
+         RubyDanfe.render @xml.to_s, :dacte
+      end
     end
     def collect(xpath, &block)
       result = []
@@ -454,7 +458,7 @@ module RubyDanfe
       pdf.ibox 0.90, 10.00, 0.28, 8.02, '', 'Município: ', { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 1.88, 8.02, '', xml['enderReme/xMun'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 3.00, 6.50, 8.02, '', 'CEP: ', { :size => 7, :border => 0, :style => :italic }
-      pdf.ibox 0.90, 3.00, 7.20, 8.02, '', xml['enderReme/CEP'][0,2] + '.' + xml['enderReme/CEP'][3,3] + '-' + xml['enderReme/CEP'][5,3], { :size => 7, :border => 0, :style => :bold }
+      pdf.ibox 0.90, 3.00, 7.20, 8.02, '', xml['enderReme/CEP'][0,2] + '.' + xml['enderReme/CEP'][3,3] + '-' + xml['enderReme/CEP'][5,3], { :size => 7, :border => 0, :style => :bold } if xml['enderReme/CEP'] != ''
       pdf.ibox 0.90, 10.00, 0.28, 8.41, '', 'CNPJ/CPF: ', { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 1.88, 8.41, '', xml['rem/CNPJ'][0,2] + '.' + xml['rem/CNPJ'][2,3] + '.' + xml['rem/CNPJ'][5,3] + '/' + xml['rem/CNPJ'][8,4] + '-' + xml['rem/CNPJ'][12,2], { :size => 7, :border => 0, :style => :bold } if xml['rem/CNPJ'] != ''
       pdf.ibox 0.90, 10.00, 1.88, 8.41, '', xml['rem/CPF'][0,3] + '.' + xml['rem/CPF'][3,3] + '.' + xml['rem/CPF'][6,3] + '-' + xml['rem/CPF'][9,2], { :size => 7, :border => 0, :style => :bold } if xml['rem/CPF'] != ''
@@ -482,7 +486,7 @@ module RubyDanfe
       pdf.ibox 0.90, 10.00, 10.53, 8.02, '', 'Município: ', { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 12.10, 8.02, '', xml['enderDest/xMun'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 3.00, 16.75, 8.02, '', 'CEP: ' , { :size => 7, :border => 0, :style => :italic }
-      pdf.ibox 0.90, 3.00, 17.40, 8.02, '', xml['enderDest/CEP'][0,2] + '.' + xml['enderDest/CEP'][3,3] + '-' + xml['enderDest/CEP'][5,3], { :size => 7, :border => 0, :style => :bold }
+      pdf.ibox 0.90, 3.00, 17.40, 8.02, '', xml['enderDest/CEP'][0,2] + '.' + xml['enderDest/CEP'][3,3] + '-' + xml['enderDest/CEP'][5,3], { :size => 7, :border => 0, :style => :bold } if xml['enderDest/CEP'] != ''
       pdf.ibox 0.90, 10.00, 10.53, 8.41, '', 'CNPJ/CPF: ', { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 12.10, 8.41, '', xml['dest/CNPJ'][0,2] + '.' + xml['dest/CNPJ'][2,3] + '.' + xml['dest/CNPJ'][5,3] + '/' + xml['dest/CNPJ'][8,4] + '-' + xml['dest/CNPJ'][12,2], { :size => 7, :border => 0, :style => :bold } if xml['dest/CNPJ'] != ''
       pdf.ibox 0.90, 10.00, 12.10, 8.41, '', xml['dest/CPF'][0,3] + '.' + xml['dest/CPF'][3,3] + '.' + xml['dest/CPF'][6,3] + '-' + xml['dest/CPF'][9,2], { :size => 7, :border => 0, :style => :bold } if xml['dest/CPF'] != ''
@@ -510,7 +514,7 @@ module RubyDanfe
       pdf.ibox 0.90, 10.00, 0.28, 10.78, '', 'Município: ', { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 1.88, 10.78, '', xml['enderExped/xMun'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 3.00, 6.50, 10.78, '', 'CEP: ', { :size => 7, :border => 0, :style => :italic }
-      pdf.ibox 0.90, 3.00, 7.20, 10.78, '', xml['enderExped/CEP'][0,2] + '.' + xml['enderExped/CEP'][3,3] + '-' + xml['enderExped/CEP'][5,3], { :size => 7, :border => 0, :style => :bold }
+      pdf.ibox 0.90, 3.00, 7.20, 10.78, '', xml['enderExped/CEP'][0,2] + '.' + xml['enderExped/CEP'][3,3] + '-' + xml['enderExped/CEP'][5,3], { :size => 7, :border => 0, :style => :bold } if xml['enderExped/CEP'] != ''
       pdf.ibox 0.90, 10.00, 0.28, 11.17, '', 'CNPJ/CPF: ', { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 1.88, 11.17, '', xml['exped/CNPJ'][0,2] + '.' + xml['exped/CNPJ'][2,3] + '.' + xml['exped/CNPJ'][5,3] + '/' + xml['exped/CNPJ'][8,4] + '-' + xml['exped/CNPJ'][12,2], { :size => 7, :border => 0, :style => :bold } if xml['exped/CNPJ'] != ''
       pdf.ibox 0.90, 10.00, 1.88, 11.17, '', xml['exped/CPF'][0,3] + '.' + xml['exped/CPF'][3,3] + '.' + xml['exped/CPF'][6,3] + '-' + xml['exped/CPF'][9,2], { :size => 7, :border => 0, :style => :bold } if xml['exped/CPF'] != ''
@@ -538,7 +542,7 @@ module RubyDanfe
       pdf.ibox 0.90, 10.00, 10.53, 10.78, '', 'Município: ' , { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 12.10, 10.78, '', xml['enderReceb/xMun'], { :size => 7, :border => 0, :style => :bold }
       pdf.ibox 0.90, 3.00, 16.75, 10.78, '', 'CEP: ', { :size => 7, :border => 0, :style => :italic }
-      pdf.ibox 0.90, 3.00, 17.40, 10.78, '', xml['enderReceb/CEP'][0,2] + '.' + xml['enderReceb/CEP'][3,3] + '-' + xml['enderReceb/CEP'][5,3], { :size => 7, :border => 0, :style => :bold }
+      pdf.ibox 0.90, 3.00, 17.40, 10.78, '', xml['enderReceb/CEP'][0,2] + '.' + xml['enderReceb/CEP'][3,3] + '-' + xml['enderReceb/CEP'][5,3], { :size => 7, :border => 0, :style => :bold } if xml['enderReceb/CEP'] != ''
       pdf.ibox 0.90, 10.00, 10.53, 11.17, '', 'CNPJ/CPF: ', { :size => 7, :border => 0, :style => :italic }
       pdf.ibox 0.90, 10.00, 12.10, 11.17, '', xml['receb/CNPJ'][0,2] + '.' + xml['receb/CNPJ'][2,3] + '.' + xml['receb/CNPJ'][5,3] + '/' + xml['receb/CNPJ'][8,4] + '-' + xml['receb/CNPJ'][12,2], { :size => 7, :border => 0, :style => :bold } if xml['receb/CNPJ'] != ''
       pdf.ibox 0.90, 10.00, 12.10, 11.17, '', xml['receb/CPF'][0,3] + '.' + xml['receb/CPF'][3,3] + '.' + xml['receb/CPF'][6,3] + '-' + xml['receb/CPF'][9,2], { :size => 7, :border => 0, :style => :bold } if xml['receb/CPF'] != ''
@@ -581,7 +585,7 @@ module RubyDanfe
         pdf.ibox 0.90, 10.00, 10.50, 12.45, '', 'Município: ', { :size => 7, :border => 0, :style => :italic }
         pdf.ibox 0.90, 10.00, 10.50, 12.45, '', xml['enderToma/xMun'], { :size => 7, :border => 0, :style => :bold }
         pdf.ibox 0.90, 4.00, 18.00, 12.45, '', 'CEP: ', { :size => 7, :border => 0, :style => :italic }
-        pdf.ibox 0.90, 4.00, 18.00, 12.45, '', xml['enderToma/CEP'][0,2] + '.' + xml['enderToma/CEP'][3,3] + '-' + xml['enderToma/CEP'][5,3], { :size => 7, :border => 0, :style => :bold }
+        pdf.ibox 0.90, 4.00, 18.00, 12.45, '', xml['enderToma/CEP'][0,2] + '.' + xml['enderToma/CEP'][3,3] + '-' + xml['enderToma/CEP'][5,3], { :size => 7, :border => 0, :style => :bold } if xml['enderToma/CEP'] != ''
         pdf.ibox 0.90, 10.00, 0.28, 12.81, '', 'Endereço: ', { :size => 7, :border => 0, :style => :italic }
         pdf.ibox 0.90, 10.00, 0.28, 12.81, '', xml['enderToma/xLgr'] + ', ' + xml['enderToma/nro'] + (xml['enderToma/xCpl'] != '' ? ' - ' + xml['enderToma/xCpl'] : '') + ' - ' + xml['enderToma/xBairro'], { :size => 7, :border => 0, :style => :bold }
         pdf.ibox 0.90, 2.00, 13.50, 12.81, '', 'UF: ' , { :size => 7, :border => 0, :style => :italic }
@@ -608,7 +612,7 @@ module RubyDanfe
         pdf.ibox 0.90, 10.00, 10.50, 12.45, '', 'Município: ', { :size => 7, :border => 0, :style => :italic }
         pdf.ibox 0.90, 10.00, 11.80, 12.45, '', xml[endereco + '/xMun'], { :size => 7, :border => 0, :style => :bold }
         pdf.ibox 0.90, 4.00, 18.00, 12.45, '', 'CEP: ', { :size => 7, :border => 0, :style => :italic }
-        pdf.ibox 0.90, 4.00, 18.70, 12.45, '', xml[endereco + '/CEP'][0,2] + '.' + xml[endereco + '/CEP'][3,3] + '-' + xml[endereco + '/CEP'][5,3], { :size => 7, :border => 0, :style => :bold }
+        pdf.ibox 0.90, 4.00, 18.70, 12.45, '', xml[endereco + '/CEP'][0,2] + '.' + xml[endereco + '/CEP'][3,3] + '-' + xml[endereco + '/CEP'][5,3], { :size => 7, :border => 0, :style => :bold } if xml[endereco + '/CEP'] != ''
         pdf.ibox 0.90, 10.00, 0.28, 12.81, '', 'Endereço: ', { :size => 7, :border => 0, :style => :italic }
         pdf.ibox 0.90, 10.00, 1.88, 12.81, '', xml[endereco + '/xLgr'] + ', ' + xml[endereco + '/nro'] + (xml[endereco + '/xCpl'] != '' ? ' - ' + xml[endereco + '/xCpl'] : '') + ' - ' + xml[endereco + '/xBairro'], { :size => 7, :border => 0, :style => :bold }
         pdf.ibox 0.90, 2.00, 13.50, 12.81, '', 'UF: ' , { :size => 7, :border => 0, :style => :italic }
