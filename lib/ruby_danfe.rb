@@ -31,7 +31,7 @@ module RubyDanfe
       return node ? node.text : ''
     end
     def render
-      if @xml.at_css('infNFe')
+      if @xml.at_css('infNFe/ide')
          RubyDanfe.render @xml.to_s, :danfe
       else
          RubyDanfe.render @xml.to_s, :dacte
@@ -292,7 +292,7 @@ module RubyDanfe
             numerify(det.css('ICMS/*/vICMS').text), #N17   
             numerify(det.css('IPI/*/vIPI').text), #O14
             numerify(det.css('ICMS/*/pICMS').text), #N16
-            numerify(det.css('IPI/*/pIPI').text) #O13 
+            numerify(det.css('IPI/*/pIPI').text) #O13
           ]
         },
         :column_widths => {
@@ -391,7 +391,12 @@ module RubyDanfe
       pdf.ibox 0.90, 3.83, 4.08, 2.81, 'TIPO DE SERVIÇO', tpServ, { :align => :center, :size => 8, :style => :bold }
 
       # tomador
-      xml['ide/toma3'] != '' ? tomador = 'toma3' : tomador = 'toma4'
+      if xml['ide/toma3'] || xml['ide/toma03'] != '' then
+        xml['ide/toma3'] != '' ? tomador = 'toma3' : tomador = 'toma03'
+      else if xml['ide/toma4'] || xml['ide/toma04'] != '' then
+             xml['ide/toma4'] != '' ? tomador = 'toma4' : tomador = 'toma04'
+           end
+      end
       toma = case xml[tomador + '/toma']
         when '0' then 'Remetente'
         when '1' then 'Expedidor'
@@ -568,7 +573,12 @@ module RubyDanfe
 
       # tomador
       pdf.ibox 1.45, 20.49, 0.25, 12.38
-      xml['ide/toma3'] != '' ? tomador = 'toma3' : tomador = 'toma4'
+      if xml['ide/toma3'] || xml['ide/toma03'] != '' then
+        xml['ide/toma3'] != '' ? tomador = 'toma3' : tomador = 'toma03'
+      else if xml['ide/toma4'] || xml['ide/toma04'] != '' then
+             xml['ide/toma4'] != '' ? tomador = 'toma4' : tomador = 'toma04'
+           end
+      end
       toma = case xml[tomador + '/toma']
                when '0' then 'rem'
                when '1' then 'exped'
