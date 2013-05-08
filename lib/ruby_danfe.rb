@@ -37,10 +37,18 @@ module RubyDanfe
          RubyDanfe.render @xml.to_s, :dacte
       end
     end
-    def collect(xpath, &block)
+    def collect(ns, tag, &block)
       result = []
-      @xml.xpath(xpath).each do |det|
-        result << yield(det)
+      # Tenta primeiro com uso de namespace
+      begin
+        @xml.xpath("//#{ns}:#{tag}").each do |det|
+          result << yield(det)
+        end
+      rescue
+        # Caso dê erro, tenta sem
+        @xml.xpath("//#{tag}").each do |det|
+          result << yield(det)
+        end        
       end
       result
     end
@@ -267,10 +275,9 @@ module RubyDanfe
 
     end
 
-    
     pdf.font_size(6) do
       pdf.itable 6.37, 21.50, 0.25, 18.17, 
-        xml.collect('//xmlns:det') { |det|
+        xml.collect('xmlns', 'det')  { |det|
           [
             det.css('prod/cProd').text, #I02
             det.css('prod/xProd').text, #I04
@@ -647,7 +654,7 @@ module RubyDanfe
       pdf.ibox 0.90, 3.50, 4.83, 14.72, 'QT./UN. MEDIDA', '', { :size => 7, :style => :italic }
       pdf.ibox 0.90, 3.50, 8.33, 14.72, 'QT./UN. MEDIDA', '', { :size => 7, :style => :italic }
       x = 1.33
-      xml.collect('//xmlns:infQ') { |det|
+      xml.collect('xmlns', 'infQ') { |det|
         if !det.css('cUnid').text.eql?('00')
            pdf.ibox 0.90, 3.50, x, 15.02, '', det.css('qCarga').text, { :size => 7, :style => :bold, :border => 0 }
            x = x + 3.50
@@ -685,7 +692,7 @@ module RubyDanfe
       pdf.ibox 1.40, 1.88, 15.05, 16.02, 'VALOR', '',{ :size => 7, :border => 0 }
       x = 0.25
       y = 16.40
-      xml.collect('//xmlns:Comp') { |det|
+      xml.collect('xmlns', 'Comp') { |det|
         pdf.ibox 1.40, 2.12, x, y, '', det.css('xNome').text, { :size => 6, :border => 0, :style => :bold }
         pdf.inumeric 1.40, 1.88, x + 1.80, y, '', det.css('vComp').text, { :size => 7, :border => 0, :align => :right, :style => :bold }
         y = y + 0.40
@@ -740,7 +747,7 @@ module RubyDanfe
       pdf.ibox 5.52, 1.50, 16.75, 19.13, 'SÉRIE', '', { :size => 7}
       pdf.ibox 5.52, 2.50, 18.24, 19.13, 'Nº DOCUMENTO', '', { :size => 7}
       x = 0.25
-      xml.collect('//xmlns:infNF') { |det|
+      xml.collect('xmlns', 'infNF') { |det|
         pdf.ibox 5.52, 2.25, x, 19.43, '', det.css('mod').text, { :size => 7, :border => 0, :style => :bold }
         x = x + 2.25
         pdf.ibox 5.52, 2.25, x, 19.43, '', xml['rem/CNPJ'][0,2] + '.' + xml['rem/CNPJ'][2,3] + '.' +xml['rem/CNPJ'][5,3] + '/' + xml['rem/CNPJ'][8,4] + '-' + xml['rem/CNPJ'][12,2], { :size => 7, :border => 0, :style => :bold } if xml['rem/CNPJ'] != ''
