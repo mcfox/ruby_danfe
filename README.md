@@ -17,5 +17,11 @@ Usage
     require 'ruby_danfe'
     
     RubyDanfe.generate('sample.pdf', 'sample.xml')
-    
+
+Testing
+=======
+
+    cd test
+    ruby generate.rb
+    ruby generate.rb nfe_with_ns.xml
     
