@@ -240,8 +240,11 @@ module RubyDanfe
 	  pdf.ibox 0.85, 3.05, 3.17, 16.60, "ESPÉCIE", xml['vol/esp']
 	  pdf.ibox 0.85, 3.05, 6.22, 16.60, "MARCA", xml['vol/marca']
 	  pdf.ibox 0.85, 4.83, 9.27, 16.60, "NUMERAÇÃO"
-	  pdf.inumeric 0.85, 3.43, 14.10, 16.60, "PESO BRUTO", xml['vol/pesoB'], {:decimals => 3}
-	  pdf.inumeric 0.85, 3.30, 17.53, 16.60, "PESO LÍQUIDO", xml['vol/pesoL'], {:decimals => 3}
+    xml.collect('xmlns', 'vol') { |det|
+      pdf.inumeric 0.85, 3.43, 14.10, 16.60, "PESO BRUTO", det.css('pesoB').text, {:decimals => 3}
+      pdf.inumeric 0.85, 3.30, 17.53, 16.60, "PESO LÍQUIDO", det.css('pesoL').text, {:decimals => 3}
+      break
+    }
 
     pdf.ititle 0.42, 10.00, 0.25, 17.45, "DADOS DO PRODUTO / SERVIÇO"
 
