@@ -196,17 +196,19 @@ module RubyDanfe
     pdf.ititle 0.42, 10.00, 0.25, 11.12, "FATURA / DUPLICATAS"
     pdf.ibox 0.85, 20.57, 0.25, 11.51
 
-    if false
-	  pdf.box [0, 563], 63, 44, "Número"
-	  pdf.box [63, 563], 63, 44, "Vencimento"	
-	  pdf.box [126, 563], 63, 44, "Valor"
-	  pdf.box [189, 563], 63, 44, "Número"
-	  pdf.box [252, 563], 63, 44, "Vencimento"	
-	  pdf.box [315, 563], 63, 44, "Valor"
-	  pdf.box [378, 563], 63, 44, "Número"
-	  pdf.box [441, 563], 63, 44, "Vencimento"
-	  pdf.box [504, 563], 60, 44, "Valor"
-    end
+    x = 0.25
+    y = 11.51
+    xml.collect('xmlns', 'dup') { |det|
+      pdf.ibox 0.85, 2.12, x, y, '', 'Número:', { :size => 6, :border => 0, :style => :italic }
+      pdf.ibox 0.85, 2.12, x + 0.90, y, '', det.css('nDup').text, { :size => 6, :border => 0 }
+      pdf.ibox 0.85, 2.12, x, y + 0.20, '', 'Venc.:', { :size => 6, :border => 0, :style => :italic }
+      dtduplicata = det.css('dVenc').text
+      dtduplicata = dtduplicata[8,2] + '/' + dtduplicata[5, 2] + '/' + dtduplicata[0, 4]
+      pdf.ibox 0.85, 2.12, x + 0.90, y + 0.20, '', dtduplicata, { :size => 6, :border => 0 }
+      pdf.ibox 0.85, 2.12, x, y + 0.40, '', 'Valor:  R$ ', { :size => 6, :border => 0, :style => :italic }
+      pdf.inumeric 0.85, 1.20, x + 0.90, y + 0.40, '', det.css('vDup').text, { :size => 6, :border => 0 }
+      x = x + 3.12
+    }
     
     pdf.ititle 0.42, 5.60, 0.25, 12.36, "CÁLCULO DO IMPOSTO"
 
