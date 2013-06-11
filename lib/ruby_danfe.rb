@@ -240,7 +240,7 @@ module RubyDanfe
     vol = 0
     xml.collect('xmlns', 'vol') { |det|
       vol += 1
-      unless vol > 2
+      if vol < 2
         pdf.ibox 0.85, 2.92, 0.25, 16.60, "QUANTIDADE", det.css('qVol').text
         pdf.ibox 0.85, 3.05, 3.17, 16.60, "ESPÉCIE", det.css('esp').text
         pdf.ibox 0.85, 3.05, 6.22, 16.60, "MARCA", det.css('marca').text
@@ -294,7 +294,7 @@ module RubyDanfe
           pdf.ibox 0.35, 3.00, 1.75, y + 0.10, '', det.css('esp').text, { :size => 4, :border => 0, :style => :italic }
           pdf.ibox 0.35, 0.70, 4.15, y + 0.10, '', 'MARCA:', { :size => 4, :border => 0 }
           pdf.ibox 0.35, 2.00, 4.75, y + 0.10, '', det.css('marca').text, { :size => 4, :border => 0, :style => :italic }
-          pdf.ibox 0.35, 1.00, 5.90, y + 0.10, '', 'NUM.:',  { :size => 4, :border => 0 }
+          pdf.ibox 0.35, 1.00, 6.10, y + 0.10, '', 'NUM.:',  { :size => 4, :border => 0 }
           pdf.ibox 0.35, 1.30, 7.00, y + 0.10, '', 'PESO B.:', { :size => 4, :border => 0 }
           pdf.inumeric 0.35, 1.30, 7.00, y + 0.10, '', det.css('pesoB').text, {:decimals => 3, :size => 4, :border => 0, :style => :italic }
           pdf.ibox 0.35, 0.90, 8.50, y + 0.10, '', 'PESO LÍQ.:', { :size => 4, :border => 0 }
@@ -302,10 +302,10 @@ module RubyDanfe
           y = y + 0.15
         end
       }
-      pdf.ibox 1.87, 12.93, 0.25, y + 0.30, '', 'OUTRAS INFORMAÇÕES', {:size => 6, :valign => :top, :border => 0}
-      pdf.ibox 1.87, 12.93, 0.25, y + 0.50, '', xml['infAdic/infCpl'], {:size => 5, :valign => :top, :border => 0}
+      pdf.ibox 2.07, 12.93, 0.25, y + 0.30, '', 'OUTRAS INFORMAÇÕES', {:size => 6, :valign => :top, :border => 0}
+      pdf.ibox 2.07, 12.93, 0.25, y + 0.50, '', xml['infAdic/infCpl'], {:size => 5, :valign => :top, :border => 0}
     else
-	     pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", xml['infAdic/infCpl'], {:size => 8, :valign => :top}
+	     pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", xml['infAdic/infCpl'], {:size => 6, :valign => :top}
     end
 	  
 	  pdf.ibox 3.07, 7.62, 13.17, 26.33, "RESERVADO AO FISCO"
