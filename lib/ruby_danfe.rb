@@ -199,15 +199,15 @@ module RubyDanfe
     x = 0.25
     y = 11.51
     xml.collect('xmlns', 'dup') { |det|
-      pdf.ibox 0.85, 2.12, x, y, '', 'Número:', { :size => 6, :border => 0, :style => :italic }
-      pdf.ibox 0.85, 2.12, x + 0.90, y, '', det.css('nDup').text, { :size => 6, :border => 0 }
+      pdf.ibox 0.85, 2.12, x, y, '', 'Núm.:', { :size => 6, :border => 0, :style => :italic }
+      pdf.ibox 0.85, 2.12, x + 0.70, y, '', det.css('nDup').text, { :size => 6, :border => 0 }
       pdf.ibox 0.85, 2.12, x, y + 0.20, '', 'Venc.:', { :size => 6, :border => 0, :style => :italic }
       dtduplicata = det.css('dVenc').text
       dtduplicata = dtduplicata[8,2] + '/' + dtduplicata[5, 2] + '/' + dtduplicata[0, 4]
-      pdf.ibox 0.85, 2.12, x + 0.90, y + 0.20, '', dtduplicata, { :size => 6, :border => 0 }
-      pdf.ibox 0.85, 2.12, x, y + 0.40, '', 'Valor:  R$ ', { :size => 6, :border => 0, :style => :italic }
-      pdf.inumeric 0.85, 1.20, x + 0.90, y + 0.40, '', det.css('vDup').text, { :size => 6, :border => 0 }
-      x = x + 3.12
+      pdf.ibox 0.85, 2.12, x + 0.70, y + 0.20, '', dtduplicata, { :size => 6, :border => 0 }
+      pdf.ibox 0.85, 2.12, x, y + 0.40, '', 'Valor: R$', { :size => 6, :border => 0, :style => :italic }
+      pdf.inumeric 0.85, 1.25, x + 0.70, y + 0.40, '', det.css('vDup').text, { :size => 6, :border => 0 }
+      x = x + 2.30
     }
     
     pdf.ititle 0.42, 5.60, 0.25, 12.36, "CÁLCULO DO IMPOSTO"
@@ -236,14 +236,20 @@ module RubyDanfe
   	pdf.ibox 0.85, 6.86, 9.27, 15.75, "MUNICÍPIO", xml['transporta/xMun']
     pdf.ibox 0.85, 0.76, 16.13, 15.75, "UF", xml['transporta/UF']
   	pdf.ibox 0.85, 3.94, 16.89, 15.75, "INSCRIÇÂO ESTADUAL", xml['transporta/IE']
-	  pdf.ibox 0.85, 2.92, 0.25, 16.60, "QUANTIDADE", xml['vol/qVol']
-	  pdf.ibox 0.85, 3.05, 3.17, 16.60, "ESPÉCIE", xml['vol/esp']
-	  pdf.ibox 0.85, 3.05, 6.22, 16.60, "MARCA", xml['vol/marca']
-	  pdf.ibox 0.85, 4.83, 9.27, 16.60, "NUMERAÇÃO"
+
+    vol = 0
     xml.collect('xmlns', 'vol') { |det|
-      pdf.inumeric 0.85, 3.43, 14.10, 16.60, "PESO BRUTO", det.css('pesoB').text, {:decimals => 3}
-      pdf.inumeric 0.85, 3.30, 17.53, 16.60, "PESO LÍQUIDO", det.css('pesoL').text, {:decimals => 3}
-      break
+      vol += 1
+      unless vol > 2
+        pdf.ibox 0.85, 2.92, 0.25, 16.60, "QUANTIDADE", det.css('qVol').text
+        pdf.ibox 0.85, 3.05, 3.17, 16.60, "ESPÉCIE", det.css('esp').text
+        pdf.ibox 0.85, 3.05, 6.22, 16.60, "MARCA", det.css('marca').text
+        pdf.ibox 0.85, 4.83, 9.27, 16.60, "NUMERAÇÃO"
+        pdf.inumeric 0.85, 3.43, 14.10, 16.60, "PESO BRUTO", det.css('pesoB').text, {:decimals => 3}
+        pdf.inumeric 0.85, 3.30, 17.53, 16.60, "PESO LÍQUIDO", det.css('pesoL').text, {:decimals => 3}
+      else
+        break
+      end
     }
 
     pdf.ititle 0.42, 10.00, 0.25, 17.45, "DADOS DO PRODUTO / SERVIÇO"
@@ -274,7 +280,33 @@ module RubyDanfe
 
     pdf.ititle 0.42, 10.00, 0.25, 25.91, "DADOS ADICIONAIS"
 
-	  pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", xml['infAdic/infCpl'], {:size => 8, :valign => :top}
+    if vol > 1
+      pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", '', {:size => 8, :valign => :top}
+      pdf.ibox 3.07, 12.93, 0.25, 26.60, '', 'CONTINUAÇÃO TRANSPORTADOR/VOLUMES TRANSPORTADOS', {:size => 5, :valign => :top, :border => 0}
+      v = 0
+      y = 26.67
+      xml.collect('xmlns', 'vol') { |det|
+        v += 1
+        if v > 1
+          pdf.ibox 0.35, 0.70, 0.25, y + 0.10, '', 'QUANT.:', { :size => 4, :border => 0 }
+          pdf.ibox 0.35, 0.70, 0.90, y + 0.10, '', det.css('qVol').text, { :size => 4, :border => 0, :style => :italic }
+          pdf.ibox 0.35, 0.50, 1.35, y + 0.10, '', 'ESP.:', { :size => 4, :border => 0 }
+          pdf.ibox 0.35, 3.00, 1.75, y + 0.10, '', det.css('esp').text, { :size => 4, :border => 0, :style => :italic }
+          pdf.ibox 0.35, 0.70, 4.15, y + 0.10, '', 'MARCA:', { :size => 4, :border => 0 }
+          pdf.ibox 0.35, 2.00, 4.75, y + 0.10, '', det.css('marca').text, { :size => 4, :border => 0, :style => :italic }
+          pdf.ibox 0.35, 1.00, 5.90, y + 0.10, '', 'NUM.:',  { :size => 4, :border => 0 }
+          pdf.ibox 0.35, 1.30, 7.00, y + 0.10, '', 'PESO B.:', { :size => 4, :border => 0 }
+          pdf.inumeric 0.35, 1.30, 7.00, y + 0.10, '', det.css('pesoB').text, {:decimals => 3, :size => 4, :border => 0, :style => :italic }
+          pdf.ibox 0.35, 0.90, 8.50, y + 0.10, '', 'PESO LÍQ.:', { :size => 4, :border => 0 }
+          pdf.inumeric 0.35, 1.50, 8.50, y + 0.10, '', det.css('pesoL').text, {:decimals => 3, :size => 4, :border => 0, :style => :italic }
+          y = y + 0.15
+        end
+      }
+      pdf.ibox 1.87, 12.93, 0.25, y + 0.30, '', 'OUTRAS INFORMAÇÕES', {:size => 6, :valign => :top, :border => 0}
+      pdf.ibox 1.87, 12.93, 0.25, y + 0.50, '', xml['infAdic/infCpl'], {:size => 5, :valign => :top, :border => 0}
+    else
+	     pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", xml['infAdic/infCpl'], {:size => 8, :valign => :top}
+    end
 	  
 	  pdf.ibox 3.07, 7.62, 13.17, 26.33, "RESERVADO AO FISCO"
 
