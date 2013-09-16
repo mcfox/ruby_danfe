@@ -769,7 +769,7 @@ module RubyDanfe
       elsif !xml['imp/ICMS/ICMS90'].eql?("")
          cst = '90 - ICMS outros'
          tipoIcms = 'ICMS90'
-      elseif !xml['imp/ICMS/ICMSSN'].eql?("")
+      elsif !xml['imp/ICMS/ICMSSN'].eql?("")
          cst = 'Simples Nacional'
          tipoIcms = 'ICMSSN'
       else
