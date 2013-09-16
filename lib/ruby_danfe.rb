@@ -20,7 +20,7 @@ end
 
 module RubyDanfe
 
-  version = "0.9.0"
+  version = "0.9.3"
 
   class XML
     def initialize(xml)
@@ -754,34 +754,34 @@ module RubyDanfe
 
       #informações relativas ao Imposto
       pdf.ibox 0.40, 20.49, 0.25, 17.42, '', 'INFORMAÇÕES RELATIVAS AO IMPOSTO', { :align => :left, :size => 7, :border => 0, :style => :bold }
-      if !xml['ICMS/ICMS00'].eql?("")
+      if !xml['imp/ICMS/ICMS00'].eql?("")
          cst = '00 - Tributação Normal ICMS'
          tipoIcms = 'ICMS00'
-      elsif !xml['ICMS/ICMS20'].eql?("")
+      elsif !xml['imp/ICMS/ICMS20'].eql?("")
          cst = '20 - Tributação com BC reduzida do ICMS'
          tipoIcms = 'ICMS20'
-      elsif !xml['ICMS/ICMS45'].eql?("")
+      elsif !xml['imp/ICMS/ICMS45'].eql?("")
          cst = '40 - ICMS Isenção;  41 - ICMS não tributada;  51 - ICMS diferido'
          tipoIcms = 'ICMS45'
-      elsif !xml['ICMS/ICMS60'].eql?("")
+      elsif !xml['imp/ICMS/ICMS60'].eql?("")
          cst = '60 - ICMS cobrado anteriormente por Substituição Tributária'
          tipoIcms = 'ICMS60'
-      elsif !xml['ICMS/ICMS90'].eql?("")
+      elsif !xml['imp/ICMS/ICMS90'].eql?("")
          cst = '90 - ICMS outros'
          tipoIcms = 'ICMS90'
-      elseif !xml['ICMS/ICMSSN'].eql?("")
+      elseif !xml['imp/ICMS/ICMSSN'].eql?("")
          cst = 'Simples Nacional'
          tipoIcms = 'ICMSSN'
       else
         cst = '90 - ICMS outros'
         tipoIcms = 'ICMSOutraUF'
-      end
+      end 
       pdf.ibox 0.90, 10.00, 0.25, 17.83, 'SITUAÇÃO TRIBUTÁRIA', cst, { :size => 7, :style => :bold }
-      pdf.inumeric 0.90, 3.00, 10.25, 17.83, 'BASE DE CÁLCULO', xml[tipoIcms + '/vBC'], { :size => 7, :style => :bold }
-      pdf.inumeric 0.90, 1.00, 13.25, 17.83, 'AL. ICMS', xml[(tipoIcms + '/pICMS')], { :size => 7, :style => :bold }
-      pdf.inumeric 0.90, 3.00, 14.25, 17.83, 'VALOR ICMS', xml[tipoIcms + '/vICMS'],{ :size => 7, :style => :bold }
-      pdf.inumeric 0.90, 2.00, 17.25, 17.83, '% RED.BC.CALC.', xml[tipoIcms + '/pRedBC'], { :size => 7, :style => :bold }
-      pdf.inumeric 0.90, 1.49, 19.25, 17.83, 'ICMS ST.', xml[tipoIcms + '/pRedBC'], { :size => 7, :style => :bold }
+      pdf.inumeric 0.90, 3.00, 10.25, 17.83, 'BASE DE CÁLCULO', xml['imp/ICMS/'+ tipoIcms + '/vBC'], { :size => 7, :style => :bold }
+      pdf.inumeric 0.90, 1.00, 13.25, 17.83, 'AL. ICMS', xml[('imp/ICMS/' + tipoIcms + '/pICMS')], { :size => 7, :style => :bold }
+      pdf.inumeric 0.90, 3.00, 14.25, 17.83, 'VALOR ICMS', xml['imp/ICMS/' +  tipoIcms + '/vICMS'],{ :size => 7, :style => :bold }
+      pdf.inumeric 0.90, 2.00, 17.25, 17.83, '% RED.BC.CALC.', xml['imp/ICMS/' + tipoIcms + '/pRedBC'], { :size => 7, :style => :bold }
+      pdf.inumeric 0.90, 1.49, 19.25, 17.83, 'ICMS ST.', xml['imp/ICMS/' + tipoIcms + '/pRedBC'], { :size => 7, :style => :bold }
 
       #documentos originários
       pdf.ibox 0.40, 20.49, 0.25, 18.73, '', 'DOCUMENTOS ORIGINÁRIOS', { :align => :left, :size => 7, :style => :bold, :border => 0 }
@@ -808,14 +808,15 @@ module RubyDanfe
 
       #OBSERVAÇÕES
       pdf.ibox 0.40, 20.49, 0.25, 24.65, '', 'OBSERVAÇÕES', { :align => :left, :size => 7, :style => :bold, :border => 0 }
-      pdf.ibox 1.40, 20.49, 0.25, 25.05, '', xml['compl/xObs'], { :align => :left, :size => 7 }
+      pdf.ibox 1.40, 20.49, 0.25, 25.05, '', (xml['compl/xObs'] + "\n CTe COMPLEMENTADO " + "Chave: " + xml['infCteComp/chave'] + " Valor de serviço: " +
+      numerify(xml['vPresComp/vTPrest']).to_s ), { :align => :left, :size => 7 }
 
       #informações do modal
       pdf.ibox 0.40, 20.49, 0.25, 26.45, '', 'INFORMAÇÕES ESPECÍFICAS DO MODAL RODOVIÁRIO - CARGA FRACIONADA', { :align => :left, :size => 7, :style => :bold, :border => 0}
       pdf.ibox 0.90, 3.00, 0.25, 26.85, 'RNTRC DA EMPRESA', xml['rodo/RNTRC'], { :size => 7, :style => :bold }
       pdf.ibox 0.90, 3.00, 3.25, 26.85, 'CIOT', xml['rodo/CIOT'], { :size => 7, :style => :bold }
 
-      dtentrega = xml['rodo/dPrev'][8, 2] + '/' + xml['rodo/dPrev'][5, 2] + '/' + xml['rodo/dPrev'][0, 4]
+      dtentrega = xml['rodo/dPrev'][8, 2].to_s + '/' + xml['rodo/dPrev'][5, 2].to_s + '/' + xml['rodo/dPrev'][0, 4].to_s
 
       pdf.ibox 0.90, 4.00, 6.25, 26.85, 'DATA PREVISTA DE ENTREGA', dtentrega, { :size => 7, :style => :bold }
       pdf.ibox 0.90, 10.49, 10.25, 26.85, '', 'ESTE CONHECIMENTO DE TRANSPORTE ATENDE A LEGISLAÇÃO DE TRANSPORTE RODOVIÁRIO EM VIGOR', { :size => 5, :align => :center }
