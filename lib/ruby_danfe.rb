@@ -225,13 +225,21 @@ module RubyDanfe
 	  pdf.inumeric 0.85, 3.27, 17.55, 13.63, "VALOR TOTAL DA NOTA", xml['ICMSTot/vNF'], :style => :bold
 	
     pdf.ititle 0.42, 10.00, 0.25, 14.48, "TRANSPORTADOR / VOLUMES TRANSPORTADOS"
-
+	
+	modFrete = case xml['ide/tpCTe']
+		when '0' then '0 - EMITENTE'
+        when '1' then '1 - DEST/REMET'
+        when '2' then '2 - TERCEIROS'
+        when '9' then '9 - SEM FRETE'
+        else ''
+    end
+	
   	pdf.ibox 0.85, 9.02, 0.25, 14.90, "RAZÃO SOCIAL", xml['transporta/xNome']
-	  pdf.ibox 0.85, 2.79, 9.27, 14.90, "FRETE POR CONTA", xml['transp/modFrete'] == '0' ? ' 0 - EMITENTE' : '1 - DEST.'
-	  pdf.ibox 0.85, 1.78, 12.06, 14.90, "CODIGO ANTT", xml['veicTransp/RNTC']
-	  pdf.ibox 0.85, 2.29, 13.84, 14.90, "PLACA DO VEÍCULO", xml['veicTransp/placa']
-	  pdf.ibox 0.85, 0.76, 16.13, 14.90, "UF", xml['veicTransp/UF']
-	  pdf.ibox 0.85, 3.94, 16.89, 14.90, "CNPJ/CPF", xml['transporta/CNPJ'] 
+	pdf.ibox 0.85, 2.79, 9.27, 14.90, "FRETE POR CONTA", modFrete
+	pdf.ibox 0.85, 1.78, 12.06, 14.90, "CODIGO ANTT", xml['veicTransp/RNTC']
+	pdf.ibox 0.85, 2.29, 13.84, 14.90, "PLACA DO VEÍCULO", xml['veicTransp/placa']
+	pdf.ibox 0.85, 0.76, 16.13, 14.90, "UF", xml['veicTransp/UF']
+	pdf.ibox 0.85, 3.94, 16.89, 14.90, "CNPJ/CPF", xml['transporta/CNPJ'] 
   	pdf.ibox 0.85, 9.02, 0.25, 15.75, "ENDEREÇO", xml['transporta/xEnder']
   	pdf.ibox 0.85, 6.86, 9.27, 15.75, "MUNICÍPIO", xml['transporta/xMun']
     pdf.ibox 0.85, 0.76, 16.13, 15.75, "UF", xml['transporta/UF']
