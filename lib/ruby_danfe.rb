@@ -233,8 +233,6 @@ module RubyDanfe
     else ''
   end
 	
-  puts modFrete
-  
   pdf.ibox 0.85, 9.02, 0.25, 14.90, "RAZÃO SOCIAL", xml['transporta/xNome']
 	pdf.ibox 0.85, 2.79, 9.27, 14.90, "FRETE POR CONTA", modFrete
 	pdf.ibox 0.85, 1.78, 12.06, 14.90, "CODIGO ANTT", xml['veicTransp/RNTC']
