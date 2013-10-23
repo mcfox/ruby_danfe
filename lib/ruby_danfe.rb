@@ -116,7 +116,7 @@ module RubyDanfe
     end
   end
   
-  def self.generatePDF(xml)
+  def self.generatePDFDanfe(xml)
   
     pdf = Document.new(
       :page_size => 'A4',
@@ -135,12 +135,12 @@ module RubyDanfe
         
     pdf.ibox 0.85, 16.10, 0.25, 0.42, "RECEBEMOS DE " + xml['emit/xNome'] + " OS PRODUTOS CONSTANTES DA NOTA FISCAL INDICADA ABAIXO"
     pdf.ibox 0.85, 4.10, 0.25, 1.27, "DATA DE RECEBIMENTO"
-  	pdf.ibox 0.85, 12.00, 4.35, 1.27, "IDENTIFICAÇÃO E ASSINATURA DO RECEBEDOR"
+    pdf.ibox 0.85, 12.00, 4.35, 1.27, "IDENTIFICAÇÃO E ASSINATURA DO RECEBEDOR"
 
-  	pdf.ibox 1.70, 4.50, 16.35, 0.42, '', 
-  	  "NF-e\n" +
-  	  "N°. " + xml['ide/nNF'] + "\n" +
-  	  "SÉRIE " + xml['ide/serie'], {:align => :center, :valign => :center}
+    pdf.ibox 1.70, 4.50, 16.35, 0.42, '', 
+      "NF-e\n" +
+      "N°. " + xml['ide/nNF'] + "\n" +
+      "SÉRIE " + xml['ide/serie'], {:align => :center, :valign => :center}
 
     # EMITENTE
     
@@ -158,37 +158,37 @@ module RubyDanfe
     pdf.ibox 0.60, 3.08, 7.71, 4.34, '', "#{xml['ide/tpNF']} - " + (xml['ide/tpNF'] == '0' ? 'ENTRADA' : 'SAÍDA'), {:size => 8, :align => :center, :border => 0}
 
     pdf.ibox 1.00, 3.08, 7.71, 4.94, '', 
-  	  "N°. " + xml['ide/nNF'] + "\n" +
-  	  "SÉRIE " + xml['ide/serie'], {:size => 8, :align => :center, :valign => :center, :border => 0, :style => :bold}
+      "N°. " + xml['ide/nNF'] + "\n" +
+      "SÉRIE " + xml['ide/serie'], {:size => 8, :align => :center, :valign => :center, :border => 0, :style => :bold}
         
     pdf.ibox 2.20, 10.02, 10.79, 2.54
     pdf.ibarcode 1.50, 8.00, 10.9010, 4.44, xml['chNFe']
     pdf.ibox 0.85, 10.02, 10.79, 4.74, "CHAVE DE ACESSO", xml['chNFe'].gsub(/(\d)(?=(\d\d\d\d)+(?!\d))/, "\\1 "), {:style => :bold, :align => :center}
     pdf.ibox 0.85, 10.02, 10.79, 5.60 , '', "Consulta de autenticidade no portal nacional da NF-e www.nfe.fazenda.gov.br/portal ou no site da Sefaz Autorizadora", {:align => :center, :size => 8}
-	  pdf.ibox 0.85, 10.54, 0.25, 6.46, "NATUREZA DA OPERAÇÃO", xml['ide/natOp']
-	  pdf.ibox 0.85, 10.02, 10.79, 6.46, "PROTOCOLO DE AUTORIZAÇÃO DE USO", xml['infProt/nProt'] + ' ' + xml['infProt/dhRecbto'], {:align => :center}
+    pdf.ibox 0.85, 10.54, 0.25, 6.46, "NATUREZA DA OPERAÇÃO", xml['ide/natOp']
+    pdf.ibox 0.85, 10.02, 10.79, 6.46, "PROTOCOLO DE AUTORIZAÇÃO DE USO", xml['infProt/nProt'] + ' ' + xml['infProt/dhRecbto'], {:align => :center}
 
-	  pdf.ibox 0.85, 6.86, 0.25, 7.31, "INSCRIÇÃO ESTADUAL", xml['emit/IE']
-	  pdf.ibox 0.85, 6.86, 7.11, 7.31, "INSC.ESTADUAL DO SUBST. TRIBUTÁRIO", xml['emit/IE_ST']
-	  pdf.ibox 0.85, 6.84, 13.97, 7.31, "CNPJ", xml['emit/CNPJ']
+    pdf.ibox 0.85, 6.86, 0.25, 7.31, "INSCRIÇÃO ESTADUAL", xml['emit/IE']
+    pdf.ibox 0.85, 6.86, 7.11, 7.31, "INSC.ESTADUAL DO SUBST. TRIBUTÁRIO", xml['emit/IE_ST']
+    pdf.ibox 0.85, 6.84, 13.97, 7.31, "CNPJ", xml['emit/CNPJ']
             
     # TITULO
     
     pdf.ititle 0.42, 10.00, 0.25, 8.16, "DESTINATÁRIO / REMETENTE"
 
-	  pdf.ibox 0.85, 12.32, 0.25, 8.58, "NOME/RAZÃO SOCIAL", xml['dest/xNome']
-	  pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", xml['dest/CNPJ'] if xml['dest/CNPJ'] != ''
-	  pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", xml['dest/CPF'] if xml['dest/CPF'] != ''
-	  pdf.idate 0.85, 2.92, 17.90, 8.58, "DATA DA EMISSÃO", xml['ide/dEmi'], {:align => :right}
-	  pdf.ibox 0.85, 10.16, 0.25, 9.43, "ENDEREÇO", xml['enderDest/xLgr'] + " " + xml['enderDest/nro']
-	  pdf.ibox 0.85, 4.83, 10.41, 9.43, "BAIRRO", xml['enderDest/xBairro']
-	  pdf.ibox 0.85, 2.67, 15.24, 9.43, "CEP", xml['enderDest/CEP']
-	  pdf.idate 0.85, 2.92, 17.90, 9.43, "DATA DA SAÍDA/ENTRADA", xml['ide/dSaiEnt'], {:align => :right}
-	  pdf.ibox 0.85, 7.11, 0.25, 10.28, "MUNICÍPIO", xml['enderDest/xMun']
-	  pdf.ibox 0.85, 4.06, 7.36, 10.28, "FONE/FAX", xml['enderDest/fone']
-	  pdf.ibox 0.85, 1.14, 11.42, 10.28, "UF", xml['enderDest/UF']
-	  pdf.ibox 0.85, 5.33, 12.56, 10.28, "INSCRIÇÃO ESTADUAL", xml['dest/IE']
-	  pdf.idate 0.85, 2.92, 17.90, 10.28, "HORA DE SAÍDA", xml['ide/dSaiEnt'], {:align => :right}
+    pdf.ibox 0.85, 12.32, 0.25, 8.58, "NOME/RAZÃO SOCIAL", xml['dest/xNome']
+    pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", xml['dest/CNPJ'] if xml['dest/CNPJ'] != ''
+    pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", xml['dest/CPF'] if xml['dest/CPF'] != ''
+    pdf.idate 0.85, 2.92, 17.90, 8.58, "DATA DA EMISSÃO", xml['ide/dEmi'], {:align => :right}
+    pdf.ibox 0.85, 10.16, 0.25, 9.43, "ENDEREÇO", xml['enderDest/xLgr'] + " " + xml['enderDest/nro']
+    pdf.ibox 0.85, 4.83, 10.41, 9.43, "BAIRRO", xml['enderDest/xBairro']
+    pdf.ibox 0.85, 2.67, 15.24, 9.43, "CEP", xml['enderDest/CEP']
+    pdf.idate 0.85, 2.92, 17.90, 9.43, "DATA DA SAÍDA/ENTRADA", xml['ide/dSaiEnt'], {:align => :right}
+    pdf.ibox 0.85, 7.11, 0.25, 10.28, "MUNICÍPIO", xml['enderDest/xMun']
+    pdf.ibox 0.85, 4.06, 7.36, 10.28, "FONE/FAX", xml['enderDest/fone']
+    pdf.ibox 0.85, 1.14, 11.42, 10.28, "UF", xml['enderDest/UF']
+    pdf.ibox 0.85, 5.33, 12.56, 10.28, "INSCRIÇÃO ESTADUAL", xml['dest/IE']
+    pdf.idate 0.85, 2.92, 17.90, 10.28, "HORA DE SAÍDA", xml['ide/dSaiEnt'], {:align => :right}
 
     # FATURAS
     
@@ -211,38 +211,38 @@ module RubyDanfe
     
     pdf.ititle 0.42, 5.60, 0.25, 12.36, "CÁLCULO DO IMPOSTO"
 
-  	pdf.inumeric 0.85, 4.06, 0.25, 12.78, "BASE DE CÁLCULO DO ICMS", xml['ICMSTot/vBC']
-  	pdf.inumeric 0.85, 4.06, 4.31, 12.78, "VALOR DO ICMS", xml['ICMSTot/vICMS']
-  	pdf.inumeric 0.85, 4.06, 8.37, 12.78, "BASE DE CÁLCULO DO ICMS ST", xml['ICMSTot/vBCST']
-  	pdf.inumeric 0.85, 4.06, 12.43, 12.78, "VALOR DO ICMS ST", xml['ICMSTot/vST']
-  	pdf.inumeric 0.85, 4.32, 16.49, 12.78, "VALOR TOTAL DOS PRODUTOS", xml['ICMSTot/vProd']
-	  pdf.inumeric 0.85, 3.46, 0.25, 13.63, "VALOR DO FRETE", xml['ICMSTot/vFrete']
-	  pdf.inumeric 0.85, 3.46, 3.71, 13.63, "VALOR DO SEGURO", xml['ICMSTot/vSeg']
-	  pdf.inumeric 0.85, 3.46, 7.17, 13.63, "DESCONTO", xml['ICMSTot/vDesc']
-	  pdf.inumeric 0.85, 3.46, 10.63, 13.63, "OUTRAS DESPESAS ACESSORIAS", xml['ICMSTot/vOutro']
-	  pdf.inumeric 0.85, 3.46, 14.09, 13.63, "VALOR DO IPI", xml['ICMSTot/vIPI']
-	  pdf.inumeric 0.85, 3.27, 17.55, 13.63, "VALOR TOTAL DA NOTA", xml['ICMSTot/vNF'], :style => :bold
-	
+    pdf.inumeric 0.85, 4.06, 0.25, 12.78, "BASE DE CÁLCULO DO ICMS", xml['ICMSTot/vBC']
+    pdf.inumeric 0.85, 4.06, 4.31, 12.78, "VALOR DO ICMS", xml['ICMSTot/vICMS']
+    pdf.inumeric 0.85, 4.06, 8.37, 12.78, "BASE DE CÁLCULO DO ICMS ST", xml['ICMSTot/vBCST']
+    pdf.inumeric 0.85, 4.06, 12.43, 12.78, "VALOR DO ICMS ST", xml['ICMSTot/vST']
+    pdf.inumeric 0.85, 4.32, 16.49, 12.78, "VALOR TOTAL DOS PRODUTOS", xml['ICMSTot/vProd']
+    pdf.inumeric 0.85, 3.46, 0.25, 13.63, "VALOR DO FRETE", xml['ICMSTot/vFrete']
+    pdf.inumeric 0.85, 3.46, 3.71, 13.63, "VALOR DO SEGURO", xml['ICMSTot/vSeg']
+    pdf.inumeric 0.85, 3.46, 7.17, 13.63, "DESCONTO", xml['ICMSTot/vDesc']
+    pdf.inumeric 0.85, 3.46, 10.63, 13.63, "OUTRAS DESPESAS ACESSORIAS", xml['ICMSTot/vOutro']
+    pdf.inumeric 0.85, 3.46, 14.09, 13.63, "VALOR DO IPI", xml['ICMSTot/vIPI']
+    pdf.inumeric 0.85, 3.27, 17.55, 13.63, "VALOR TOTAL DA NOTA", xml['ICMSTot/vNF'], :style => :bold
+  
     pdf.ititle 0.42, 10.00, 0.25, 14.48, "TRANSPORTADOR / VOLUMES TRANSPORTADOS"
-	
-	modFrete = case xml['transp/modFrete']
-		when '0' then '0 - EMITENTE'
-    when '1' then '1 - DEST/REMET'
-    when '2' then '2 - TERCEIROS'
-    when '9' then '9 - SEM FRETE'
-    else ''
-  end
-	
-  pdf.ibox 0.85, 9.02, 0.25, 14.90, "RAZÃO SOCIAL", xml['transporta/xNome']
-	pdf.ibox 0.85, 2.79, 9.27, 14.90, "FRETE POR CONTA", modFrete
-	pdf.ibox 0.85, 1.78, 12.06, 14.90, "CODIGO ANTT", xml['veicTransp/RNTC']
-	pdf.ibox 0.85, 2.29, 13.84, 14.90, "PLACA DO VEÍCULO", xml['veicTransp/placa']
-	pdf.ibox 0.85, 0.76, 16.13, 14.90, "UF", xml['veicTransp/UF']
-	pdf.ibox 0.85, 3.94, 16.89, 14.90, "CNPJ/CPF", xml['transporta/CNPJ'] 
-  pdf.ibox 0.85, 9.02, 0.25, 15.75, "ENDEREÇO", xml['transporta/xEnder']
-  pdf.ibox 0.85, 6.86, 9.27, 15.75, "MUNICÍPIO", xml['transporta/xMun']
-  pdf.ibox 0.85, 0.76, 16.13, 15.75, "UF", xml['transporta/UF']
-  pdf.ibox 0.85, 3.94, 16.89, 15.75, "INSCRIÇÂO ESTADUAL", xml['transporta/IE']
+  
+    modFrete = case xml['transp/modFrete']
+      when '0' then '0 - EMITENTE'
+      when '1' then '1 - DEST/REMET'
+      when '2' then '2 - TERCEIROS'
+      when '9' then '9 - SEM FRETE'
+      else ''
+    end
+  
+    pdf.ibox 0.85, 9.02, 0.25, 14.90, "RAZÃO SOCIAL", xml['transporta/xNome']
+    pdf.ibox 0.85, 2.79, 9.27, 14.90, "FRETE POR CONTA", modFrete
+    pdf.ibox 0.85, 1.78, 12.06, 14.90, "CODIGO ANTT", xml['veicTransp/RNTC']
+    pdf.ibox 0.85, 2.29, 13.84, 14.90, "PLACA DO VEÍCULO", xml['veicTransp/placa']
+    pdf.ibox 0.85, 0.76, 16.13, 14.90, "UF", xml['veicTransp/UF']
+    pdf.ibox 0.85, 3.94, 16.89, 14.90, "CNPJ/CPF", xml['transporta/CNPJ'] 
+    pdf.ibox 0.85, 9.02, 0.25, 15.75, "ENDEREÇO", xml['transporta/xEnder']
+    pdf.ibox 0.85, 6.86, 9.27, 15.75, "MUNICÍPIO", xml['transporta/xMun']
+    pdf.ibox 0.85, 0.76, 16.13, 15.75, "UF", xml['transporta/UF']
+    pdf.ibox 0.85, 3.94, 16.89, 15.75, "INSCRIÇÂO ESTADUAL", xml['transporta/IE']
 
     vol = 0
     xml.collect('xmlns', 'vol') { |det|
@@ -277,13 +277,13 @@ module RubyDanfe
     pdf.ibox 6.77, 0.86, 19.95, 17.87, "% IPI"
 
     pdf.horizontal_line 0.25.cm, 21.50.cm, :at => invert(18.17.cm)
-	  
+    
     pdf.ititle 0.42, 10.00, 0.25, 24.64, "CÁLCULO DO ISSQN"
 
-	  pdf.ibox 0.85, 5.08, 0.25, 25.06, "INSCRIÇÃO MUNICIPAL", xml['emit/IM']
-	  pdf.ibox 0.85, 5.08, 5.33, 25.06, "VALOR TOTAL DOS SERVIÇOS", xml['total/vServ']
-	  pdf.ibox 0.85, 5.08, 10.41, 25.06, "BASE DE CÁLCULO DO ISSQN", xml['total/vBCISS']
-	  pdf.ibox 0.85, 5.28, 15.49, 25.06, "VALOR DO ISSQN", xml['total/ISSTot']
+    pdf.ibox 0.85, 5.08, 0.25, 25.06, "INSCRIÇÃO MUNICIPAL", xml['emit/IM']
+    pdf.ibox 0.85, 5.08, 5.33, 25.06, "VALOR TOTAL DOS SERVIÇOS", xml['total/vServ']
+    pdf.ibox 0.85, 5.08, 10.41, 25.06, "BASE DE CÁLCULO DO ISSQN", xml['total/vBCISS']
+    pdf.ibox 0.85, 5.28, 15.49, 25.06, "VALOR DO ISSQN", xml['total/ISSTot']
 
     pdf.ititle 0.42, 10.00, 0.25, 25.91, "DADOS ADICIONAIS"
 
@@ -312,10 +312,10 @@ module RubyDanfe
       pdf.ibox 2.07, 12.93, 0.25, y + 0.30, '', 'OUTRAS INFORMAÇÕES', {:size => 6, :valign => :top, :border => 0}
       pdf.ibox 2.07, 12.93, 0.25, y + 0.50, '', xml['infAdic/infCpl'], {:size => 5, :valign => :top, :border => 0}
     else
-	     pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", xml['infAdic/infCpl'], {:size => 6, :valign => :top}
+       pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", xml['infAdic/infCpl'], {:size => 6, :valign => :top}
     end
-	  
-	  pdf.ibox 3.07, 7.62, 13.17, 26.33, "RESERVADO AO FISCO"
+    
+    pdf.ibox 3.07, 7.62, 13.17, 26.33, "RESERVADO AO FISCO"
 
     end
 
@@ -326,7 +326,7 @@ module RubyDanfe
             det.css('prod/cProd').text, #I02
             det.css('prod/xProd').text, #I04
             det.css('prod/NCM').text, #I05
-            det.css('ICMS/*/orig').text, #N11
+            det.css('ICMS orig').first.text + det.css('ICMS CST').first.text, #N11
             det.css('prod/CFOP').text, #I08
             det.css('prod/uCom').text, #I09
             numerify(det.css('prod/qCom').text), #I10 
@@ -366,11 +366,10 @@ module RubyDanfe
     pdf.page_count.times do |i|
       pdf.go_to_page(i + 1)
       pdf.ibox 1.00, 3.08, 7.71, 5.54, '', 
-  	  "FOLHA #{i + 1} de #{pdf.page_count}", {:size => 8, :align => :center, :valign => :center, :border => 0, :style => :bold}
+      "FOLHA #{i + 1} de #{pdf.page_count}", {:size => 8, :align => :center, :valign => :center, :border => 0, :style => :bold}
     end
     
-    return pdf
-      
+    return pdf    
   end
 
   def self.generatePDFDacte(xml)
@@ -409,10 +408,10 @@ module RubyDanfe
         xml['enderEmit/xMun'] + " - " + xml['enderEmit/UF'] + " " + xml['enderEmit/xPais'] + "\n" +
         "Fone/Fax: " + fone,
         { :align => :center, :size => 8, :border => 0, :style => :bold }
-#      pdf.ibox 2.27, 7.67, 0.25, 1.14, '', xml['enderEmit/xLgr'] + ", " + xml['enderEmit/nro'] + " " + xml['enderEmit/xCpl'], { :align => :center, :size => 8, :border => 0 }
-#      pdf.ibox 2.27, 7.67, 0.25, 1.44, '', xml['enderEmit/xBairro'] + " - " + xml['enderEmit/CEP'], { :align => :center, :size => 8, :border => 0 }
-#      pdf.ibox 2.27, 7.67, 0.25, 1.74, '', xml['enderEmit/xMun'] + " - " + xml['enderEmit/UF'] + " " + xml['enderEmit/xPais'], { :align => :center, :size => 8, :border => 0 }
-#      pdf.ibox 2.27, 7.67, 0.25, 2.04, '', "Fone/Fax: " + xml['enderEmit/fone'], { :align => :center, :size => 8, :border => 0 }
+    # pdf.ibox 2.27, 7.67, 0.25, 1.14, '', xml['enderEmit/xLgr'] + ", " + xml['enderEmit/nro'] + " " + xml['enderEmit/xCpl'], { :align => :center, :size => 8, :border => 0 }
+    # pdf.ibox 2.27, 7.67, 0.25, 1.44, '', xml['enderEmit/xBairro'] + " - " + xml['enderEmit/CEP'], { :align => :center, :size => 8, :border => 0 }
+    # pdf.ibox 2.27, 7.67, 0.25, 1.74, '', xml['enderEmit/xMun'] + " - " + xml['enderEmit/UF'] + " " + xml['enderEmit/xPais'], { :align => :center, :size => 8, :border => 0 }
+    # pdf.ibox 2.27, 7.67, 0.25, 2.04, '', "Fone/Fax: " + xml['enderEmit/fone'], { :align => :center, :size => 8, :border => 0 }
       
       # tipo ct-e
       tpCTe = case xml['ide/tpCTe']
@@ -842,7 +841,7 @@ module RubyDanfe
   def self.render(xml_string, type = :danfe)  
     xml = XML.new(xml_string)
     pdf = if type == :danfe 
-            generatePDF(xml)
+            generatePDFDanfe(xml)
           elsif type == :dacte
             generatePDFDacte(xml)
           end
