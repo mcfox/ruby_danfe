@@ -209,6 +209,7 @@ module RubyDanfe
       x = x + 2.30
     }
     
+    # IMPOSTO
     pdf.ititle 0.42, 5.60, 0.25, 12.36, "CÁLCULO DO IMPOSTO"
 
     pdf.inumeric 0.85, 4.06, 0.25, 12.78, "BASE DE CÁLCULO DO ICMS", xml['ICMSTot/vBC']
@@ -326,7 +327,7 @@ module RubyDanfe
             det.css('prod/cProd').text, #I02
             det.css('prod/xProd').text, #I04
             det.css('prod/NCM').text, #I05
-            det.css('ICMS orig').first.text + det.css('ICMS CST').first.text, #N11
+            det.css('ICMS orig').first.text + getCst(det), #N11
             det.css('prod/CFOP').text, #I08
             det.css('prod/uCom').text, #I09
             numerify(det.css('prod/qCom').text), #I10 
@@ -370,6 +371,16 @@ module RubyDanfe
     end
     
     return pdf    
+  end
+
+  def self.getCst(det)
+    if !det.css('ICMS CST').blank? 
+      return det.css('ICMS CST').first.text
+    elsif !det.css('ICMS CSOSN').blank?
+      return det.css('ICMS CSOSN').first.text    
+    else
+      return "" 
+    end
   end
 
   def self.generatePDFDacte(xml)
