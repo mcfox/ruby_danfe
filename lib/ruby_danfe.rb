@@ -20,7 +20,7 @@ end
 
 module RubyDanfe
 
-  version = "0.9.3"
+  version = "0.9.4"
 
   class XML
     def initialize(xml)
