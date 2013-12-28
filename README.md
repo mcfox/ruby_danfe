@@ -33,6 +33,8 @@ You can install all necessaries dependencies using bunder like above:
 
 ### Tests
 
+#### Manual tests
+
 At `test` folder you will find the `generate.rb` file. It shows how to generate a pdf file from a valid xml.
 
 You can use it following the steps above:
@@ -59,6 +61,22 @@ or
         pdf = RubyDanfe.generatePDF(xml)
 
         pdf.render_file "output.pdf"
+
+#### Automated tests with RSpec
+
+You can run all specs using:
+
+        $ rspec
+
+In the `spec/fixtures` folder, you are going to find some xml files. Each one represent a different NF-e context.
+
+Each xml file must have its respective pdf file.
+
+If you did some change that caused general visual changes at output pdfs, so you have to rebuild all fixtures pdf files.
+
+You can do this automagically running the following taks:
+
+        $ rake spec:fixtures:recreate_pdfs
 
 ### Building and publishing
 
