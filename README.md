@@ -78,6 +78,10 @@ You can do this automagically running the following taks:
 
         $ rake spec:fixtures:recreate_pdfs
 
+#### Code coverage
+
+Code coverage is available through of SimpleCov. Just run `rspec` and open the coverage report in your browser.
+
 ### Building and publishing
 
 You can build using one of the above tasks

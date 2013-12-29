@@ -1,7 +1,7 @@
 # coding: utf-8
 module RubyDanfe
   class DanfeGenerator
-    def self.generatePDF(xml)
+    def generatePDF(xml)
       pdf = Document.new
 
       pdf.repeat :all do
