@@ -1,2 +1,6 @@
 .idea
+.DS_store
 *sublime-*
+Gemfile.lock
+pkg
+*.pdf

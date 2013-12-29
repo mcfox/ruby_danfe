@@ -1,4 +1,4 @@
-require '../lib/ruby_danfe.rb'
+require "../lib/ruby_danfe"
 
 if ARGV.size == 0
   puts "Usage: generate.rb <filename>"
