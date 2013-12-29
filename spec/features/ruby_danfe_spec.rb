@@ -37,4 +37,12 @@ describe "RubyDanfe generated pdf files" do
 
     expect("#{base_dir}nfe_simples_nacional.xml.fixture.pdf").to be_same_file_as(output_pdf)
   end
+
+  it "renders a basic CT-e" do
+    expect(File.exist?(output_pdf)).to be_false
+
+    RubyDanfe.generate(output_pdf, "#{base_dir}cte.xml", :dacte)
+
+    expect("#{base_dir}cte.xml.fixture.pdf").to be_same_file_as(output_pdf)
+  end
 end
