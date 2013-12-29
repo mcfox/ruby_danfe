@@ -20,20 +20,27 @@ end
 
 module RubyDanfe
   class XML
+    def css(xpath)
+      @xml.css(xpath)
+    end
+
     def initialize(xml)
       @xml = Nokogiri::XML(xml)
     end
+
     def [](xpath)
       node = @xml.css(xpath)
       return node ? node.text : ''
     end
+
     def render
       if @xml.at_css('infNFe/ide')
-         RubyDanfe.render @xml.to_s, :danfe
+        RubyDanfe.render @xml.to_s, :danfe
       else
-         RubyDanfe.render @xml.to_s, :dacte
+        RubyDanfe.render @xml.to_s, :dacte
       end
     end
+
     def collect(ns, tag, &block)
       result = []
       # Tenta primeiro com uso de namespace
@@ -49,6 +56,7 @@ module RubyDanfe
       end
       result
     end
+
     def attrib(node, attrib)
       begin
         return @xml.css(node).attr(attrib).text
@@ -323,7 +331,7 @@ module RubyDanfe
             det.css('prod/cProd').text, #I02
             descricao, #I04
             det.css('prod/NCM').text, #I05
-            det.css('ICMS/*/orig').text, #N11
+            Cst.to_danfe(det), #N11
             det.css('prod/CFOP').text, #I08
             det.css('prod/uCom').text, #I09
             numerify(det.css('prod/qCom').text), #I10
