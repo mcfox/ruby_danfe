@@ -1,14 +1,25 @@
-# -*- encoding : utf-8 -*-
-Gem::Specification.new do |s|
-  s.name        = 'ruby_danfe'
-  s.version     = '0.9.4'
-  s.summary     = "DANFE generator for Brazilian NFE."
-  s.authors     = ["Eduardo Reboucas"]
-  s.email       = 'eduardo.reboucas@gmail.com'
-  s.files       = ["ruby_danfe.gemspec", "lib/ruby_danfe.rb"]
-  s.add_dependency('nokogiri')
-  s.add_dependency('prawn')
-  s.add_dependency('barby')
-  s.add_development_dependency('pry')
-  s.homepage    = 'https://github.com/taxweb/ruby_danfe'
+# coding: utf-8
+$:.push File.expand_path("../lib", __FILE__)
+require "ruby_danfe/version"
+
+Gem::Specification.new do |spec|
+  spec.name          = "ruby_danfe"
+  spec.version       = RubyDanfe::VERSION
+  spec.summary       = "DANFE and DACTE pdf generator for Brazilian invoices and transportation docs."
+  spec.author        = "Eduardo Reboucas"
+  spec.email         = "eduardo.reboucas@gmail.com"
+  spec.homepage      = "http://github.com/taxweb/ruby_danfe"
+  spec.license       = "MIT"
+
+  spec.files         = `git ls-files`.split("\n")
+  spec.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
+  spec.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
+  spec.require_paths = ["lib"]
+
+  spec.add_dependency("nokogiri")
+  spec.add_dependency("prawn")
+  spec.add_dependency("barby")
+
+  spec.add_development_dependency("pry")
+  spec.add_development_dependency("rspec")
 end
