@@ -1,8 +1,10 @@
-require "bundler/setup"
-Bundler.require(:default, :development)
+require "simplecov"
+SimpleCov.start
 
+require "bundler/setup"
 require "ruby_danfe"
 
+Bundler.require(:default, :development)
 Dir[File.dirname(__FILE__) + "/support/*.rb"].each { |f| require f }
 
 RSpec.configure do |config|
