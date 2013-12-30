@@ -19,12 +19,12 @@ module RubyDanfe
     xml = XML.new(xml_string)
 
     if type == :danfe
-      generator = DanfeGenerator.new
+      generator = DanfeGenerator.new(xml)
     else
-      generator = DacteGenerator.new
+      generator = DacteGenerator.new(xml)
     end
 
-    pdf = generator.generatePDF(xml)
+    pdf = generator.generatePDF
     pdf
   end
 end
