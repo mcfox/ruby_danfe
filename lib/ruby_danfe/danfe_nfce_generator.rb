@@ -1,5 +1,4 @@
 # encoding:utf-8
-require 'qr4r'
 
 module RubyDanfe
   class DanfeNfceGenerator
