@@ -4,6 +4,16 @@ module RubyDanfe
       @xml.css(xpath)
     end
 
+    def xpath(regex)
+      doc = Nokogiri::HTML(@xml.to_s)
+      return doc.xpath(regex)
+    end
+
+    def regex_string(search_string, regex)
+      doc = Nokogiri::HTML(search_string)
+      return doc.xpath(regex)      
+    end
+
     def initialize(xml)
       @xml = Nokogiri::XML(xml)
     end
