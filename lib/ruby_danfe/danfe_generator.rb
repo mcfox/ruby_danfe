@@ -47,9 +47,9 @@ module RubyDanfe
       @pdf.ibox 3.92, 7.46, 0.25, 2.54, '',
         @xml['emit/xNome'] + "\n" +
         @xml['enderEmit/xLgr'] + ", " + @xml['enderEmit/nro'] + "\n" +
-        @xml['enderEmit/xBairro'] + " - " + @xml['enderEmit/CEP'] + "\n" +
+        @xml['enderEmit/xBairro'] + " - " + Cep.format(@xml['enderEmit/CEP']) + "\n" +
         @xml['enderEmit/xMun'] + "/" + @xml['enderEmit/UF'] + "\n" +
-        @xml['enderEmit/fone'] + " " + @xml['enderEmit/email'], {:align => :center, :valign => :center}
+        Phone.format(@xml['enderEmit/fone']) + " " + @xml['enderEmit/email'], {:align => :center, :valign => :center}
 
       @pdf.ibox 3.92, 3.08, 7.71, 2.54
 
@@ -68,26 +68,26 @@ module RubyDanfe
       @pdf.ibox 0.85, 10.54, 0.25, 6.46, "NATUREZA DA OPERAÇÃO", @xml['ide/natOp']
       @pdf.ibox 0.85, 10.02, 10.79, 6.46, "PROTOCOLO DE AUTORIZAÇÃO DE USO", @xml['infProt/nProt'] + ' ' + Helper.format_date(@xml['infProt/dhRecbto']) , {:align => :center}
 
-      @pdf.ibox 0.85, 6.86, 0.25, 7.31, "INSCRIÇÃO ESTADUAL", @xml['emit/IE']
-      @pdf.ibox 0.85, 6.86, 7.11, 7.31, "INSC.ESTADUAL DO SUBST. TRIBUTÁRIO", @xml['emit/IE_ST']
-      @pdf.ibox 0.85, 6.84, 13.97, 7.31, "CNPJ", @xml['emit/CNPJ']
+      @pdf.ibox 0.85, 6.86, 0.25, 7.31, "INSCRIÇÃO ESTADUAL", Ie.format(@xml['emit/IE'], @xml['enderEmit/UF'])
+      @pdf.ibox 0.85, 6.86, 7.11, 7.31, "INSC.ESTADUAL DO SUBST. TRIBUTÁRIO", Ie.format(@xml['emit/IE_ST'], @xml['enderEmit/UF'])
+      @pdf.ibox 0.85, 6.84, 13.97, 7.31, "CNPJ", Cnpj.format(@xml['emit/CNPJ'])
     end
 
     def render_titulo
       @pdf.ititle 0.42, 10.00, 0.25, 8.16, "DESTINATÁRIO / REMETENTE"
 
       @pdf.ibox 0.85, 12.32, 0.25, 8.58, "NOME/RAZÃO SOCIAL", @xml['dest/xNome']
-      @pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", @xml['dest/CNPJ'] if @xml['dest/CNPJ'] != ''
-      @pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", @xml['dest/CPF'] if @xml['dest/CPF'] != ''
+      @pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", Cnpj.format(@xml['dest/CNPJ']) if @xml['dest/CNPJ'] != ''
+      @pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", Cpf.format(@xml['dest/CPF']) if @xml['dest/CPF'] != ''
       @pdf.idate 0.85, 2.92, 17.90, 8.58, "DATA DA EMISSÃO", @xml['ide/dEmi'], {:align => :right}
       @pdf.ibox 0.85, 10.16, 0.25, 9.43, "ENDEREÇO", @xml['enderDest/xLgr'] + " " + @xml['enderDest/nro']
       @pdf.ibox 0.85, 4.83, 10.41, 9.43, "BAIRRO", @xml['enderDest/xBairro']
-      @pdf.ibox 0.85, 2.67, 15.24, 9.43, "CEP", @xml['enderDest/CEP']
+      @pdf.ibox 0.85, 2.67, 15.24, 9.43, "CEP", Cep.format(@xml['enderDest/CEP'])
       @pdf.idate 0.85, 2.92, 17.90, 9.43, "DATA DA SAÍDA/ENTRADA", @xml['ide/dSaiEnt'], {:align => :right}
       @pdf.ibox 0.85, 7.11, 0.25, 10.28, "MUNICÍPIO", @xml['enderDest/xMun']
-      @pdf.ibox 0.85, 4.06, 7.36, 10.28, "FONE/FAX", @xml['enderDest/fone']
+      @pdf.ibox 0.85, 4.06, 7.36, 10.28, "FONE/FAX", Phone.format(@xml['enderDest/fone'])
       @pdf.ibox 0.85, 1.14, 11.42, 10.28, "UF", @xml['enderDest/UF']
-      @pdf.ibox 0.85, 5.33, 12.56, 10.28, "INSCRIÇÃO ESTADUAL", @xml['dest/IE']
+      @pdf.ibox 0.85, 5.33, 12.56, 10.28, "INSCRIÇÃO ESTADUAL", Ie.format(@xml['dest/IE'], @xml['enderDest/UF'])
       @pdf.ibox 0.85, 2.92, 17.90, 10.28, "HORA DE SAÍDA", @xml['ide/hSaiEnt'], {:align => :right}
     end
 
@@ -132,7 +132,7 @@ module RubyDanfe
       @pdf.ibox 0.85, 9.02, 0.25, 14.90, "RAZÃO SOCIAL", @xml['transporta/xNome']
       @pdf.ibox 0.85, 2.79, 9.27, 14.90, "FRETE POR CONTA", @xml['transp/modFrete'] == '0' ? ' 0 - EMITENTE' : '1 - DEST.'
       @pdf.ibox 0.85, 1.78, 12.06, 14.90, "CODIGO ANTT", @xml['veicTransp/RNTC']
-      @pdf.ibox 0.85, 2.29, 13.84, 14.90, "PLACA DO VEÍCULO", @xml['veicTransp/placa']
+      @pdf.ibox 0.85, 2.29, 13.84, 14.90, "PLACA DO VEÍCULO", Plate.format(@xml['veicTransp/placa'])
       @pdf.ibox 0.85, 0.76, 16.13, 14.90, "UF", @xml['veicTransp/UF']
       @pdf.ibox 0.85, 3.94, 16.89, 14.90, "CNPJ/CPF", @xml['transporta/CNPJ']
       @pdf.ibox 0.85, 9.02, 0.25, 15.75, "ENDEREÇO", @xml['transporta/xEnder']
