@@ -268,7 +268,6 @@ module RubyDanfe
             13 => 0.86.cm
           },
           :cell_style => {:padding => 2, :border_width => 0} do |table|
-            @pdf.dash(5);
             table.column(6..13).style(:align => :right)
             table.column(0..13).border_width = 1
             table.column(0..13).borders = [:bottom]
