@@ -29,6 +29,10 @@ module RubyDanfe
       Barby::Code128C.new(info).annotate_pdf(self, :x => x.cm, :y => Helper.invert(y.cm), :width => w.cm, :height => h.cm) if info != ''
     end
 
+    def iqrcode(h, w, x, y, info)
+      Barby::QrCode.new(info, :level => :q).annotate_pdf(self, :x => x.cm, :y => Helper.invert(y.cm), :width => w.cm, :height => h.cm) if info != ''
+    end
+
     def irectangle(h, w, x, y)
       self.stroke_rectangle [x.cm, Helper.invert(y.cm)], w.cm, h.cm
     end

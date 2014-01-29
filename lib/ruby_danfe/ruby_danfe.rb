@@ -20,6 +20,8 @@ module RubyDanfe
 
     if type == :danfe
       generator = DanfeGenerator.new(xml)
+    elsif type == :danfe_nfce
+      generator = DanfeNfceGenerator.new(xml)
     else
       generator = DacteGenerator.new(xml)
     end
