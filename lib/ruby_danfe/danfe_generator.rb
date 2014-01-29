@@ -224,19 +224,10 @@ module RubyDanfe
       @pdf.font_size(6) do
         @pdf.itable 6.37, 21.50, 0.25, 18.17,
           @xml.collect('xmlns', 'det')  { |det|
-            if !det.css('prod/nFCI').text.empty? then
-              descricao = <<-string
-              #{det.css('prod/xProd').text}
-
-              FCI: #{det.css('prod/nFCI').text}
-              string
-            else
-              descricao = det.css('prod/xProd').text
-            end
-
             [
               det.css('prod/cProd').text, #I02
-              descricao, #I04
+              Descricao.generate(det), #I04
+              #{}" ",
               det.css('prod/NCM').text, #I05
               Cst.to_danfe(det), #N11
               det.css('prod/CFOP').text, #I08
