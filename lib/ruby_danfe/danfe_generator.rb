@@ -5,9 +5,24 @@ module RubyDanfe
       @xml = xml
       @pdf = Document.new
       @vol = 0
+
+      @pdf.create_stamp("sem_valor_fiscal") do
+        @pdf.fill_color "7d7d7d"
+        @pdf.text_box "SEM VALOR FISCAL",
+          :size   => 2.2.cm,
+          :width  => @pdf.bounds.width,
+          :height => @pdf.bounds.height,
+          :align  => :center,
+          :valign => :center,
+          :at     => [0, @pdf.bounds.height],
+          :rotate => 45,
+          :rotate_around => :center
+      end
     end
 
     def generatePDF
+      @pdf.stamp("sem_valor_fiscal") if Helper.without_fiscal_value?(@xml)
+
       @pdf.repeat :all do
         render_canhoto
         render_emitente
