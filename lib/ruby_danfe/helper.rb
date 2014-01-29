@@ -21,5 +21,18 @@ module RubyDanfe
 
       formated_date
     end
+    
+    def self.without_fiscal_value?(xml)
+      homologation?(xml) || unauthorized?(xml)
+    end
+
+    private
+    def self.homologation?(xml)
+      xml.css("nfeProc/NFe/infNFe/ide/tpAmb").text == "2"
+    end
+
+    def self.unauthorized?(xml)
+      xml.css("nfeProc/protNFe/infProt/dhRecbto").empty?
+    end
   end
 end
