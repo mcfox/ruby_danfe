@@ -19,9 +19,25 @@ If you have the xml saved in a file:
 
 If you have the xml in a variable:
 
-        xml = RubyDanfe::XML.new(my_xml_string)
+        xml = "string xml"
         pdf = RubyDanfe.generatePDF(xml)
         pdf.render_file "output.pdf"
+
+You can use some options too! In this example, the product's field quantity will be rendered with 4 decimals after comma:
+
+        xml = "string xml"
+        RubyDanfe.options = {"quantity_decimals" => 4}
+        pdf = RubyDanfe.generatePDF(xml)
+        pdf.render_file "output.pdf"
+
+If you have some especific option that is global for your project, you can create a file at config/ruby_danfe.yml, then the ruby_danfe always will load this options. Example:
+
+        project_name/config/ruby_danfe.yml
+
+        ruby_danfe:
+          options:
+            quantity_decimals: 3
+
 
 ## Development
 
