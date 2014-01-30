@@ -66,7 +66,7 @@ module RubyDanfe
       @pdf.ibox 0.85, 10.02, 10.79, 4.74, "CHAVE DE ACESSO", @xml['chNFe'].gsub(/(\d)(?=(\d\d\d\d)+(?!\d))/, "\\1 "), {:style => :bold, :align => :center}
       @pdf.ibox 0.85, 10.02, 10.79, 5.60 , '', "Consulta de autenticidade no portal nacional da NF-e www.nfe.fazenda.gov.br/portal ou no site da Sefaz Autorizadora", {:align => :center, :size => 8}
       @pdf.ibox 0.85, 10.54, 0.25, 6.46, "NATUREZA DA OPERAÇÃO", @xml['ide/natOp']
-      @pdf.ibox 0.85, 10.02, 10.79, 6.46, "PROTOCOLO DE AUTORIZAÇÃO DE USO", @xml['infProt/nProt'] + ' ' + @xml['infProt/dhRecbto'], {:align => :center}
+      @pdf.ibox 0.85, 10.02, 10.79, 6.46, "PROTOCOLO DE AUTORIZAÇÃO DE USO", @xml['infProt/nProt'] + ' ' + Helper.format_date(@xml['infProt/dhRecbto']) , {:align => :center}
 
       @pdf.ibox 0.85, 6.86, 0.25, 7.31, "INSCRIÇÃO ESTADUAL", @xml['emit/IE']
       @pdf.ibox 0.85, 6.86, 7.11, 7.31, "INSC.ESTADUAL DO SUBST. TRIBUTÁRIO", @xml['emit/IE_ST']
@@ -88,7 +88,7 @@ module RubyDanfe
       @pdf.ibox 0.85, 4.06, 7.36, 10.28, "FONE/FAX", @xml['enderDest/fone']
       @pdf.ibox 0.85, 1.14, 11.42, 10.28, "UF", @xml['enderDest/UF']
       @pdf.ibox 0.85, 5.33, 12.56, 10.28, "INSCRIÇÃO ESTADUAL", @xml['dest/IE']
-      @pdf.idate 0.85, 2.92, 17.90, 10.28, "HORA DE SAÍDA", @xml['ide/dSaiEnt'], {:align => :right}
+      @pdf.ibox 0.85, 2.92, 17.90, 10.28, "HORA DE SAÍDA", @xml['ide/hSaiEnt'], {:align => :right}
     end
 
     def render_faturas
@@ -224,19 +224,10 @@ module RubyDanfe
       @pdf.font_size(6) do
         @pdf.itable 6.37, 21.50, 0.25, 18.17,
           @xml.collect('xmlns', 'det')  { |det|
-            if !det.css('prod/nFCI').text.empty? then
-              descricao = <<-string
-              #{det.css('prod/xProd').text}
-
-              FCI: #{det.css('prod/nFCI').text}
-              string
-            else
-              descricao = det.css('prod/xProd').text
-            end
-
             [
               det.css('prod/cProd').text, #I02
-              descricao, #I04
+              Descricao.generate(det), #I04
+              #{}" ",
               det.css('prod/NCM').text, #I05
               Cst.to_danfe(det), #N11
               det.css('prod/CFOP').text, #I08
