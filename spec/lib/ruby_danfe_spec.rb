@@ -4,7 +4,10 @@ describe RubyDanfe do
   let(:base_dir) { "./spec/fixtures/"}
   let(:output_pdf) { "#{base_dir}output.pdf" }
 
-  before { File.delete(output_pdf) if File.exist?(output_pdf) }
+  before {
+    File.delete(output_pdf) if File.exist?(output_pdf)
+    RubyDanfe.options = {"quantity_decimals" => 2}
+  }
 
   describe ".generate" do
     it "saves the PDF document to file based on a xml file" do
