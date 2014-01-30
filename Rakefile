@@ -15,6 +15,10 @@ namespace :spec do
         RubyDanfe.generate("#{f}.fixture.pdf", "#{f}")
       end
 
+      puts "Recreating spec/fixtures/4_decimals_nfe_simples_nacional.xml.fixture.pdf"
+      RubyDanfe.options = {"quantity_decimals" => 4}
+      RubyDanfe.generate("spec/fixtures/4_decimals_nfe_simples_nacional.xml.fixture.pdf", "spec/fixtures/4_decimals_nfe_simples_nacional.xml")
+
       Dir["spec/fixtures/cte*.xml"].each do |f|
         puts "Recreating #{f}.fixture.pdf"
         RubyDanfe.generate("#{f}.fixture.pdf", "#{f}", :dacte)
