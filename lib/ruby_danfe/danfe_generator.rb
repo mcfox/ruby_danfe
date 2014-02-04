@@ -5,6 +5,7 @@ module RubyDanfe
       @xml = xml
       @pdf = Document.new
       @vol = 0
+      @logo_path = RubyDanfe.options.logo_path
     end
 
     def generatePDF
@@ -24,7 +25,7 @@ module RubyDanfe
 
       @pdf.page_count.times do |i|
         @pdf.go_to_page(i + 1)
-        @pdf.ibox 1.00, 3.08, 7.71, 5.54, '',
+        @pdf.ibox 1.00, 2.08, 8.71, 5.54, '',
         "FOLHA #{i + 1} de #{@pdf.page_count}", {:size => 8, :align => :center, :valign => :center, :border => 0, :style => :bold}
       end
 
@@ -41,23 +42,36 @@ module RubyDanfe
         "NF-e\n" +
         "N°. " + @xml['ide/nNF'] + "\n" +
         "SÉRIE " + @xml['ide/serie'], {:align => :center, :valign => :center}
+
+      @pdf.ibox 1, 20.6, 0.25, 2.05, '', "- " * 124, {:size => 8, :align => :center, :border => 0, :style => :bold}
     end
 
     def render_emitente
-      @pdf.ibox 3.92, 7.46, 0.25, 2.54, '',
-        @xml['emit/xNome'] + "\n" +
-        @xml['enderEmit/xLgr'] + ", " + @xml['enderEmit/nro'] + "\n" +
-        @xml['enderEmit/xBairro'] + " - " + @xml['enderEmit/CEP'] + "\n" +
-        @xml['enderEmit/xMun'] + "/" + @xml['enderEmit/UF'] + "\n" +
-        @xml['enderEmit/fone'] + " " + @xml['enderEmit/email'], {:align => :center, :valign => :center}
+      if @logo_path.empty?
+        @pdf.ibox 3.92, 8.46, 0.25, 2.80, '', @xml['emit/xNome'], {:size => 12, :align => :center, :border => 0, :style => :bold}
+        @pdf.ibox 3.92, 8.46, 0.25, 2.54, '',
+          "\n" + @xml['enderEmit/xLgr'] + ", " + @xml['enderEmit/nro'] + "\n" +
+          @xml['enderEmit/xBairro'] + " - " + @xml['enderEmit/CEP'] + "\n" +
+          @xml['enderEmit/xMun'] + "/" + @xml['enderEmit/UF'] + "\n" +
+          @xml['enderEmit/fone'] + " " + @xml['enderEmit/email'], {:align => :center, :valign => :center}
+      else
+        @pdf.ibox 3.92, 8.46, 0.25, 2.54
+        @pdf.ibox 3.92, 8.46, 0.25, 2.80, '', @xml['emit/xNome'], {:size => 12, :align => :center, :border => 0, :style => :bold}
+        @pdf.ibox 3.92, 8.46, 2.75, 4, '',
+          @xml['enderEmit/xLgr'] + ", " + @xml['enderEmit/nro'] + "\n" +
+          @xml['enderEmit/xBairro'] + " - " + @xml['enderEmit/CEP'] + "\n" +
+          @xml['enderEmit/xMun'] + "/" + @xml['enderEmit/UF'] + "\n" +
+          @xml['enderEmit/fone'] + " " + @xml['enderEmit/email'], {:size => 8, :align => :left, :border => 0, :style => :bold}
+        @pdf.image @logo_path, :at => [0.5.cm, Helper.invert(4.cm)], :width => 2.cm
+      end
 
-      @pdf.ibox 3.92, 3.08, 7.71, 2.54
+      @pdf.ibox 3.92, 2.08, 8.71, 2.54
 
-      @pdf.ibox 0.60, 3.08, 7.71, 2.54, '', "DANFE", {:size => 12, :align => :center, :border => 0, :style => :bold}
-      @pdf.ibox 1.20, 3.08, 7.71, 3.14, '', "DOCUMENTO AUXILIAR DA NOTA FISCAL ELETRÔNICA", {:size => 8, :align => :center, :border => 0}
-      @pdf.ibox 0.60, 3.08, 7.71, 4.34, '', "#{@xml['ide/tpNF']} - " + (@xml['ide/tpNF'] == '0' ? 'ENTRADA' : 'SAÍDA'), {:size => 8, :align => :center, :border => 0}
+      @pdf.ibox 0.60, 2.08, 8.71, 2.54, '', "DANFE", {:size => 12, :align => :center, :border => 0, :style => :bold}
+      @pdf.ibox 1.20, 2.08, 8.71, 3.14, '', "DOCUMENTO AUXILIAR DA NOTA FISCAL ELETRÔNICA", {:size => 8, :align => :center, :border => 0}
+      @pdf.ibox 0.60, 2.08, 8.71, 4.34, '', "#{@xml['ide/tpNF']} - " + (@xml['ide/tpNF'] == '0' ? 'ENTRADA' : 'SAÍDA'), {:size => 8, :align => :center, :border => 0}
 
-      @pdf.ibox 1.00, 3.08, 7.71, 4.94, '',
+      @pdf.ibox 1.00, 2.08, 8.71, 4.94, '',
         "N°. " + @xml['ide/nNF'] + "\n" +
         "SÉRIE " + @xml['ide/serie'], {:size => 8, :align => :center, :valign => :center, :border => 0, :style => :bold}
 
