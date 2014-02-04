@@ -1,0 +1,20 @@
+require "prawn"
+require "prawn/measurement_extensions"
+require "barby"
+require "barby/barcode/code_128"
+require "barby/outputter/prawn_outputter"
+require "nokogiri"
+require 'ostruct'
+require 'yaml'
+
+require_relative '../ruby_danfe.rb'
+require_relative 'options.rb'
+require_relative 'helper.rb'
+require_relative 'cst.rb'
+require_relative 'document.rb'
+require_relative 'version.rb'
+require_relative 'dacte_generator.rb'
+require_relative 'danfe_generator.rb'
+require_relative 'xml.rb'
+require_relative 'descricao.rb'
+require_relative 'ruby_danfe.rb'
