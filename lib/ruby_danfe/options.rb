@@ -2,7 +2,8 @@ module RubyDanfe
   class Options < OpenStruct
 
     DEFAULTOPTIONS = {
-      quantity_decimals: 2
+      quantity_decimals: 2,
+      numerify_prod_qcom: false
     }
 
     def initialize(new_options={})

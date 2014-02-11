@@ -37,6 +37,7 @@ If you have some especific option that is global for your project, you can creat
         ruby_danfe:
           options:
             quantity_decimals: 3
+            numerify_prod_qcom: false
 
 
 ## Development
