@@ -11,6 +11,13 @@ module RubyDanfe
       28.7.cm - y
     end
 
+    def self.format_quantity(qty)
+      return Helper.numerify(qty, RubyDanfe.options.quantity_decimals) if RubyDanfe.options.numerify_prod_qcom
+      qty.gsub!(",", ".")
+      qty[qty.rindex('.')] = ',' if qty.rindex('.')
+      qty
+    end
+
     def self.format_date(string)
       formated_date = ""
 
