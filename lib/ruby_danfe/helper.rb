@@ -1,10 +1,13 @@
 module RubyDanfe
   class Helper
     def self.numerify(number, decimals = 2)
+      number = number.tr("\n","").delete(" ")
       return "" if !number || number == ""
       int, frac = ("%.#{decimals}f" % number).split(".")
       int.gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1\.")
       int + "," + frac
+      rescue
+        number
     end
 
     def self.invert(y)
