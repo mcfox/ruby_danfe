@@ -79,16 +79,16 @@ module RubyDanfe
       @pdf.ibox 0.85, 12.32, 0.25, 8.58, "NOME/RAZÃO SOCIAL", @xml['dest/xNome']
       @pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", @xml['dest/CNPJ'] if @xml['dest/CNPJ'] != ''
       @pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", @xml['dest/CPF'] if @xml['dest/CPF'] != ''
-      @pdf.idate 0.85, 2.92, 17.90, 8.58, "DATA DA EMISSÃO", @xml['ide/dEmi'], {:align => :right}
+      @pdf.ibox 0.85, 2.92, 17.90, 8.58, "DATA DA EMISSÃO", Helper.format_date(@xml['ide/dEmi']), {:align => :right}
       @pdf.ibox 0.85, 10.16, 0.25, 9.43, "ENDEREÇO", @xml['enderDest/xLgr'] + " " + @xml['enderDest/nro']
       @pdf.ibox 0.85, 4.83, 10.41, 9.43, "BAIRRO", @xml['enderDest/xBairro']
       @pdf.ibox 0.85, 2.67, 15.24, 9.43, "CEP", @xml['enderDest/CEP']
-      @pdf.idate 0.85, 2.92, 17.90, 9.43, "DATA DA SAÍDA/ENTRADA", Helper.format_datetime(@xml['ide/dSaiEnt']), {:align => :right}
+      @pdf.ibox 0.85, 2.92, 17.90, 9.43, "DATA DA SAÍDA/ENTRADA", Helper.format_date(@xml['ide/dSaiEnt']), {:align => :right}
       @pdf.ibox 0.85, 7.11, 0.25, 10.28, "MUNICÍPIO", @xml['enderDest/xMun']
       @pdf.ibox 0.85, 4.06, 7.36, 10.28, "FONE/FAX", @xml['enderDest/fone']
       @pdf.ibox 0.85, 1.14, 11.42, 10.28, "UF", @xml['enderDest/UF']
       @pdf.ibox 0.85, 5.33, 12.56, 10.28, "INSCRIÇÃO ESTADUAL", @xml['dest/IE']
-      @pdf.ibox 0.85, 2.92, 17.90, 10.28, "HORA DE SAÍDA", @xml['ide/hSaiEnt'], {:align => :right}
+      @pdf.ibox 0.85, 2.92, 17.90, 10.28, "HORA DE SAÍDA", Helper.format_time(@xml['ide/hSaiEnt']), {:align => :right}
     end
 
     def render_faturas
