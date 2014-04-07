@@ -215,8 +215,10 @@ module RubyDanfe
         @pdf.ibox 2.07, 12.93, 0.25, y + 0.50, '', @xml['infAdic/infCpl'], {:size => 5, :valign => :top, :border => 0}
         @pdf.ibox 2.07, 12.93, 0.25, y + 0.100, '', @xml['infAdic/infAdFisco'], {:size => 5, :valign => :top, :border => 0}
       else
-         @pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", @xml['infAdic/infCpl'], {:size => 6, :valign => :top}
-         @pdf.ibox 3.07, 12.93, 0.25, 26.63, "", @xml['infAdic/infAdFisco'], {:size => 6, :valign => :top, :border => 0}
+        @pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", @xml['infAdic/infCpl'], {:size => 6, :valign => :top}
+        unless @xml['infAdic/infAdFisco'].empty? 
+          @pdf.ibox 3.07, 12.93, 0.25, 27.33, "", "Informações adicionais de interesse do Fisco: " + @xml['infAdic/infAdFisco'], {:size => 6, :valign => :top, :border => 0}
+        end
       end
 
       @pdf.ibox 3.07, 7.62, 13.17, 26.33, "RESERVADO AO FISCO"
