@@ -6,8 +6,8 @@ Gem::Specification.new do |spec|
   spec.name          = "ruby_danfe"
   spec.version       = RubyDanfe::VERSION
   spec.summary       = "DANFE and DACTE pdf generator for Brazilian invoices and transportation docs."
-  spec.author        = ["Eduardo Reboucas", "Fabiano F. Scalco"]
-  spec.email         = ["eduardo.reboucas@gmail.com", "fabiano.scalco@gmail.com"]
+  spec.author        = "Eduardo Reboucas"
+  spec.email         = "eduardo.reboucas@gmail.com"
   spec.homepage      = "http://github.com/taxweb/ruby_danfe"
   spec.license       = "MIT"
 
