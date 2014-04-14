@@ -188,6 +188,7 @@ module RubyDanfe
 
     def render_dados_adicionais
       @pdf.ititle 0.42, 10.00, 0.25, 25.91, "DADOS ADICIONAIS"
+      inf_ad_fisco_y = 0
 
       if @vol > 1
         @pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", '', {:size => 8, :valign => :top}
@@ -213,12 +214,28 @@ module RubyDanfe
         end
         @pdf.ibox 2.07, 12.93, 0.25, y + 0.30, '', 'OUTRAS INFORMAÇÕES', {:size => 6, :valign => :top, :border => 0}
         @pdf.ibox 2.07, 12.93, 0.25, y + 0.50, '', @xml['infAdic/infCpl'], {:size => 5, :valign => :top, :border => 0}
-        @pdf.ibox 2.07, 12.93, 0.25, y + 0.100, '', @xml['infAdic/infAdFisco'], {:size => 5, :valign => :top, :border => 0}
-      else
-        @pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", @xml['infAdic/infCpl'], {:size => 6, :valign => :top}
-        unless @xml['infAdic/infAdFisco'].empty? 
-          @pdf.ibox 3.07, 12.93, 0.25, 27.33, "", "Informações adicionais de interesse do Fisco: " + @xml['infAdic/infAdFisco'], {:size => 6, :valign => :top, :border => 0}
+
+        if @xml['infAdic/infCpl'] == ""
+          inf_ad_fisco_y = y + 0.50
+        else
+          inf_ad_fisco_y = y + 0.100
         end
+
+        p inf_ad_fisco_y
+
+        @pdf.ibox 2.07, 12.93, 0.25, inf_ad_fisco_y, '', @xml['infAdic/infAdFisco'], {:size => 5, :valign => :top, :border => 0}
+
+      else
+        if @xml['infAdic/infCpl'] == ""
+          inf_ad_fisco_y = 26.60
+        else
+          inf_ad_fisco_y = 27.33
+        end
+
+        p inf_ad_fisco_y
+
+        @pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", @xml['infAdic/infCpl'], {:size => 6, :valign => :top}
+        @pdf.ibox 3.07, 12.93, 0.25, inf_ad_fisco_y, "", @xml['infAdic/infAdFisco'], {:size => 6, :valign => :top, :border => 0}
       end
 
       @pdf.ibox 3.07, 7.62, 13.17, 26.33, "RESERVADO AO FISCO"
