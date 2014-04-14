@@ -221,8 +221,6 @@ module RubyDanfe
           inf_ad_fisco_y = y + 0.100
         end
 
-        p inf_ad_fisco_y
-
         @pdf.ibox 2.07, 12.93, 0.25, inf_ad_fisco_y, '', @xml['infAdic/infAdFisco'], {:size => 5, :valign => :top, :border => 0}
 
       else
@@ -231,8 +229,6 @@ module RubyDanfe
         else
           inf_ad_fisco_y = 27.33
         end
-
-        p inf_ad_fisco_y
 
         @pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", @xml['infAdic/infCpl'], {:size => 6, :valign => :top}
         @pdf.ibox 3.07, 12.93, 0.25, inf_ad_fisco_y, "", @xml['infAdic/infAdFisco'], {:size => 6, :valign => :top, :border => 0}
