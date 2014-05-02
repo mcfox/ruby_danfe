@@ -1,3 +1,4 @@
+# encoding:utf-8
 module RubyDanfe
   def self.generate(pdf_filename, xml_filename, type = :danfe, new_options = {})
     self.options = new_options if !new_options.empty?
