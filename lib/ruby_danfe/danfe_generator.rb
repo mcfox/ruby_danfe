@@ -66,8 +66,7 @@ module RubyDanfe
       @pdf.ibox 0.85, 10.02, 10.79, 4.74, "CHAVE DE ACESSO", @xml['chNFe'].gsub(/(\d)(?=(\d\d\d\d)+(?!\d))/, "\\1 "), {:style => :bold, :align => :center}
       @pdf.ibox 0.85, 10.02, 10.79, 5.60 , '', "Consulta de autenticidade no portal nacional da NF-e www.nfe.fazenda.gov.br/portal ou no site da Sefaz Autorizadora", {:align => :center, :size => 8}
       @pdf.ibox 0.85, 10.54, 0.25, 6.46, "NATUREZA DA OPERAÇÃO", @xml['ide/natOp']
-      @pdf.ibox 0.85, 10.02, 10.79, 6.46, "PROTOCOLO DE AUTORIZAÇÃO DE USO", @xml['infProt/nProt'] + ' ' + Helper.format_date(@xml['infProt/dhRecbto']) , {:align => :center}
-
+      @pdf.ibox 0.85, 10.02, 10.79, 6.46, "PROTOCOLO DE AUTORIZAÇÃO DE USO", @xml['infProt/nProt'] + ' ' + Helper.format_datetime(@xml['infProt/dhRecbto']) , {:align => :center}
       @pdf.ibox 0.85, 6.86, 0.25, 7.31, "INSCRIÇÃO ESTADUAL", @xml['emit/IE']
       @pdf.ibox 0.85, 6.86, 7.11, 7.31, "INSC.ESTADUAL DO SUBST. TRIBUTÁRIO", @xml['emit/IE_ST']
       @pdf.ibox 0.85, 6.84, 13.97, 7.31, "CNPJ", @xml['emit/CNPJ']
@@ -79,16 +78,16 @@ module RubyDanfe
       @pdf.ibox 0.85, 12.32, 0.25, 8.58, "NOME/RAZÃO SOCIAL", @xml['dest/xNome']
       @pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", @xml['dest/CNPJ'] if @xml['dest/CNPJ'] != ''
       @pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", @xml['dest/CPF'] if @xml['dest/CPF'] != ''
-      @pdf.idate 0.85, 2.92, 17.90, 8.58, "DATA DA EMISSÃO", (not @xml['ide/dEmi'].empty?) ? @xml['ide/dEmi'] : @xml['ide/dhEmi'] , {:align => :right}
+      @pdf.ibox 0.85, 2.92, 17.90, 8.58, "DATA DA EMISSÃO", (not @xml['ide/dEmi'].empty?) ? Helper.format_date(@xml['ide/dEmi']) : Helper.format_datetime(@xml['ide/dhEmi']) , {:align => :right}
       @pdf.ibox 0.85, 10.16, 0.25, 9.43, "ENDEREÇO", @xml['enderDest/xLgr'] + " " + @xml['enderDest/nro']
       @pdf.ibox 0.85, 4.83, 10.41, 9.43, "BAIRRO", @xml['enderDest/xBairro']
       @pdf.ibox 0.85, 2.67, 15.24, 9.43, "CEP", @xml['enderDest/CEP']
-      @pdf.idate 0.85, 2.92, 17.90, 9.43, "DATA DA SAÍDA/ENTRADA", (not @xml['ide/dSaiEnt'].empty?) ? @xml['ide/dSaiEnt'] : @xml['ide/dhSaiEnt'], {:align => :right}
+      @pdf.ibox 0.85, 2.92, 17.90, 9.43, "DATA DA SAÍDA/ENTRADA", (not @xml['ide/dSaiEnt'].empty?) ? Helper.format_date(@xml['ide/dSaiEnt']) : Helper.format_datetime(@xml['ide/dhSaiEnt']), {:align => :right}
       @pdf.ibox 0.85, 7.11, 0.25, 10.28, "MUNICÍPIO", @xml['enderDest/xMun']
       @pdf.ibox 0.85, 4.06, 7.36, 10.28, "FONE/FAX", @xml['enderDest/fone']
       @pdf.ibox 0.85, 1.14, 11.42, 10.28, "UF", @xml['enderDest/UF']
       @pdf.ibox 0.85, 5.33, 12.56, 10.28, "INSCRIÇÃO ESTADUAL", @xml['dest/IE']
-      @pdf.ibox 0.85, 2.92, 17.90, 10.28, "HORA DE SAÍDA", @xml['ide/hSaiEnt'], {:align => :right}
+      @pdf.ibox 0.85, 2.92, 17.90, 10.28, "HORA DE SAÍDA", Helper.format_time(@xml['ide/hSaiEnt']), {:align => :right}
     end
 
     def render_faturas
@@ -188,6 +187,7 @@ module RubyDanfe
 
     def render_dados_adicionais
       @pdf.ititle 0.42, 10.00, 0.25, 25.91, "DADOS ADICIONAIS"
+      inf_ad_fisco_y = 0
 
       if @vol > 1
         @pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", '', {:size => 8, :valign => :top}
@@ -213,8 +213,24 @@ module RubyDanfe
         end
         @pdf.ibox 2.07, 12.93, 0.25, y + 0.30, '', 'OUTRAS INFORMAÇÕES', {:size => 6, :valign => :top, :border => 0}
         @pdf.ibox 2.07, 12.93, 0.25, y + 0.50, '', @xml['infAdic/infCpl'], {:size => 5, :valign => :top, :border => 0}
+
+        if @xml['infAdic/infCpl'] == ""
+          inf_ad_fisco_y = y + 0.50
+        else
+          inf_ad_fisco_y = y + 0.100
+        end
+
+        @pdf.ibox 2.07, 12.93, 0.25, inf_ad_fisco_y, '', @xml['infAdic/infAdFisco'], {:size => 5, :valign => :top, :border => 0}
+
       else
-         @pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", @xml['infAdic/infCpl'], {:size => 6, :valign => :top}
+        if @xml['infAdic/infCpl'] == ""
+          inf_ad_fisco_y = 26.60
+        else
+          inf_ad_fisco_y = 27.33
+        end
+
+        @pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", @xml['infAdic/infCpl'], {:size => 6, :valign => :top}
+        @pdf.ibox 3.07, 12.93, 0.25, inf_ad_fisco_y, "", @xml['infAdic/infAdFisco'], {:size => 6, :valign => :top, :border => 0}
       end
 
       @pdf.ibox 3.07, 7.62, 13.17, 26.33, "RESERVADO AO FISCO"
