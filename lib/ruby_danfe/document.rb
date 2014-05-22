@@ -42,7 +42,7 @@ module RubyDanfe
     end
 
     def idate(h, w, x, y, title = '', info = '', options = {})
-      tt = info.split('-')
+      tt = info.gsub(/T.*/, '').split('-')
       ibox h, w, x, y, title, "#{tt[2]}/#{tt[1]}/#{tt[0]}", options
     end
 

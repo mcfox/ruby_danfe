@@ -31,5 +31,6 @@ module RubyDanfe
 
       formated_date
     end
+
   end
 end
