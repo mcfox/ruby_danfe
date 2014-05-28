@@ -88,7 +88,7 @@ module RubyDanfe
       @pdf.ibox 0.85, 1.14, 11.42, 10.28, "UF", @xml['enderDest/UF']
       @pdf.ibox 0.85, 5.33, 12.56, 10.28, "INSCRIÇÃO ESTADUAL", @xml['dest/IE']
       @pdf.ibox 0.85, 2.92, 17.90, 10.28, "HORA DE SAÍDA", Helper.format_time(@xml['ide/hSaiEnt']), {:align => :right}
-      @pdf.ibox 0.85, 2.92, 17.90, 10.28, "HORA DE SAÍDA", (not @xml['ide/hSaiEnt'].empty?) ? Helper.format_time(@xml['ide/hSaiEnt']) : Helper.extract_time_from_date(@xml['ide/dhEmi']) , {:align => :right}
+      @pdf.ibox 0.85, 2.92, 17.90, 10.28, "HORA DE SAÍDA", (not @xml['ide/hSaiEnt'].empty?) ? Helper.format_time(@xml['ide/hSaiEnt']) : Helper.extract_time_from_date(@xml['ide/dhSaiEnt']) , {:align => :right}
     end
 
     def render_faturas
