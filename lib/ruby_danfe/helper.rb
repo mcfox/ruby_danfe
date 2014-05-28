@@ -53,5 +53,16 @@ module RubyDanfe
 
       formated_time
     end
+
+    def self.extract_time_from_date(string)
+      formated_time = ""
+
+      if not string.empty?
+        date = DateTime.strptime(string, "%Y-%m-%dT%H:%M:%S")
+        formated_time = date.strftime("%H:%M:%S")
+      end
+
+      formated_time
+    end
   end
 end
