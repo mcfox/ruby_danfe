@@ -11,7 +11,7 @@ describe RubyDanfe do
 
   describe ".generate" do
     it "saves the PDF document to file based on a xml file" do
-      expect(File.exist?(output_pdf)).to be_false
+      expect(File.exist?(output_pdf)).to be_falsey
 
       RubyDanfe.generate(output_pdf, "#{base_dir}nfe_with_ns.xml")
 
@@ -31,7 +31,7 @@ describe RubyDanfe do
 
   describe ".render_file" do
     it "renders the PDF document to file based on a xml string" do
-      expect(File.exist?(output_pdf)).to be_false
+      expect(File.exist?(output_pdf)).to be_falsey
 
       xml_string = File.new("#{base_dir}nfe_with_ns.xml")
 
