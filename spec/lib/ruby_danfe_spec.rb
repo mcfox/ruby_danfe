@@ -25,7 +25,7 @@ describe RubyDanfe do
 
       pdf_string = RubyDanfe.render(xml_string)
 
-      expect(pdf_string).to include "%PDF-1.3\n%\xFF\xFF\xFF\xFF\n1 0 obj\n<< /Creator <"
+      expect(pdf_string).to include '%PDF-1.3'
     end
   end
 
