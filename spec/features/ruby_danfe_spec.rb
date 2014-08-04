@@ -10,7 +10,7 @@ describe "RubyDanfe generated pdf files" do
   }
 
   it "renders a basic NF-e with namespace" do
-    expect(File.exist?(output_pdf)).to be_false
+    expect(File.exist?(output_pdf)).to be_falsey
 
     RubyDanfe.generate(output_pdf, "#{base_dir}nfe_with_ns.xml")
 
@@ -18,7 +18,7 @@ describe "RubyDanfe generated pdf files" do
   end
 
   it "renders another basic NF-e without namespace" do
-    expect(File.exist?(output_pdf)).to be_false
+    expect(File.exist?(output_pdf)).to be_falsey
 
     RubyDanfe.generate(output_pdf, "#{base_dir}nfe_without_ns.xml")
 
@@ -26,7 +26,7 @@ describe "RubyDanfe generated pdf files" do
   end
 
   it "renders a NF-e having FCI in its items" do
-    expect(File.exist?(output_pdf)).to be_false
+    expect(File.exist?(output_pdf)).to be_falsey
 
     RubyDanfe.generate(output_pdf, "#{base_dir}nfe_with_fci.xml")
 
@@ -34,7 +34,7 @@ describe "RubyDanfe generated pdf files" do
   end
 
   it "renders a NF-e of Simples Nacional using CSOSN" do
-    expect(File.exist?(output_pdf)).to be_false
+    expect(File.exist?(output_pdf)).to be_falsey
 
     RubyDanfe.generate(output_pdf, "#{base_dir}nfe_simples_nacional.xml")
 
@@ -42,7 +42,7 @@ describe "RubyDanfe generated pdf files" do
   end
 
   it "renders a basic CT-e" do
-    expect(File.exist?(output_pdf)).to be_false
+    expect(File.exist?(output_pdf)).to be_falsey
 
     RubyDanfe.generate(output_pdf, "#{base_dir}cte.xml", :dacte)
 
@@ -50,7 +50,7 @@ describe "RubyDanfe generated pdf files" do
   end
 
   it "renders quantity field with 4 decimals" do
-    expect(File.exist?(output_pdf)).to be_false
+    expect(File.exist?(output_pdf)).to be_falsey
 
     RubyDanfe.generate(output_pdf, "#{base_dir}4_decimals_nfe_simples_nacional.xml", :danfe, {"quantity_decimals" => 4})
 
