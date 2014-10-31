@@ -47,7 +47,7 @@ module RubyDanfe
       formated_time = ""
 
       if not string.empty?
-        time = Time.strptime(string, "%H:%M:%S")
+        time = Time.new(string)
         formated_time = time.strftime("%H:%M:%S")
       end
 
