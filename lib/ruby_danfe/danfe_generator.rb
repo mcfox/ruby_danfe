@@ -24,7 +24,7 @@ module RubyDanfe
 
       @pdf.page_count.times do |i|
         @pdf.go_to_page(i + 1)
-        @pdf.ibox 1.00, 3.08, 7.71, 5.54, '',
+        @pdf.ibox 1.00, 3.08, 6.71, 5.54, '',
         "FOLHA #{i + 1} de #{@pdf.page_count}", {:size => 8, :align => :center, :valign => :center, :border => 0, :style => :bold}
       end
 
@@ -44,27 +44,27 @@ module RubyDanfe
     end
 
     def render_emitente
-      @pdf.ibox 3.92, 7.46, 0.25, 2.54, '',
+      @pdf.ibox 3.92, 6.46, 0.25, 2.54, '',
         @xml['emit/xNome'] + "\n" +
         @xml['enderEmit/xLgr'] + ", " + @xml['enderEmit/nro'] + "\n" +
         @xml['enderEmit/xBairro'] + " - " + @xml['enderEmit/CEP'] + "\n" +
         @xml['enderEmit/xMun'] + "/" + @xml['enderEmit/UF'] + "\n" +
         @xml['enderEmit/fone'] + " " + @xml['enderEmit/email'], {:align => :center, :valign => :center}
 
-      @pdf.ibox 3.92, 3.08, 7.71, 2.54
+      @pdf.ibox 3.92, 3.08, 6.71, 2.54
 
-      @pdf.ibox 0.60, 3.08, 7.71, 2.54, '', "DANFE", {:size => 12, :align => :center, :border => 0, :style => :bold}
-      @pdf.ibox 1.20, 3.08, 7.71, 3.14, '', "DOCUMENTO AUXILIAR DA NOTA FISCAL ELETRÔNICA", {:size => 8, :align => :center, :border => 0}
-      @pdf.ibox 0.60, 3.08, 7.71, 4.34, '', "#{@xml['ide/tpNF']} - " + (@xml['ide/tpNF'] == '0' ? 'ENTRADA' : 'SAÍDA'), {:size => 8, :align => :center, :border => 0}
+      @pdf.ibox 0.60, 3.08, 6.71, 2.54, '', "DANFE", {:size => 12, :align => :center, :border => 0, :style => :bold}
+      @pdf.ibox 1.20, 3.08, 6.71, 3.14, '', "DOCUMENTO AUXILIAR DA NOTA FISCAL ELETRÔNICA", {:size => 8, :align => :center, :border => 0}
+      @pdf.ibox 0.60, 3.08, 6.71, 4.34, '', "#{@xml['ide/tpNF']} - " + (@xml['ide/tpNF'] == '0' ? 'ENTRADA' : 'SAÍDA'), {:size => 8, :align => :center, :border => 0}
 
-      @pdf.ibox 1.00, 3.08, 7.71, 4.94, '',
+      @pdf.ibox 1.00, 3.08, 6.71, 4.94, '',
         "N°. " + @xml['ide/nNF'] + "\n" +
         "SÉRIE " + @xml['ide/serie'], {:size => 8, :align => :center, :valign => :center, :border => 0, :style => :bold}
 
-      @pdf.ibox 2.20, 10.02, 10.79, 2.54
-      @pdf.ibarcode 1.50, 8.00, 10.9010, 4.44, @xml['chNFe']
-      @pdf.ibox 0.85, 10.02, 10.79, 4.74, "CHAVE DE ACESSO", @xml['chNFe'].gsub(/(\d)(?=(\d\d\d\d)+(?!\d))/, "\\1 "), {:style => :bold, :align => :center}
-      @pdf.ibox 0.85, 10.02, 10.79, 5.60 , '', "Consulta de autenticidade no portal nacional da NF-e www.nfe.fazenda.gov.br/portal ou no site da Sefaz Autorizadora", {:align => :center, :size => 8}
+      @pdf.ibox 2.20, 11.02, 9.79, 2.54
+      @pdf.ibarcode 1.50, 8.00, 10.4010, 4.44, @xml['chNFe']
+      @pdf.ibox 0.85, 11.02, 9.79, 4.74, "CHAVE DE ACESSO", @xml['chNFe'].gsub(/(\d)(?=(\d\d\d\d)+(?!\d))/, "\\1 "), {:style => :bold, :align => :center}
+      @pdf.ibox 0.85, 11.02, 9.79, 5.60 , '', "Consulta de autenticidade no portal nacional da NF-e www.nfe.fazenda.gov.br/portal ou no site da Sefaz Autorizadora", {:align => :center, :size => 8}
       @pdf.ibox 0.85, 10.54, 0.25, 6.46, "NATUREZA DA OPERAÇÃO", @xml['ide/natOp']
       @pdf.ibox 0.85, 10.02, 10.79, 6.46, "PROTOCOLO DE AUTORIZAÇÃO DE USO", @xml['infProt/nProt'] + ' ' + Helper.format_date(@xml['infProt/dhRecbto']) , {:align => :center}
 
