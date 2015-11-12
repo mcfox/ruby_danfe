@@ -1,13 +1,36 @@
 require "spec_helper"
 
 describe RubyDanfe::Helper do
-  describe ".format_date" do
+  describe ".format_datetime" do
     it "returns a formated string" do
       string = "2013-10-18T13:54:04"
-      expect(RubyDanfe::Helper.format_date(string)).to eq "18/10/2013 13:54:04"
+      expect(RubyDanfe::Helper.format_datetime(string)).to eq "18/10/2013 13:54:04"
     end
   end
 
+  describe ".format_date" do
+    it "returns a formated string" do
+      string = "2013-10-18"
+      expect(RubyDanfe::Helper.format_date(string)).to eq "18/10/2013"
+    end
+
+    it "returns a formated string" do
+      string = ""
+      expect(RubyDanfe::Helper.format_date(string)).to eq ""
+    end
+  end
+
+  describe ".format_time" do
+    it "returns a formated string" do
+      string = "22:30:45"
+      expect(RubyDanfe::Helper.format_time(string)).to eq "22:30:45"
+    end
+
+    it "returns a formated string" do
+      string = ""
+      expect(RubyDanfe::Helper.format_time(string)).to eq ""
+    end
+  end
 
   describe ".format_quantity" do
     context "with RubyDanfe.options.numerify_prod_qcom false" do

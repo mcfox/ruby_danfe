@@ -1,3 +1,3 @@
 module RubyDanfe
-  VERSION = "0.10.0"
+  VERSION = "1.11.6"
 end
