@@ -358,7 +358,7 @@ module RubyDanfe
       #@pdf.ibox 0.92, 20.49, 0.25, 13.82
       @pdf.ibox 0.90, 6.83, 0.25, 13.82, 'PRODUTO PREDOMINANTE', @xml['infCarga/proPred'], {:size => 7, :style => :bold }
       @pdf.ibox 0.90, 6.83, 7.09, 13.82, 'OUTRAS CARACTERÍSTICAS DA CARGA', @xml['infCarga/xOutCat'], {:size => 7, :style => :bold }
-      @pdf.ibox 0.90, 6.82, 13.92, 13.82, 'VALOR TOTAL DA MERCADORIA', '0,00', {:size => 7, :style => :bold }
+      @pdf.ibox 0.90, 6.82, 13.92, 13.82, 'VALOR TOTAL DA MERCADORIA', @xml['infCarga/vCarga'].empty? ? '0,00' : @xml['infCarga/vCarga'], {:size => 7, :style => :bold }
     end
 
     def render_quantidade
