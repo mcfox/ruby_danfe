@@ -2,9 +2,18 @@ require "spec_helper"
 
 describe RubyDanfe::Helper do
   describe ".format_datetime" do
-    it "returns a formated string" do
-      string = "2013-10-18T13:54:04"
-      expect(RubyDanfe::Helper.format_datetime(string)).to eq "18/10/2013 13:54:04"
+    context "when date format is %Y-%m-%d" do      
+      it "returns a formated string" do
+        string = "2013-10-18T13:54:04"
+        expect(RubyDanfe::Helper.format_datetime(string)).to eq "18/10/2013 13:54:04"
+      end
+    end
+
+    context "when date format is %d/%m/%Y" do      
+      it "returns a formated string" do
+        string = "25/02/2016  09:22:26"
+        expect(RubyDanfe::Helper.format_datetime(string)).to eq "25/02/2016 09:22:26"
+      end
     end
   end
 

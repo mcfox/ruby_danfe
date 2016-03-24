@@ -25,7 +25,7 @@ module RubyDanfe
       formated_datetime = ""
 
       if not string.empty?
-        date = DateTime.strptime(string, "%Y-%m-%dT%H:%M:%S")
+        date = extract_date_time(string)
         formated_datetime = date.strftime("%d/%m/%Y %H:%M:%S")
       end
 
@@ -58,11 +58,21 @@ module RubyDanfe
       formated_time = ""
 
       if not string.empty?
-        date = DateTime.strptime(string, "%Y-%m-%dT%H:%M:%S")
+        date = extract_date_time(string)
         formated_time = date.strftime("%H:%M:%S")
       end
 
       formated_time
+    end
+
+    private
+
+    def self.extract_date_time(string)
+      begin
+        DateTime.strptime(string, "%Y-%m-%dT%H:%M:%S")
+      rescue ArgumentError
+        DateTime.strptime(string, "%d/%m/%Y %H:%M:%S")
+      end
     end
   end
 end
