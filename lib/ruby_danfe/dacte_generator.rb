@@ -35,7 +35,7 @@ module RubyDanfe
     private
     def render_emitente
       @pdf.ibox 2.27, 7.67, 0.25, 0.54
-      @pdf.ibox 2.27, 7.67, 0.25, 0.84, '',
+      @pdf.ibox 2.27, 7.67, 0.25, 0.74, '',
         @xml['emit/xNome'],
         { :align => :center, :size => 9, :border => 0, :style => :bold }
 
@@ -47,11 +47,15 @@ module RubyDanfe
           fone = @xml['enderEmit/fone'][0,4] + '-' + @xml['enderEmit/fone'][4,4]
         end
       end
-      @pdf.ibox 2.27, 7.67, 0.25, 1.30, '',
+      @pdf.ibox 2.27, 7.67, 0.25, 1.20, '',
         @xml['enderEmit/xLgr'] + ", " + @xml['enderEmit/nro'] + " " + @xml['enderEmit/xCpl'] + "\n" +
         @xml['enderEmit/xMun'] + " - " + @xml['enderEmit/UF'] + " " + @xml['enderEmit/xPais'] + "\n" +
         "Fone/Fax: " + fone,
         { :align => :center, :size => 8, :border => 0, :style => :bold }
+
+      @pdf.ibox 2.27, 7.67, 0.25, 2.30, '',
+        "CNPJ: " + @xml['emit/CNPJ'] + "     " + "IE: " + @xml['emit/IE'],
+        { :align => :center, :size => 7, :border => 0, :style => :bold }
     end
 
     def render_tipo_cte
