@@ -2,14 +2,14 @@ require "spec_helper"
 
 describe RubyDanfe::Helper do
   describe ".format_datetime" do
-    context "when date format is %Y-%m-%d" do      
+    context "when date format is %Y-%m-%d" do
       it "returns a formated string" do
         string = "2013-10-18T13:54:04"
         expect(RubyDanfe::Helper.format_datetime(string)).to eq "18/10/2013 13:54:04"
       end
     end
 
-    context "when date format is %d/%m/%Y" do      
+    context "when date format is %d/%m/%Y" do
       it "returns a formated string" do
         string = "25/02/2016  09:22:26"
         expect(RubyDanfe::Helper.format_datetime(string)).to eq "25/02/2016 09:22:26"
@@ -91,6 +91,22 @@ describe RubyDanfe::Helper do
         it "should format number without dot and comma" do
           expect(RubyDanfe::Helper.format_quantity("200")).to eq "200,000"
         end
+      end
+    end
+  end
+
+  describe ".format_cnpj" do
+    context "with a valid cnpj" do
+      it "returns a formated string" do
+        string = "15704602000105"
+        expect(RubyDanfe::Helper.format_cnpj(string)).to eq "15.704.602/0001-05"
+      end
+    end
+
+    context "with an invalid cnpj" do
+      it "returns an empty string" do
+        string = "157046020"
+        expect(RubyDanfe::Helper.format_cnpj(string)).to eq ""
       end
     end
   end
