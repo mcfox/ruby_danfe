@@ -65,6 +65,17 @@ module RubyDanfe
       formated_time
     end
 
+    def self.format_cnpj(string)
+      formated_cnpj = ""
+
+      if not (string.empty? || string.size != 14)
+        formated_cnpj = string[0,2] + '.' + string[2,3] + '.' + string[5,3] +
+                        '/' + string[8,4] + '-' + string[12,2]
+      end
+
+      formated_cnpj
+    end
+
     private
 
     def self.extract_date_time(string)
