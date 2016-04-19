@@ -54,7 +54,7 @@ module RubyDanfe
         { :align => :center, :size => 8, :border => 0, :style => :bold }
 
       @pdf.ibox 2.27, 7.67, 0.25, 2.30, '',
-        "CNPJ: " + @xml['emit/CNPJ'] + "     " + "IE: " + @xml['emit/IE'],
+        "CNPJ: " + Helper.format_cnpj(@xml['emit/CNPJ']) + "     " + "IE: " + @xml['emit/IE'],
         { :align => :center, :size => 7, :border => 0, :style => :bold }
     end
 
@@ -168,7 +168,7 @@ module RubyDanfe
       @pdf.ibox 0.90, 3.00, 6.50, 8.02, '', 'CEP: ', { :size => 7, :border => 0, :style => :italic }
       @pdf.ibox 0.90, 3.00, 7.20, 8.02, '', @xml['enderReme/CEP'][0,2] + '.' + @xml['enderReme/CEP'][3,3] + '-' + @xml['enderReme/CEP'][5,3], { :size => 7, :border => 0, :style => :bold } if @xml['enderReme/CEP'] != ''
       @pdf.ibox 0.90, 10.00, 0.28, 8.41, '', 'CNPJ/CPF: ', { :size => 7, :border => 0, :style => :italic }
-      @pdf.ibox 0.90, 10.00, 1.88, 8.41, '', @xml['rem/CNPJ'][0,2] + '.' + @xml['rem/CNPJ'][2,3] + '.' + @xml['rem/CNPJ'][5,3] + '/' + @xml['rem/CNPJ'][8,4] + '-' + @xml['rem/CNPJ'][12,2], { :size => 7, :border => 0, :style => :bold } if @xml['rem/CNPJ'] != ''
+      @pdf.ibox 0.90, 10.00, 1.88, 8.41, '', Helper.format_cnpj(@xml['rem/CNPJ']), { :size => 7, :border => 0, :style => :bold } if @xml['rem/CNPJ'] != ''
       @pdf.ibox 0.90, 10.00, 1.88, 8.41, '', @xml['rem/CPF'][0,3] + '.' + @xml['rem/CPF'][3,3] + '.' + @xml['rem/CPF'][6,3] + '-' + @xml['rem/CPF'][9,2], { :size => 7, :border => 0, :style => :bold } if @xml['rem/CPF'] != ''
       @pdf.ibox 0.90, 3.50, 6.50, 8.41, '', 'Inscr. Est.: ', { :size => 7, :border => 0, :style => :italic }
       @pdf.ibox 0.90, 3.50, 7.85, 8.41, '', @xml['rem/IE'], { :size => 7, :border => 0, :style => :bold }
@@ -198,7 +198,7 @@ module RubyDanfe
       @pdf.ibox 0.90, 3.00, 16.75, 8.02, '', 'CEP: ' , { :size => 7, :border => 0, :style => :italic }
       @pdf.ibox 0.90, 3.00, 17.40, 8.02, '', @xml['enderDest/CEP'][0,2] + '.' + @xml['enderDest/CEP'][3,3] + '-' + @xml['enderDest/CEP'][5,3], { :size => 7, :border => 0, :style => :bold } if @xml['enderDest/CEP'] != ''
       @pdf.ibox 0.90, 10.00, 10.53, 8.41, '', 'CNPJ/CPF: ', { :size => 7, :border => 0, :style => :italic }
-      @pdf.ibox 0.90, 10.00, 12.10, 8.41, '', @xml['dest/CNPJ'][0,2] + '.' + @xml['dest/CNPJ'][2,3] + '.' + @xml['dest/CNPJ'][5,3] + '/' + @xml['dest/CNPJ'][8,4] + '-' + @xml['dest/CNPJ'][12,2], { :size => 7, :border => 0, :style => :bold } if @xml['dest/CNPJ'] != ''
+      @pdf.ibox 0.90, 10.00, 12.10, 8.41, '', Helper.format_cnpj(@xml['dest/CNPJ']), { :size => 7, :border => 0, :style => :bold } if @xml['dest/CNPJ'] != ''
       @pdf.ibox 0.90, 10.00, 12.10, 8.41, '', @xml['dest/CPF'][0,3] + '.' + @xml['dest/CPF'][3,3] + '.' + @xml['dest/CPF'][6,3] + '-' + @xml['dest/CPF'][9,2], { :size => 7, :border => 0, :style => :bold } if @xml['dest/CPF'] != ''
       @pdf.ibox 0.90, 3.50, 16.75, 8.41, '', 'Inscr. Est.: ', { :size => 7, :border => 0, :style => :italic }
       @pdf.ibox 0.90, 3.50, 18.05, 8.41, '', @xml['dest/IE'], { :size => 7, :border => 0, :style => :bold }
@@ -228,7 +228,7 @@ module RubyDanfe
       @pdf.ibox 0.90, 3.00, 6.50, 10.78, '', 'CEP: ', { :size => 7, :border => 0, :style => :italic }
       @pdf.ibox 0.90, 3.00, 7.20, 10.78, '', @xml['enderExped/CEP'][0,2] + '.' + @xml['enderExped/CEP'][3,3] + '-' + @xml['enderExped/CEP'][5,3], { :size => 7, :border => 0, :style => :bold } if @xml['enderExped/CEP'] != ''
       @pdf.ibox 0.90, 10.00, 0.28, 11.17, '', 'CNPJ/CPF: ', { :size => 7, :border => 0, :style => :italic }
-      @pdf.ibox 0.90, 10.00, 1.88, 11.17, '', @xml['exped/CNPJ'][0,2] + '.' + @xml['exped/CNPJ'][2,3] + '.' + @xml['exped/CNPJ'][5,3] + '/' + @xml['exped/CNPJ'][8,4] + '-' + @xml['exped/CNPJ'][12,2], { :size => 7, :border => 0, :style => :bold } if @xml['exped/CNPJ'] != ''
+      @pdf.ibox 0.90, 10.00, 1.88, 11.17, '', Helper.format_cnpj(@xml['exped/CNPJ']), { :size => 7, :border => 0, :style => :bold } if @xml['exped/CNPJ'] != ''
       @pdf.ibox 0.90, 10.00, 1.88, 11.17, '', @xml['exped/CPF'][0,3] + '.' + @xml['exped/CPF'][3,3] + '.' + @xml['exped/CPF'][6,3] + '-' + @xml['exped/CPF'][9,2], { :size => 7, :border => 0, :style => :bold } if @xml['exped/CPF'] != ''
       @pdf.ibox 0.90, 3.50, 6.50, 11.17, '', 'Inscr. Est.:' , { :size => 7, :border => 0, :style => :italic }
       @pdf.ibox 0.90, 3.50, 7.85, 11.17, '', @xml['exped/IE'], { :size => 7, :border => 0, :style => :bold }
@@ -258,7 +258,7 @@ module RubyDanfe
       @pdf.ibox 0.90, 3.00, 16.75, 10.78, '', 'CEP: ', { :size => 7, :border => 0, :style => :italic }
       @pdf.ibox 0.90, 3.00, 17.40, 10.78, '', @xml['enderReceb/CEP'][0,2] + '.' + @xml['enderReceb/CEP'][3,3] + '-' + @xml['enderReceb/CEP'][5,3], { :size => 7, :border => 0, :style => :bold } if @xml['enderReceb/CEP'] != ''
       @pdf.ibox 0.90, 10.00, 10.53, 11.17, '', 'CNPJ/CPF: ', { :size => 7, :border => 0, :style => :italic }
-      @pdf.ibox 0.90, 10.00, 12.10, 11.17, '', @xml['receb/CNPJ'][0,2] + '.' + @xml['receb/CNPJ'][2,3] + '.' + @xml['receb/CNPJ'][5,3] + '/' + @xml['receb/CNPJ'][8,4] + '-' + @xml['receb/CNPJ'][12,2], { :size => 7, :border => 0, :style => :bold } if @xml['receb/CNPJ'] != ''
+      @pdf.ibox 0.90, 10.00, 12.10, 11.17, '', Helper.format_cnpj(@xml['receb/CNPJ']), { :size => 7, :border => 0, :style => :bold } if @xml['receb/CNPJ'] != ''
       @pdf.ibox 0.90, 10.00, 12.10, 11.17, '', @xml['receb/CPF'][0,3] + '.' + @xml['receb/CPF'][3,3] + '.' + @xml['receb/CPF'][6,3] + '-' + @xml['receb/CPF'][9,2], { :size => 7, :border => 0, :style => :bold } if @xml['receb/CPF'] != ''
       @pdf.ibox 0.90, 3.50, 16.75, 11.17, '', 'Inscr. Est.: ', { :size => 7, :border => 0, :style => :italic }
       @pdf.ibox 0.90, 3.50, 18.05, 11.17, '', @xml['receb/IE'], { :size => 7, :border => 0, :style => :bold }
@@ -314,7 +314,7 @@ module RubyDanfe
         @pdf.ibox 0.90, 5.00, 16.50, 12.81, '', 'País: ' , { :size => 7, :border => 0, :style => :italic }
         @pdf.ibox 0.90, 5.00, 17.50, 12.81, '', @xml['enderToma/xPais'], { :size => 7, :border => 0, :style => :bold }
         @pdf.ibox 0.90, 5.00, 0.28, 13.17, '', 'CNPJ/CPF: ' , { :size => 7, :border => 0, :style => :italic }
-        @pdf.ibox 0.90, 5.00, 1.88, 13.17, '', @xml['toma4/CNPJ'][0,2] + '.' + @xml['toma4/CNPJ'][2,3] + '.' + @xml['toma4/CNPJ'][5,3] + '/' + @xml['toma4/CNPJ'][8,4] + '-' + @xml['toma4/CNPJ'][12,2], { :size => 7, :border => 0, :style => :bold } if @xml['toma4/CNPJ'] != ''
+        @pdf.ibox 0.90, 5.00, 1.88, 13.17, '', Helper.format_cnpj(@xml['toma4/CNPJ']), { :size => 7, :border => 0, :style => :bold } if @xml['toma4/CNPJ'] != ''
         @pdf.ibox 0.90, 5.00, 1.88, 13.17, '', @xml['toma4/CPF'][0,3] + '.' + @xml['toma4/CPF'][3,3] + '.' + @xml['toma4/CPF'][6,3] + '-' + @xml['toma4/CPF'][9,2], { :size => 7, :border => 0, :style => :bold } if @xml['toma4/CPF'] != ''
         @pdf.ibox 0.90, 5.00, 5.60, 13.17, '', 'Inscr. Est.: ', { :size => 7, :border => 0, :style => :italic }
         @pdf.ibox 0.90, 5.00, 7.20, 13.17, '', @xml['toma4/IE'], { :size => 7, :border => 0, :style => :bold }
@@ -341,7 +341,7 @@ module RubyDanfe
         @pdf.ibox 0.90, 5.00, 16.50, 12.81, '', 'País: ' , { :size => 7, :border => 0, :style => :italic }
         @pdf.ibox 0.90, 5.00, 17.50, 12.81, '', @xml[endereco + '/xPais'], { :size => 7, :border => 0, :style => :bold }
         @pdf.ibox 0.90, 5.00, 0.28, 13.17, '', 'CNPJ/CPF: ' , { :size => 7, :border => 0, :style => :italic }
-        @pdf.ibox 0.90, 5.00, 1.88, 13.17, '', @xml[toma + '/CNPJ'][0,2] + '.' + @xml[toma + '/CNPJ'][2,3] + '.' + @xml[toma + '/CNPJ'][5,3] + '/' + @xml[toma + '/CNPJ'][8,4] + '-' + @xml[toma + '/CNPJ'][12,2], { :size => 7, :border => 0, :style => :bold } if @xml[toma + '/CNPJ'] != ''
+        @pdf.ibox 0.90, 5.00, 1.88, 13.17, '', Helper.format_cnpj(@xml[toma + '/CNPJ']), { :size => 7, :border => 0, :style => :bold } if @xml[toma + '/CNPJ'] != ''
         @pdf.ibox 0.90, 5.00, 1.88, 13.17, '', @xml[toma + '/CPF'][0,3] + '.' + @xml[toma + '/CPF'][3,3] + '.' + @xml[toma + '/CPF'][6,3] + '-' + @xml[toma + '/CPF'][9,2], { :size => 7, :border => 0, :style => :bold } if @xml[toma + '/CPF'] != ''
         @pdf.ibox 0.90, 5.00, 5.60, 13.17, '', 'Inscr. Est.: ', { :size => 7, :border => 0, :style => :italic }
         @pdf.ibox 0.90, 5.00, 7.20, 13.17, '', @xml[toma + '/IE'], { :size => 7, :border => 0, :style => :bold }
@@ -477,7 +477,7 @@ module RubyDanfe
       @xml.collect('xmlns', 'infNF') { |det|
         @pdf.ibox 5.52, 1.50, x, 19.43, '', det.css('mod').text, { :size => 7, :border => 0, :style => :bold }
         x = x + 1.75
-        @pdf.ibox 5.52, 2.25, x, 19.43, '', @xml['rem/CNPJ'][0,2] + '.' + @xml['rem/CNPJ'][2,3] + '.' +@xml['rem/CNPJ'][5,3] + '/' + @xml['rem/CNPJ'][8,4] + '-' + @xml['rem/CNPJ'][12,2], { :size => 7, :border => 0, :style => :bold } if @xml['rem/CNPJ'] != ''
+        @pdf.ibox 5.52, 2.25, x, 19.43, '', Helper.format_cnpj(@xml['rem/CNPJ']), { :size => 7, :border => 0, :style => :bold } if @xml['rem/CNPJ'] != ''
         @pdf.ibox 5.52, 5.25, x, 19.43, '', @xml['rem/CPF'][0,3] + '.' + @xml['rem/CPF'][3,3] + '.' +@xml['rem/CPF'][6,3] + '-' + @xml['rem/CPF'][9,2], { :size => 7, :border => 0, :style => :bold } if @xml['rem/CPF'] != ''
         x = x + 5.50
         @pdf.ibox 5.52, 0.75, x, 19.43, '', det.css('serie').text, { :size => 7, :border => 0, :style => :bold }
