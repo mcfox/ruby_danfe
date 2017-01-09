@@ -1,7 +1,16 @@
 # coding: utf-8
+require 'prawn'
+require 'open-uri'
 module RubyDanfe
   class DanfeGenerator
-    def initialize(xml)
+    require 'RMagick'
+    include Magick
+    def initialize(xml, logo = nil)
+      if logo
+        @logo = URI.parse(logo)
+        @logo.scheme = "http"
+        @logo = @logo.to_s
+      end
       @xml = xml
       @pdf = Document.new
       @vol = 0
@@ -44,7 +53,14 @@ module RubyDanfe
     end
 
     def render_emitente
+      if @logo
+        i = Image.read(@logo).first
+        i.write( 'new_image.png' )
+        @pdf.image open('new_image.png'), :at => [50, 735], :width => 100, :height => 20
+      end
+      logo_spc = @logo ? "\n \n" : ""
       @pdf.ibox 3.92, 6.46, 0.25, 2.54, '',
+        logo_spc +
         @xml['emit/xNome'] + "\n" +
         @xml['enderEmit/xLgr'] + ", " + @xml['enderEmit/nro'] + "\n" +
         @xml['enderEmit/xBairro'] + " - " + @xml['enderEmit/CEP'] + "\n" +

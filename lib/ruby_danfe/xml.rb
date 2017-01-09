@@ -11,11 +11,12 @@ module RubyDanfe
 
     def regex_string(search_string, regex)
       doc = Nokogiri::HTML(search_string)
-      return doc.xpath(regex)      
+      return doc.xpath(regex)
     end
 
-    def initialize(xml)
+    def initialize(xml, logo = nil)
       @xml = Nokogiri::XML(xml)
+      @logo = logo
     end
 
     def [](xpath)
@@ -25,9 +26,9 @@ module RubyDanfe
 
     def render
       if @xml.at_css('infNFe/ide')
-        RubyDanfe.render @xml.to_s, :danfe
+        RubyDanfe.render @xml.to_s, :danfe, @logo
       else
-        RubyDanfe.render @xml.to_s, :dacte
+        RubyDanfe.render @xml.to_s, :dacte, @logo
       end
     end
 
