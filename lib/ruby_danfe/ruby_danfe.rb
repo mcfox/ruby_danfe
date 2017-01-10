@@ -7,16 +7,17 @@ module RubyDanfe
     render_file(pdf_filename, xml_string, type)
   end
 
-  def self.render(xml_string, type = :danfe, logo = nil, new_options = {})
+  def self.render(xml_string, type = :danfe, new_options = {})
     self.options = new_options if !new_options.empty?
-    pdf = generatePDF(xml_string, type, logo)
+
+    pdf = generatePDF(xml_string, type)
     pdf.render
   end
 
-  def self.render_file(pdf_filename, xml_string, type = :danfe, logo = nil, new_options = {})
+  def self.render_file(pdf_filename, xml_string, type = :danfe, new_options = {})
     self.options = new_options if !new_options.empty?
 
-    pdf = generatePDF(xml_string, type, logo)
+    pdf = generatePDF(xml_string, type)
     pdf.render_file pdf_filename
   end
 
@@ -29,13 +30,13 @@ module RubyDanfe
   end
 
   private
-    def self.generatePDF(xml_string, type = :danfe, logo = nil, new_options = {})
+    def self.generatePDF(xml_string, type = :danfe, new_options = {})
       self.options = new_options if !new_options.empty?
 
       xml = XML.new(xml_string)
 
       if type == :danfe
-        generator = DanfeGenerator.new(xml, logo)
+        generator = DanfeGenerator.new(xml)
       elsif type == :danfe_nfce
         generator = DanfeNfceGenerator.new(xml)
       else
