@@ -14,9 +14,8 @@ module RubyDanfe
       return doc.xpath(regex)
     end
 
-    def initialize(xml, logo = nil)
+    def initialize(xml)
       @xml = Nokogiri::XML(xml)
-      @logo = logo
     end
 
     def [](xpath)
@@ -26,9 +25,9 @@ module RubyDanfe
 
     def render
       if @xml.at_css('infNFe/ide')
-        RubyDanfe.render @xml.to_s, :danfe, @logo
+        RubyDanfe.render @xml.to_s, :danfe
       else
-        RubyDanfe.render @xml.to_s, :dacte, @logo
+        RubyDanfe.render @xml.to_s, :dacte
       end
     end
 
