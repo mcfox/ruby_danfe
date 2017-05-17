@@ -2,6 +2,7 @@ require "prawn"
 require "prawn/measurement_extensions"
 require "barby"
 require "barby/barcode/code_128"
+require 'barby/barcode/qr_code'
 require "barby/outputter/prawn_outputter"
 require "nokogiri"
 require 'ostruct'
@@ -15,6 +16,7 @@ require_relative 'document.rb'
 require_relative 'version.rb'
 require_relative 'dacte_generator.rb'
 require_relative 'danfe_generator.rb'
+require_relative 'danfe_nfce_generator.rb'
 require_relative 'xml.rb'
 require_relative 'descricao.rb'
 require_relative 'ruby_danfe.rb'

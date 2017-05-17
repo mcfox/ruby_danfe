@@ -1,10 +1,11 @@
 # encoding:utf-8
+require 'digest/sha1'
 
 module RubyDanfe
   class DanfeNfceGenerator
     def initialize(xml)
       @xml = xml
-      @pdf = Document.new
+      @pdf = Document.new(page_size: [390, 845])
     end
 
     def generatePDF
@@ -34,7 +35,7 @@ module RubyDanfe
       @pdf.ibox 2.85, 3, 1.5, 2, "", "NFC-e", {:size => 12, :align => :center, :border => 0, :style => :bold}
 
       @pdf.ibox 4.92, 7, 4, 0, '',
-        @xml['emit/xNome'] + "\n" + 
+        @xml['emit/xNome'] + "\n" +
         "CNPJ: " + @xml['emit/CNPJ'] + "\n" +
         @xml['enderEmit/xLgr'] + ", " + @xml['enderEmit/nro'] + "\n" +
         @xml['enderEmit/xBairro']+ " " + "-" + " " + @xml['enderEmit/xMun'] + "/" + @xml['enderEmit/UF'] + "\n" +
@@ -42,22 +43,22 @@ module RubyDanfe
         "CEP: " + @xml['enderEmit/CEP'] + " - " + "IE: " + @xml['emit/IE'], {:align => :center, :valign => :center, size: 8, border: 0}
     end
 
-    def render_info_fixas   
+    def render_info_fixas
       @pdf.ibox 2, 12, 0.9, 4, '',
-        "DANFE NFC-e - Documento Auxiliar da Nota Fiscal Eletrônica" + "\n" + "para Consumidor Final" + "\n \n" + 
+        "DANFE NFC-e - Documento Auxiliar da Nota Fiscal Eletrônica" + "\n" + "para Consumidor Final" + "\n \n" +
         "Não permite aproveitamento de crédito de ICMS", {align: :center, :valign => :center, size: 8}
     end
 
-    def render_detalhes_venda      
+    def render_detalhes_venda
       render_cabecalho_dos_produtos
-      
+
       totais =  @xml.css('total')
-      
+
       @pdf.inumeric 0.70, 4, 0.9, 15.8, "Subtotal", totais.css('vProd').text, {:size => 6}
       @pdf.inumeric 0.70, 4, 4.9, 15.8, "Desconto", totais.css('vDesc').text, {:size => 6}
       @pdf.inumeric 0.70, 4, 8.9, 15.8, "Troco", totais.css('vTroco').text, {:size => 6}
-    end   
-    
+    end
+
     def render_cabecalho_dos_produtos
       @pdf.ibox 9.55, 1.3, 0.9, 6.1, "CÓDIGO", "",{:size => 8, :align => :center, :style => :bold}
       @pdf.ibox 9.55, 1.3, 2.2, 6.1, "UNIDADE"
@@ -108,7 +109,7 @@ module RubyDanfe
       return row
     end
 
-    def render_totais  
+    def render_totais
       qtde_produtos =   @xml.css('det').count
       forma_pgto    =   get_forma_pgto
       valor_total   =   Helper.numerify(@xml.css('total').css('vProd').text)
@@ -120,7 +121,7 @@ module RubyDanfe
 
     def get_forma_pgto
       cod_forma_pgto = @xml.css('tPag').text
-      case cod_forma_pgto 
+      case cod_forma_pgto
       when "01" then "Dinheiro"
         when "02" then "Cheque"
         when "03" then "Cartão de Crédito"
@@ -143,7 +144,7 @@ module RubyDanfe
         "Informação dos Tributos Totais Incidentes (Lei Federal 12.741 /2012):   #{soma_tributos}", {align: :center, :valign => :center, size: 7}
     end
 
-    def render_mensagem_fiscal    
+    def render_mensagem_fiscal
       numero_nota = @xml.css('nNF').text
       serie = @xml.css('serie').text
       data = @xml.css('dhEmi').text
@@ -158,30 +159,38 @@ module RubyDanfe
       end
 
       @pdf.ibox 3, 12, 0.9, 18.9, 'Mensagem Fiscal',
-        "#{cabecalho}" + 
-        "Número #{numero_nota} | Série #{serie} | Emissão #{data_emissao} - Via Consumidor" + 
-        "\n \n" + "Consulte pela Chave de Acesso em sistemas.sefaz.am.gov.br/nfceweb/formConsulta.do" + 
+        "#{cabecalho}" +
+        "Número #{numero_nota} | Série #{serie} | Emissão #{data_emissao} - Via Consumidor" +
+        "\n \n" + "Consulte pela Chave de Acesso em #{get_url_consulta}" +
         "\n \n" + "CHAVE DE ACESSO:" +
-        "\n \n" + chave_acesso + "\n", {align: :center, :valign => :center, size: 7} 
+        "\n \n" + chave_acesso + "\n", {align: :center, :valign => :center, size: 7}
     end
 
     def get_chave
-      chave = @xml.css('infNFe').attr("Id").value.gsub(/^(NFe|CTe)/, "")      
+      chave = @xml.css('infNFe').attr("Id").value.gsub(/^(NFe|CTe)/, "")
       return "%s %s %s %s %s %s %s %s %s %s %s" %[chave[0..3], chave[4..7], chave[8..11], chave[12..15], chave[16..19], chave[20..23], chave[24..27], chave[28..31], chave[32..35], chave[36..39], chave[40..43]]
     end
 
-    def render_consumidor   
+    def render_consumidor
       consumidor = @xml.xpath("//dest")
-      cpf = @xml.regex_string(consumidor.to_s.downcase, "//cpf").text
       nome = @xml.regex_string(consumidor.to_s.downcase, "//xnome").text.split.map(&:capitalize).join(' ')
-      
+
       endereco = @xml.regex_string(consumidor.to_s.downcase, "//xlgr").text + " - " + @xml.regex_string(consumidor.to_s.downcase, "//xbairro").text
-      endereco += " - " + @xml.regex_string(consumidor.to_s.downcase, "//xmun").text + " - " + @xml.regex_string(consumidor.to_s.downcase, "//uf").text
+      endereco += " - " + @xml.regex_string(consumidor.to_s.downcase, "//xmun").text + " - " + @xml.regex_string(consumidor.to_s.downcase, "//uf").text.downcase
       endereco = endereco.split.map(&:capitalize).join(' ')
+      endereco = endereco.upcase
 
       if consumidor.any?
-        consumidor_msg = cpf.empty? ? "" : "CNPJ/CPF/ID Estrangeiro - #{cpf} - "
-        consumidor_msg += nome
+        documento = @xml.css('dest idEstrangeiro, dest CPF, dest CNPJ').text
+        tipo_documento, documento =
+          case documento.length
+            when 11 then ["CPF", "%s.%s.%s-%s" % documento.match(/(...)(...)(...)(..)/).captures]
+            when 14 then ["CNPJ", "%s.%s.%s/%s-%s" % documento.match(/(..)(...)(...)(....)(..)/).captures]
+            else ["ID Estrangeiro", documento]
+          end
+
+        consumidor_msg = nome
+        consumidor_msg += " - #{tipo_documento}: #{documento}"
         consumidor_msg += "\n" + endereco
       else
         consumidor_msg = "CONSUMIDOR NÃO IDENTIFICADO"
@@ -191,15 +200,16 @@ module RubyDanfe
         consumidor_msg, {align: :center, :valign => :top, size: 7}
     end
 
-    def render_qrcode      
-      @pdf.ibox 0.7, 12, 0.9, 23.3, '', ''
-      #@pdf.iqrcode 1.7, 8.2, 6.5, 25, get_qrcode_url
+    def render_qrcode
+      @pdf.iqrcode 5.18, 28, get_qrcode_url, 20
 
       data = @xml.css('dhRecbto').text
       data_receb = Date.parse(data).strftime('%d/%m/%Y %I:%M:%S')
 
       protocolo = @xml.css('nProt').text
-      @pdf.draw_text "\n" + "Protocolo de Autorização: #{protocolo} - Data: #{data_receb}", at: [100, 140], :size => 6
+      msg_protocolo = "Protocolo de Autorização: #{protocolo} - Data: #{data_receb}"
+
+      @pdf.ibox 0.7, 12, 0.9, 23.3, '', msg_protocolo, size: 6, align: :center, valign: :center
     end
 
     def get_qrcode_url
@@ -207,30 +217,59 @@ module RubyDanfe
     end
 
     def get_ender_consulta
-      tipo_ambiente = @xml.css('tpAmb')
-      uf = @xml.css('emit').css('UF').text.upcase
-      url = ""
+      url = get_url_qr_code
 
-      if tipo_ambiente == "2" # HOMOLOGAÇÃO
-        case uf 
-          when "AC" then return "http://www.sefaznet.ac.gov.br/nfe/NFe.jsp?opc=3" 
-          when "AM" then return "http://sistemas.sefaz.am.gov.br/nfceweb/consultarNFCe.jsp?"
-          when "MA" then return "http://www.nfce.sefaz.ma.gov.br/portal/consultarNFCe.jsp"
-          when "MT" then return "http://www.sefaz.mt.gov.br/nfe/portal/consultanfce"
-          when "RN" then return "http://www.nfe.rn.gov.br/portal/consultarNFCe.jsp?"
-          when "RS" then return "https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx"
-          when "SE" then return "http://www.nfe.se.gov.br/portal/consultarNFCe.jsp?"
-        end
-      else # PRODUÇÃO
-        case uf 
-          when "AC" then return "http://hml.sefaznet.ac.gov.br" 
-          when "AM" then return "http://homnfe.sefaz.am.gov.br/nfceweb/consultarNFCe.jsp?"
-          when "MA" then return "http://www.hom.nfce.sefaz.ma.gov.br/portal/consultarNFCe.jsp"
-          when "MT" then return "http://www.hom.nfe.sefaz.mt.gov.br/portal/consultarNFCe.jsp"
-          when "RN" then return "http://www.hom.nfe.rn.gov.br/portal/consultarNFCe.jsp?"
-          when "RS" then return "https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx"
-          when "SE" then return "http://www.hom.nfe.se.gov.br/portal/consultarNFCe.jsp?"
-        end
+      params = {
+        "chNFe" => get_chave.gsub(/ /, ""),
+        "nVersao" => @xml.css('nfeProc').attr("versao"),
+        "tpAmb" => @xml['ide/tpAmb'],
+        "dhEmi" => str_to_hex(@xml['ide/dhEmi']),
+        "vNF" => @xml['ICMSTot/vNF'],
+        "vICMS" => @xml['ICMSTot/vICMS'],
+        "digVal" => str_to_hex(@xml['nfe/DigestValue']),
+        "cIdToken" => '000001',
+      }
+
+      unless @xml.css('dest').empty?
+        params["cDest"] = @xml.css('dest idEstrangeiro, dest CPF, dest CNPJ').text
+      end
+
+      params_string = params.to_a.map{|p| p.join("=")}.join("&")
+
+      hash_token = Digest::SHA1.base64digest params_string
+
+      url + params_string + "&cHashQRCode=" + hash_token
+    end
+
+    def get_url_qr_code
+      case @xml.css('emit').css('UF').text.upcase
+        when "AC" then "http://www.sefaznet.ac.gov.br/nfe/NFe.jsp?opc=3"
+        when "AM" then "http://sistemas.sefaz.am.gov.br/nfceweb/consultarNFCe.jsp?"
+        when "MA" then "http://www.nfce.sefaz.ma.gov.br/portal/consultarNFCe.jsp?"
+        when "MT" then "http://www.sefaz.mt.gov.br/nfe/portal/consultanfce?"
+        when "RN" then "http://www.nfe.rn.gov.br/portal/consultarNFCe.jsp?"
+        when "RO" then "http://www.nfce.sefin.ro.gov.br/consultanfce/consulta.jsp?"
+        when "RS" then "https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx?"
+        when "SE" then "http://www.nfe.se.gov.br/portal/consultarNFCe.jsp?"
+      end
+    end
+
+    def get_url_consulta
+      case @xml.css('emit').css('UF').text.upcase
+        when "AC" then "http://www.sefaznet.ac.gov.br/nfe/NFe.jsp?opc=3"
+        when "AM" then "http://sistemas.sefaz.am.gov.br/nfceweb/consultarNFCe.jsp"
+        when "MA" then "http://www.nfce.sefaz.ma.gov.br/portal/consultarNFCe.jsp"
+        when "MT" then "http://www.sefaz.mt.gov.br/nfe/portal/consultanfce"
+        when "RN" then "http://www.nfe.rn.gov.br/portal/consultarNFCe.jsp"
+        when "RO" then "http://www.nfce.sefin.ro.gov.br"
+        when "RS" then "https://www.sefaz.rs.gov.br/NFCE/NFCE-COM.aspx"
+        when "SE" then "http://www.nfe.se.gov.br/portal/consultarNFCe.jsp"
+      end
+    end
+
+    def str_to_hex str
+      str.split("").reduce("") do |str, char|
+        str + char.ord.to_s(16)
       end
     end
   end

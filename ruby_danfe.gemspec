@@ -18,6 +18,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "nokogiri", "~> 1.6.3.1"
   spec.add_dependency "prawn", '~> 1.0.0'
+  spec.add_dependency "rqrcode"
   spec.add_dependency "barby"
   spec.add_dependency "rake"
 
