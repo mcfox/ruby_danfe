@@ -11,15 +11,22 @@ module RubyDanfe
       @pdf.repeat :all do
         render_canhoto
         render_emitente
-        render_titulo
-        render_faturas
-        render_calculo_do_imposto
-        render_transportadora_e_volumes
-        render_cabecalho_dos_produtos
-        render_calculo_do_issqn
-        render_dados_adicionais
+        render_dados_adicionais_box
       end
 
+      @pdf.repeat :all, dynamic: true do
+        render_cabecalho_dos_produtos(@pdf.page_number)
+      end
+
+      render_titulo
+      render_faturas
+      render_calculo_do_imposto
+      render_transportadora_e_volumes
+      render_calculo_do_issqn
+
+      render_dados_adicionais
+
+      @pdf.go_to_page(1)
       render_produtos
 
       @pdf.page_count.times do |i|
@@ -141,40 +148,61 @@ module RubyDanfe
       @pdf.ibox 0.85, 3.94, 16.89, 15.75, "INSCRIÇÂO ESTADUAL", @xml['transporta/IE']
 
       @vol = 0
+
+      quantidade = 0
+      peso_bruto = 0
+      peso_liquido = 0
+
+      especie = nil
+      marca = nil
+
       @xml.collect('xmlns', 'vol') do |det|
         @vol += 1
-        if @vol < 2
-          @pdf.ibox 0.85, 2.92, 0.25, 16.60, "QUANTIDADE", det.css('qVol').text
-          @pdf.ibox 0.85, 3.05, 3.17, 16.60, "ESPÉCIE", det.css('esp').text
-          @pdf.ibox 0.85, 3.05, 6.22, 16.60, "MARCA", det.css('marca').text
-          @pdf.ibox 0.85, 4.83, 9.27, 16.60, "NUMERAÇÃO"
-          @pdf.inumeric 0.85, 3.43, 14.10, 16.60, "PESO BRUTO", det.css('pesoB').text, {:decimals => 3}
-          @pdf.inumeric 0.85, 3.30, 17.53, 16.60, "PESO LÍQUIDO", det.css('pesoL').text, {:decimals => 3}
-        else
-          break
-        end
+        quantidade += det.css('qVol').text.to_f
+        peso_bruto += det.css('pesoB').text.to_f
+        peso_liquido += det.css('pesoL').text.to_f
+
+        especie ||= det.css('esp').text
+        marca ||= det.css('marca').text
+      end
+
+      if @vol == 0
+        @pdf.ibox 0.85, 2.80, 0.25, 16.60, "QUANTIDADE"
+        @pdf.ibox 0.85, 5.00, 3.05, 16.60, "ESPÉCIE"
+        @pdf.ibox 0.85, 3.05, 8.05, 16.60, "MARCA"
+        @pdf.ibox 0.85, 3.00, 11.10, 16.60, "NUMERAÇÃO"
+        @pdf.ibox 0.85, 3.43, 14.10, 16.60, "PESO BRUTO"
+        @pdf.ibox 0.85, 3.30, 17.53, 16.60, "PESO LÍQUIDO"
+      else
+        @pdf.ibox 0.85, 2.80, 0.25, 16.60, "QUANTIDADE", (quantidade.round == quantidade ? quantidade.to_i : quantidade).to_s
+        @pdf.ibox 0.85, 5.00, 3.05, 16.60, "ESPÉCIE", especie
+        @pdf.ibox 0.85, 3.05, 8.05, 16.60, "MARCA", marca
+        @pdf.ibox 0.85, 3.00, 11.10, 16.60, "NUMERAÇÃO"
+        @pdf.inumeric 0.85, 3.43, 14.10, 16.60, "PESO BRUTO", peso_bruto.to_s, {:decimals => 3}
+        @pdf.inumeric 0.85, 3.30, 17.53, 16.60, "PESO LÍQUIDO", peso_liquido.to_s, {:decimals => 3}
       end
     end
 
-    def render_cabecalho_dos_produtos
-      @pdf.ititle 0.42, 10.00, 0.25, 17.45, "DADOS DO PRODUTO / SERVIÇO"
+    def render_cabecalho_dos_produtos(page_number)
+      base_y = page_number == 1 ? 17.45 : 8.2
+      height = page_number == 1 ? 6.70 : 17.2
 
-      @pdf.ibox 6.70, 2.00, 0.25, 17.87, "CÓDIGO"
-      @pdf.ibox 6.70, 4.90, 2.25, 17.87, "DESCRIÇÃO"
-      @pdf.ibox 6.70, 1.30, 7.15, 17.87, "NCM"
-      @pdf.ibox 6.70, 0.80, 8.45, 17.87, "CST"
-      @pdf.ibox 6.70, 1.00, 9.25, 17.87, "CFOP"
-      @pdf.ibox 6.70, 1.00, 10.25, 17.87, "UNID"
-      @pdf.ibox 6.70, 1.30, 11.25, 17.87, "QUANT"
-      @pdf.ibox 6.70, 1.50, 12.55, 17.87, "VALOR UNIT"
-      @pdf.ibox 6.70, 1.50, 14.05, 17.87, "VALOR TOT"
-      @pdf.ibox 6.70, 1.50, 15.55, 17.87, "BASE CÁLC"
-      @pdf.ibox 6.70, 1.00, 17.05, 17.87, "VL ICMS"
-      @pdf.ibox 6.70, 1.00, 18.05, 17.87, "VL IPI"
-      @pdf.ibox 6.70, 0.90, 19.05, 17.87, "% ICMS"
-      @pdf.ibox 6.70, 0.86, 19.95, 17.87, "% IPI"
+      @pdf.ititle 0.42, 10.00, 0.25, base_y, "DADOS DO PRODUTO / SERVIÇO"
 
-      @pdf.horizontal_line 0.25.cm, 20.83.cm, :at => Helper.invert(18.17.cm)
+      @pdf.ibox height, 2.00, 0.25, base_y + 0.42, "CÓDIGO"
+      @pdf.ibox height, 4.90, 2.25, base_y + 0.42, "DESCRIÇÃO"
+      @pdf.ibox height, 1.30, 7.15, base_y + 0.42, "NCM"
+      @pdf.ibox height, 0.80, 8.45, base_y + 0.42, "CST"
+      @pdf.ibox height, 1.00, 9.25, base_y + 0.42, "CFOP"
+      @pdf.ibox height, 1.00, 10.25, base_y + 0.42, "UNID"
+      @pdf.ibox height, 1.30, 11.25, base_y + 0.42, "QUANT"
+      @pdf.ibox height, 1.50, 12.55, base_y + 0.42, "VALOR UNIT"
+      @pdf.ibox height, 1.50, 14.05, base_y + 0.42, "VALOR TOT"
+      @pdf.ibox height, 1.50, 15.55, base_y + 0.42, "BASE CÁLC"
+      @pdf.ibox height, 1.00, 17.05, base_y + 0.42, "VL ICMS"
+      @pdf.ibox height, 1.00, 18.05, base_y + 0.42, "VL IPI"
+      @pdf.ibox height, 0.90, 19.05, base_y + 0.42, "% ICMS"
+      @pdf.ibox height, 0.86, 19.95, base_y + 0.42, "% IPI"
     end
 
     def render_calculo_do_issqn
@@ -186,34 +214,32 @@ module RubyDanfe
       @pdf.ibox 0.85, 5.28, 15.49, 25.06, "VALOR DO ISSQN", @xml['total/ISSTot'] || @xml['total/ISSQNtot/vISSQN']
     end
 
-    def render_dados_adicionais
+    def render_dados_adicionais_box
       @pdf.ititle 0.42, 10.00, 0.25, 25.91, "DADOS ADICIONAIS"
-      inf_ad_fisco_y = 0
+      @pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", '', {:size => 8, :valign => :top}
+
+      @pdf.ibox 3.07, 7.62, 13.17, 26.33, "RESERVADO AO FISCO"
+    end
+
+    def render_dados_adicionais
+      info_adicional = ""
 
       if @vol > 1
-        @pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", '', {:size => 8, :valign => :top}
-        @pdf.ibox 3.07, 12.93, 0.25, 26.60, '', 'CONTINUAÇÃO TRANSPORTADOR/VOLUMES TRANSPORTADOS', {:size => 5, :valign => :top, :border => 0}
-        v = 0
+        info_adicional += "TRANSPORTADOR/VOLUMES TRANSPORTADOS\n"
+
         y = 26.67
-        @xml.collect('xmlns', 'vol') do |det|
-          v += 1
-          if v > 1
-            @pdf.ibox 0.35, 0.70, 0.25, y + 0.10, '', 'QUANT.:', { :size => 4, :border => 0 }
-            @pdf.ibox 0.35, 0.70, 0.90, y + 0.10, '', det.css('qVol').text, { :size => 4, :border => 0, :style => :italic }
-            @pdf.ibox 0.35, 0.50, 1.35, y + 0.10, '', 'ESP.:', { :size => 4, :border => 0 }
-            @pdf.ibox 0.35, 3.00, 1.75, y + 0.10, '', det.css('esp').text, { :size => 4, :border => 0, :style => :italic }
-            @pdf.ibox 0.35, 0.70, 4.15, y + 0.10, '', 'MARCA:', { :size => 4, :border => 0 }
-            @pdf.ibox 0.35, 2.00, 4.75, y + 0.10, '', det.css('marca').text, { :size => 4, :border => 0, :style => :italic }
-            @pdf.ibox 0.35, 1.00, 6.10, y + 0.10, '', 'NUM.:',  { :size => 4, :border => 0 }
-            @pdf.ibox 0.35, 1.30, 7.00, y + 0.10, '', 'PESO B.:', { :size => 4, :border => 0 }
-            @pdf.inumeric 0.35, 1.30, 7.00, y + 0.10, '', det.css('pesoB').text, {:decimals => 3, :size => 4, :border => 0, :style => :italic }
-            @pdf.ibox 0.35, 0.90, 8.50, y + 0.10, '', 'PESO LÍQ.:', { :size => 4, :border => 0 }
-            @pdf.inumeric 0.35, 1.50, 8.50, y + 0.10, '', det.css('pesoL').text, {:decimals => 3, :size => 4, :border => 0, :style => :italic }
-            y = y + 0.15
-          end
+        info_adicional += @xml.inject 'xmlns', 'vol', "" do |info, det|
+          y = y + 0.15
+
+          info +
+            "QUANT.: #{det.css('qVol').text}   " +
+            "ESPÉCIE: #{det.css('esp').text}   " +
+            "MARCA: #{det.css('marca').text}   " +
+            "PESO B.: #{det.css('pesoB').text}   " +
+            "PESO LÍQ.: #{det.css('pesoL').text}\n"
         end
-        @pdf.ibox 2.07, 12.93, 0.25, y + 0.30, '', 'OUTRAS INFORMAÇÕES', {:size => 6, :valign => :top, :border => 0}
-        @pdf.ibox 2.07, 12.93, 0.25, y + 0.50, '', @xml['infAdic/infCpl'], {:size => 5, :valign => :top, :border => 0}
+
+        info_adicional += "\nOUTRAS INFORMAÇÕES: "
 
         if @xml['infAdic/infCpl'] == ""
           inf_ad_fisco_y = y + 0.50
@@ -230,16 +256,30 @@ module RubyDanfe
           inf_ad_fisco_y = 27.33
         end
 
-        @pdf.ibox 3.07, 12.93, 0.25, 26.33, "INFORMAÇÕES COMPLEMENTARES", @xml['infAdic/infCpl'], {:size => 6, :valign => :top}
         @pdf.ibox 3.07, 12.93, 0.25, inf_ad_fisco_y, "", @xml['infAdic/infAdFisco'], {:size => 6, :valign => :top, :border => 0}
       end
 
-      @pdf.ibox 3.07, 7.62, 13.17, 26.33, "RESERVADO AO FISCO"
+      info_adicional += @xml['infAdic/infCpl']
+
+      if @xml.css('entrega')
+        info_adicional += " LOCAL DA ENTREGA: " +
+          @xml['entrega/xLgr'] + " " +
+          @xml['entrega/nro'] + " " +
+          "Bairro/Distrito: " + @xml['entrega/xBairro'] + " " +
+          "Municipio: " + @xml['entrega/xMun'] + " " +
+          "UF: " + @xml['entrega/UF'] + " " +
+          "País: Brasil"
+      end
+
+      @pdf.bounding_box [(0.33).cm, Helper.invert(26.78.cm)], height: 2.7.cm, width: 12.7.cm do
+        @pdf.font_size 6
+        @pdf.text info_adicional, align: :justify
+      end
     end
 
     def render_produtos
       @pdf.font_size(6) do
-        @pdf.itable 6.37, 21.50, 0.25, 18.17,
+        @produtos_box = @pdf.itable 6.37, 21.50, 0.25, 18.17,
           @xml.collect('xmlns', 'det')  { |det|
             [
               det.css('prod/cProd').text, #I02
@@ -252,11 +292,11 @@ module RubyDanfe
               Helper.format_quantity(det.css('prod/qCom').text),
               Helper.numerify(det.css('prod/vUnCom').text), #I10a
               Helper.numerify(det.css('prod/vProd').text), #I11
-              Helper.numerify(det.css('ICMS/*/vBC').text), #N15
-              Helper.numerify(det.css('ICMS/*/vICMS').text), #N17
-              Helper.numerify(det.css('IPI/*/vIPI').text), #O14
-              Helper.numerify(det.css('ICMS/*/pICMS').text), #N16
-              Helper.numerify(det.css('IPI/*/pIPI').text) #O13
+              Helper.numerify_default_zero(det.css('ICMS/*/vBC').text), #N15
+              Helper.numerify_default_zero(det.css('ICMS/*/vICMS').text), #N17
+              Helper.numerify_default_zero(det.css('IPI/*/vIPI').text), #O14
+              Helper.numerify_default_zero(det.css('ICMS/*/pICMS').text), #N16
+              Helper.numerify_default_zero(det.css('IPI/*/pIPI').text) #O13
             ]
           },
           :column_widths => {
@@ -278,7 +318,15 @@ module RubyDanfe
           :cell_style => {:padding => 2, :border_width => 0} do |table|
             table.column(6..13).style(:align => :right)
             table.column(0..13).border_width = 1
-            table.column(0..13).borders = [:bottom]
+            table.column(0..13).borders = [:top]
+            table.before_rendering_page do |page|
+              if @pdf.page_number == 1
+                @pdf.bounds.instance_variable_set(:@y, (22.2).cm)
+                @pdf.bounds.instance_variable_set(:@height, (16.8).cm)
+              else
+                @pdf.bounds.instance_variable_set(:@y, (21).cm)
+              end
+            end
           end
       end
     end
