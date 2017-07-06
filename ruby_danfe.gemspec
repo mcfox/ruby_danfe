@@ -17,7 +17,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "nokogiri", ">= 1.6"
-  spec.add_dependency "prawn", '>= 1.0'
+  spec.add_dependency "prawn", '~> 1.0.0'
   spec.add_dependency "barby"
   spec.add_dependency "rake"
 
