@@ -240,23 +240,6 @@ module RubyDanfe
         end
 
         info_adicional += "\nOUTRAS INFORMAÇÕES: "
-
-        if @xml['infAdic/infCpl'] == ""
-          inf_ad_fisco_y = y + 0.50
-        else
-          inf_ad_fisco_y = y + 0.100
-        end
-
-        @pdf.ibox 2.07, 12.93, 0.25, inf_ad_fisco_y, '', @xml['infAdic/infAdFisco'], {:size => 5, :valign => :top, :border => 0}
-
-      else
-        if @xml['infAdic/infCpl'] == ""
-          inf_ad_fisco_y = 26.60
-        else
-          inf_ad_fisco_y = 27.33
-        end
-
-        @pdf.ibox 3.07, 12.93, 0.25, inf_ad_fisco_y, "", @xml['infAdic/infAdFisco'], {:size => 6, :valign => :top, :border => 0}
       end
 
       info_adicional += @xml['infAdic/infCpl']
@@ -269,6 +252,10 @@ module RubyDanfe
           "Municipio: " + @xml['entrega/xMun'] + " " +
           "UF: " + @xml['entrega/UF'] + " " +
           "País: Brasil"
+      end
+      
+      if @xml['infAdic/infAdFisco'] != ""
+        info_adicional += "\n#{@xml['infAdic/infAdFisco']}"
       end
 
       @pdf.bounding_box [(0.33).cm, Helper.invert(26.78.cm)], height: 2.7.cm, width: 12.7.cm do
