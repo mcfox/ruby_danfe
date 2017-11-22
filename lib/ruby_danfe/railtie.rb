@@ -7,6 +7,8 @@ require "barby/outputter/prawn_outputter"
 require "nokogiri"
 require 'ostruct'
 require 'yaml'
+require 'date'
+require 'time'
 
 require_relative '../ruby_danfe.rb'
 require_relative 'options.rb'
