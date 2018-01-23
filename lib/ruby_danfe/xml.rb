@@ -11,7 +11,7 @@ module RubyDanfe
 
     def regex_string(search_string, regex)
       doc = Nokogiri::HTML(search_string)
-      return doc.xpath(regex)      
+      return doc.xpath(regex)
     end
 
     def initialize(xml)
