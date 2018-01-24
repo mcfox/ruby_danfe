@@ -137,7 +137,7 @@ module RubyDanfe
       @pdf.ititle 0.42, 10.00, 0.25, 14.48, "TRANSPORTADOR / VOLUMES TRANSPORTADOS"
 
       @pdf.ibox 0.85, 9.02, 0.25, 14.90, "RAZÃO SOCIAL", @xml['transporta/xNome']
-      @pdf.ibox 0.85, 2.79, 9.27, 14.90, "FRETE POR CONTA", @xml['transp/modFrete'] == '0' ? ' 0 - EMITENTE' : '1 - DEST.'
+      @pdf.ibox 0.85, 2.79, 9.27, 14.90, "FRETE POR CONTA", descricao_modalidade_frete(@xml['transp/modFrete'])
       @pdf.ibox 0.85, 1.78, 12.06, 14.90, "CODIGO ANTT", @xml['veicTransp/RNTC']
       @pdf.ibox 0.85, 2.29, 13.84, 14.90, "PLACA DO VEÍCULO", @xml['veicTransp/placa']
       @pdf.ibox 0.85, 0.76, 16.13, 14.90, "UF", @xml['veicTransp/UF']
@@ -315,6 +315,19 @@ module RubyDanfe
               end
             end
           end
+      end
+    end
+
+    def descricao_modalidade_frete(modalidade)
+      case modalidade
+      when '1'
+        "1 - Por conta do destinatário/remetente"
+      when '2'
+        "2 - Por conta de terceiros"
+      when '9'
+        "9 - Sem frete"
+      else
+        "0 - Por conta do emitente"
       end
     end
   end
