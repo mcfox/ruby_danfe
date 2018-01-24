@@ -1,14 +1,16 @@
 module RubyDanfe
   class Document
-    def initialize
-      @document = Prawn::Document.new(
+    def initialize(opts = {})
+      default_opts = {
         :page_size => 'A4',
         :page_layout => :portrait,
         :left_margin => 0,
         :right_margin => 0,
         :top_margin => 0,
         :botton_margin => 0
-      )
+      }
+
+      @document = Prawn::Document.new(default_opts.merge(opts))
 
       @document.font "Times-Roman"
     end
@@ -26,11 +28,12 @@ module RubyDanfe
     end
 
     def ibarcode(h, w, x, y, info)
+      info = info.gsub(/\D/, '')
       Barby::Code128C.new(info).annotate_pdf(self, :x => x.cm, :y => Helper.invert(y.cm), :width => w.cm, :height => h.cm) if info != ''
     end
 
-    def iqrcode(h, w, x, y, info)
-      Barby::QrCode.new(info, :level => :q).annotate_pdf(self, :x => x.cm, :y => Helper.invert(y.cm), :width => w.cm, :height => h.cm) if info != ''
+    def iqrcode(x, y, info, size = nil)
+      Barby::QrCode.new(info, :level => :q, :size => size).annotate_pdf(self, :x => x.cm, :y => Helper.invert(y.cm)) if info != ''
     end
 
     def irectangle(h, w, x, y)
