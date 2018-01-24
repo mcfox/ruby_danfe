@@ -47,6 +47,21 @@ module RubyDanfe
       result
     end
 
+    def inject(ns, tag, acc, &block)
+      # Tenta primeiro com uso de namespace
+      begin
+        @xml.xpath("//#{ns}:#{tag}").each do |det|
+          acc = yield(acc, det)
+        end
+      rescue
+        # Caso dê erro, tenta sem
+        @xml.xpath("//#{tag}").each do |det|
+          acc = yield(acc, det)
+        end
+      end
+      acc
+    end
+
     def attrib(node, attrib)
       begin
         return @xml.css(node).attr(attrib).text

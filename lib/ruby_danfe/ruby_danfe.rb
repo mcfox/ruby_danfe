@@ -35,15 +35,14 @@ module RubyDanfe
 
       xml = XML.new(xml_string)
 
-      if type == :danfe
-        generator = DanfeGenerator.new(xml)
-      elsif type == :danfe_nfce
-        generator = DanfeNfceGenerator.new(xml)
-      else
-        generator = DacteGenerator.new(xml)
-      end
+      generator =
+        case type
+          when :danfe then DanfeGenerator.new(xml)
+          when :danfe_nfce then DanfeNfceGenerator.new(xml)
+          when :dacte then DacteGenerator.new(xml)
+          else raise "unknown type #{type}"
+        end
 
-      pdf = generator.generatePDF
-      pdf
+      generator.generatePDF
     end
 end

@@ -42,13 +42,13 @@ module RubyDanfe
       fone = @xml['enderEmit/fone']
       unless fone.eql?('')
         if fone.size > 8
-          fone =  '(' + @xml['enderEmit/fone'][0,2] + ')' + @xml['enderEmit/fone'][2,4] + '-' + @xml['enderEmit/fone'][6,4]
+          fone =  '(' + @xml['enderEmit/fone'][0,2] + ') ' + @xml['enderEmit/fone'][2,5] + '-' + @xml['enderEmit/fone'][6,4]
         else
           fone = @xml['enderEmit/fone'][0,4] + '-' + @xml['enderEmit/fone'][4,4]
         end
       end
       @pdf.ibox 2.27, 7.67, 0.25, 1.20, '',
-        @xml['enderEmit/xLgr'] + ", " + @xml['enderEmit/nro'] + " " + @xml['enderEmit/xCpl'] + "\n" +
+        @xml['enderEmit/xLgr'] + ", " + @xml['enderEmit/nro'] + "\n" +
         @xml['enderEmit/xMun'] + " - " + @xml['enderEmit/UF'] + " " + @xml['enderEmit/xPais'] + "\n" +
         "Fone/Fax: " + fone,
         { :align => :center, :size => 8, :border => 0, :style => :bold }
@@ -375,7 +375,8 @@ module RubyDanfe
       x = 1.33
       @xml.collect('xmlns', 'infQ') { |det|
         if !det.css('cUnid').text.eql?('00')
-           @pdf.ibox 0.90, 3.50, x, 15.02, '', det.css('qCarga').text, { :size => 7, :style => :bold, :border => 0 }
+           desc = "#{det.css('qCarga').text} #{det.css('tpMed').text}"
+           @pdf.ibox 0.90, 3.50, x, 15.02, '', desc, { :size => 7, :style => :bold, :border => 0 }
            x = x + 3.50
         end
       }
@@ -474,28 +475,31 @@ module RubyDanfe
       @pdf.ibox 5.52, 1.00, 17.75, 19.13, 'SÉRIE', '', { :size => 7}
       @pdf.ibox 5.52, 2.00, 18.74, 19.13, 'Nº DOCUMENTO', '', { :size => 7}
       x = 0.25
+      y = 19.43
       @xml.collect('xmlns', 'infNF') { |det|
-        @pdf.ibox 5.52, 1.50, x, 19.43, '', det.css('mod').text, { :size => 7, :border => 0, :style => :bold }
+        x, y = 0.25, y + 0.25 if x == 20.75
+        @pdf.ibox 5.52, 1.50, x, y, '', det.css('mod').text, { :size => 7, :border => 0, :style => :bold }
         x = x + 1.75
-        @pdf.ibox 5.52, 2.25, x, 19.43, '', Helper.format_cnpj(@xml['rem/CNPJ']), { :size => 7, :border => 0, :style => :bold } if @xml['rem/CNPJ'] != ''
-        @pdf.ibox 5.52, 5.25, x, 19.43, '', @xml['rem/CPF'][0,3] + '.' + @xml['rem/CPF'][3,3] + '.' +@xml['rem/CPF'][6,3] + '-' + @xml['rem/CPF'][9,2], { :size => 7, :border => 0, :style => :bold } if @xml['rem/CPF'] != ''
+        @pdf.ibox 5.52, 2.25, x, y, '', Helper.format_cnpj(@xml['rem/CNPJ']), { :size => 7, :border => 0, :style => :bold } if @xml['rem/CNPJ'] != ''
+        @pdf.ibox 5.52, 5.25, x, y, '', @xml['rem/CPF'][0,3] + '.' + @xml['rem/CPF'][3,3] + '.' +@xml['rem/CPF'][6,3] + '-' + @xml['rem/CPF'][9,2], { :size => 7, :border => 0, :style => :bold } if @xml['rem/CPF'] != ''
         x = x + 5.50
-        @pdf.ibox 5.52, 0.75, x, 19.43, '', det.css('serie').text, { :size => 7, :border => 0, :style => :bold }
+        @pdf.ibox 5.52, 0.75, x, y, '', det.css('serie').text, { :size => 7, :border => 0, :style => :bold }
         x = x + 1.00
-        @pdf.ibox 5.52, 1.75, x, 19.43, '', det.css('nDoc').text, { :size => 7, :border => 0, :style => :bold }
+        @pdf.ibox 5.52, 1.75, x, y, '', det.css('nDoc').text, { :size => 7, :border => 0, :style => :bold }
         x = x + 2.00
       }
       # NFe
       @xml.collect('xmlns', 'infNFe') { |det|
         chave = det.css('chave').text
         unless chave.empty?
-          @pdf.ibox 5.52, 1.50, x, 19.43, '', 'NFe', { :size => 7, :border => 0, :style => :bold }
+          x, y = 0.25, y + 0.25 if x == 20.75
+          @pdf.ibox 5.52, 1.50, x, y, '', 'NFe', { :size => 7, :border => 0, :style => :bold }
           x = x + 1.75
-          @pdf.ibox 5.52, 5.25, x, 19.43, '', chave, { :size => 6, :border => 0, :style => :bold }
+          @pdf.ibox 5.52, 5.25, x, y, '', chave, { :size => 6, :border => 0, :style => :bold }
           x = x + 5.50
-          @pdf.ibox 5.52, 0.75, x, 19.43, '', chave[22, 3], { :size => 7, :border => 0, :style => :bold }
+          @pdf.ibox 5.52, 0.75, x, y, '', chave[22, 3], { :size => 7, :border => 0, :style => :bold }
           x = x + 1.00
-          @pdf.ibox 5.52, 1.75, x, 19.43, '', chave[25, 9].gsub(/^[0]+/, ''), { :size => 7, :border => 0, :style => :bold }
+          @pdf.ibox 5.52, 1.75, x, y, '', chave[25, 9].gsub(/^[0]+/, ''), { :size => 7, :border => 0, :style => :bold }
           x = x + 2.00
         end
       }

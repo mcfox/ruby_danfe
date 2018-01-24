@@ -20,6 +20,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "prawn", '~> 1.2.1'
   spec.add_dependency 'prawn-table', '~> 0.1.0'
   spec.add_dependency "barby"
+  spec.add_dependency "rqrcode"
   spec.add_dependency "rake"
 
   spec.add_development_dependency "pry"

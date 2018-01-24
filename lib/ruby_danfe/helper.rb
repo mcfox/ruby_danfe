@@ -10,6 +10,16 @@ module RubyDanfe
         number
     end
 
+    def self.numerify_default_zero(number, decimals = 2)
+      number = number.tr("\n","").delete(" ")
+      return "0,00" if !number || number == ""
+      int, frac = ("%.#{decimals}f" % number).split(".")
+      int.gsub!(/(\d)(?=(\d\d\d)+(?!\d))/, "\\1\.")
+      int + "," + frac
+      rescue
+        number
+    end
+
     def self.invert(y)
       28.7.cm - y
     end
