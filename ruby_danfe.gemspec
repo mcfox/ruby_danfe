@@ -16,13 +16,14 @@ Gem::Specification.new do |spec|
   spec.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "nokogiri", "~> 1.6.3.1"
-  spec.add_dependency "prawn", '~> 1.0.0'
-  spec.add_dependency "rqrcode"
+  spec.add_dependency "nokogiri", "~> 1.7.0.1"
+  spec.add_dependency "prawn", '~> 1.2.1'
+  spec.add_dependency 'prawn-table', '~> 0.1.0'
   spec.add_dependency "barby"
+  spec.add_dependency "rqrcode"
   spec.add_dependency "rake"
 
   spec.add_development_dependency "pry"
-  spec.add_development_dependency "rspec", "~> 3.0.0"
+  spec.add_development_dependency "rspec", "~> 3.0"
   spec.add_development_dependency "simplecov"
 end

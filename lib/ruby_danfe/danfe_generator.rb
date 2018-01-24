@@ -70,7 +70,7 @@ module RubyDanfe
 
       @pdf.ibox 2.20, 11.02, 9.79, 2.54
       @pdf.ibarcode 1.50, 8.00, 10.4010, 4.44, @xml['chNFe']
-      @pdf.ibox 0.85, 11.02, 9.79, 4.74, "CHAVE DE ACESSO", @xml['chNFe'].gsub(/(\d)(?=(\d\d\d\d)+(?!\d))/, "\\1 "), {:style => :bold, :align => :center}
+      @pdf.ibox 0.85, 11.02, 9.79, 4.74, "CHAVE DE ACESSO", @xml['chNFe'].gsub(/\D/, '').gsub(/(\d)(?=(\d\d\d\d)+(?!\d))/, "\\1 "), {:style => :bold, :align => :center}
       @pdf.ibox 0.85, 11.02, 9.79, 5.60 , '', "Consulta de autenticidade no portal nacional da NF-e www.nfe.fazenda.gov.br/portal ou no site da Sefaz Autorizadora", {:align => :center, :size => 8}
       @pdf.ibox 0.85, 10.54, 0.25, 6.46, "NATUREZA DA OPERAÇÃO", @xml['ide/natOp']
       @pdf.ibox 0.85, 10.02, 10.79, 6.46, "PROTOCOLO DE AUTORIZAÇÃO DE USO", @xml['infProt/nProt'] + ' ' + Helper.format_datetime(@xml['infProt/dhRecbto']) , {:align => :center}
@@ -209,9 +209,9 @@ module RubyDanfe
       @pdf.ititle 0.42, 10.00, 0.25, 24.64, "CÁLCULO DO ISSQN"
 
       @pdf.ibox 0.85, 5.08, 0.25, 25.06, "INSCRIÇÃO MUNICIPAL", @xml['emit/IM']
-      @pdf.ibox 0.85, 5.08, 5.33, 25.06, "VALOR TOTAL DOS SERVIÇOS", @xml['total/vServ'] || @xml['total/ISSQNtot/vServ']
-      @pdf.ibox 0.85, 5.08, 10.41, 25.06, "BASE DE CÁLCULO DO ISSQN", @xml['total/vBCISS'] || @xml['total/ISSQNtot/vBC']
-      @pdf.ibox 0.85, 5.28, 15.49, 25.06, "VALOR DO ISSQN", @xml['total/ISSTot'] || @xml['total/ISSQNtot/vISSQN']
+      @pdf.ibox 0.85, 5.08, 5.33, 25.06, "VALOR TOTAL DOS SERVIÇOS", @xml['total/vServ'].empty? ? @xml['total/ISSQNtot/vServ'] : @xml['total/vServ']  
+      @pdf.ibox 0.85, 5.08, 10.41, 25.06, "BASE DE CÁLCULO DO ISSQN", @xml['total/vBCISS'].empty? ? @xml['total/ISSQNtot/vBC'] : @xml['total/vBCISS']
+      @pdf.ibox 0.85, 5.28, 15.49, 25.06, "VALOR DO ISSQN", @xml['total/ISSTot'].empty? ? @xml['total/ISSQNtot/vISS'] : @xml['total/ISSTot']
     end
 
     def render_dados_adicionais_box

@@ -1,4 +1,5 @@
 require "prawn"
+require "prawn/table"
 require "prawn/measurement_extensions"
 require "barby"
 require "barby/barcode/code_128"
