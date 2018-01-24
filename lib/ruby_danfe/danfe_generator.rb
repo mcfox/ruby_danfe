@@ -181,9 +181,9 @@ module RubyDanfe
       @pdf.ititle 0.42, 10.00, 0.25, 24.64, "CÁLCULO DO ISSQN"
 
       @pdf.ibox 0.85, 5.08, 0.25, 25.06, "INSCRIÇÃO MUNICIPAL", @xml['emit/IM']
-      @pdf.ibox 0.85, 5.08, 5.33, 25.06, "VALOR TOTAL DOS SERVIÇOS", @xml['total/vServ'] || @xml['total/ISSQNtot/vServ']
-      @pdf.ibox 0.85, 5.08, 10.41, 25.06, "BASE DE CÁLCULO DO ISSQN", @xml['total/vBCISS'] || @xml['total/ISSQNtot/vBC']
-      @pdf.ibox 0.85, 5.28, 15.49, 25.06, "VALOR DO ISSQN", @xml['total/ISSTot'] || @xml['total/ISSQNtot/vISSQN']
+      @pdf.ibox 0.85, 5.08, 5.33, 25.06, "VALOR TOTAL DOS SERVIÇOS", @xml['total/vServ'].empty? ? @xml['total/ISSQNtot/vServ'] : @xml['total/vServ']  
+      @pdf.ibox 0.85, 5.08, 10.41, 25.06, "BASE DE CÁLCULO DO ISSQN", @xml['total/vBCISS'].empty? ? @xml['total/ISSQNtot/vBC'] : @xml['total/vBCISS']
+      @pdf.ibox 0.85, 5.28, 15.49, 25.06, "VALOR DO ISSQN", @xml['total/ISSTot'].empty? ? @xml['total/ISSQNtot/vISS'] : @xml['total/ISSTot']
     end
 
     def render_dados_adicionais

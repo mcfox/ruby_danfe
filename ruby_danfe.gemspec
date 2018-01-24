@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
   spec.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "nokogiri", "~> 1.6"
+  spec.add_dependency "nokogiri", "~> 1.7.0.1"
   spec.add_dependency "prawn", '~> 1.2.1'
   spec.add_dependency 'prawn-table', '~> 0.1.0'
   spec.add_dependency "barby"
