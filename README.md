@@ -16,6 +16,8 @@ If you have the xml saved in a file:
 
         require "ruby_danfe"
         RubyDanfe.generate("sample.pdf", "sample.xml")
+        RubyDanfe.generate("cte.pdf", "cte.xml", "dacte")
+        RubyDanfe.generate("cteos.pdf", "cteos.xml", "dacteos")
 
 If you have the xml in a variable:
 
@@ -58,11 +60,15 @@ You can use it following the steps above:
 
         $ cd test
         $ ruby generate.rb nfe_with_ns.xml
+        $ ruby generate.rb cte_with_ns.xml 'dacte'
+        $ ruby generate.rb cteos_with_ns.xml 'dacteos'
 
 You can also use an special version of irb with all classes pre-loaded. Just use:
 
         $ rake console
         RubyDanfe.generate("output.pdf", "test/nfe_with_ns.xml")
+        RubyDanfe.generate("output.pdf", "test/cte.xml", 'dacte')
+        RubyDanfe.generate("output.pdf", "test/cteos.xml", 'dacteos')
 
 or
 
