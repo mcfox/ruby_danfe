@@ -27,7 +27,11 @@ module RubyDanfe
       if @xml.at_css('infNFe/ide')
         RubyDanfe.render @xml.to_s, :danfe
       else
-        RubyDanfe.render @xml.to_s, :dacte
+        if @xml.at_css('CTeOS')
+          RubyDanfe.render @xml.to_s, :dacteos
+        else
+          RubyDanfe.render @xml.to_s, :dacte
+        end
       end
     end
 
