@@ -22,7 +22,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "prawn-table", "~> 0.2"
   spec.add_dependency "barby", "~> 0.5"
   spec.add_dependency "rqrcode", "~> 0.10"
-  spec.add_dependency "rake", "~> 10.0"
+  spec.add_dependency "rake"
 
   spec.add_development_dependency "pry"
   spec.add_development_dependency "rspec", "~> 3.0"
