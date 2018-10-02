@@ -72,7 +72,7 @@ module RubyDanfe
     def render_discriminacao
       @pdf.ibox 9.35, 20.57, 0.25,  13.17
       @pdf.ibox 0.85, 20.57, 0.25,  13.17, '', 'DISCRIMINAÇÃO DOS SERVIÇOS', {border: 0, style: :bold,:align => :center, :valign => :center}
-      @pdf.ibox 8.5, 20.57,    1.25,  14.02, "", "#{@xml['Servico/Discriminacao']}", {border: 0}
+      @pdf.ibox 8, 19.57, 0.75,  14.02, "", "#{@xml['Servico/Discriminacao']}", {border: 0}
     end
 
     def render_valor_total
@@ -96,7 +96,7 @@ module RubyDanfe
     def render_outras
       @pdf.ibox 2.55, 20.57, 0.25,  26.77
       @pdf.ibox 0.85, 20.57, 0.25,  26.77, '', 'OUTRAS INFORMAÇÕES', {border: 0, style: :bold,:align => :center, :valign => :center}
-      @pdf.ibox 1.70, 20.57, 1.25,  27.62, "", "#{@xml['InfNfse/OutrasInformacoes']}", {border: 0}
+      @pdf.ibox 1.70, 19.57, 0.75,  27.62, "", "#{@xml['InfNfse/OutrasInformacoes']}", {border: 0}
     end
   end
 end
