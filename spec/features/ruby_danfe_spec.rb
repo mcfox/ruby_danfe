@@ -49,6 +49,12 @@ describe "RubyDanfe generated pdf files" do
     expect("#{base_dir}cte.xml.fixture.pdf").to be_same_file_as(output_pdf)
   end
 
+  it "renders a basic NFS-e" do
+    RubyDanfe.generate(output_pdf, "#{base_dir}nfse.xml", :danfse)
+
+    expect("#{base_dir}nfse.xml.fixture.pdf").to be_same_file_as(output_pdf)
+  end
+
   it "renders quantity field with 4 decimals" do
     expect(File.exist?(output_pdf)).to be_falsey
 

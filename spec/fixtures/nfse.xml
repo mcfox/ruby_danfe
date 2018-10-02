@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<CompNfse>
+  <Nfse>
+    <InfNfse>
+      <Numero>56293</Numero>
+      <CodigoVerificacao>VKLN-H5PH</CodigoVerificacao>
+      <DataEmissao>2018-09-03T11:30:07</DataEmissao>
+      <IdentificacaoRps>
+        <Numero>59566</Numero>
+        <Serie>A</Serie>
+        <Tipo>1</Tipo>
+      </IdentificacaoRps>
+      <DataEmissaoRps>2018-09-03</DataEmissaoRps>
+      <NaturezaOperacao>1</NaturezaOperacao>
+      <OptanteSimplesNacional>2</OptanteSimplesNacional>
+      <IncentivadorCultural>2</IncentivadorCultural>
+      <Competencia>2018-09-03T00:00:00</Competencia>
+      <Servico>
+        <Valores>
+          <ValorServicos>2464</ValorServicos>
+          <ValorIr>22.17</ValorIr>
+          <IssRetido>2</IssRetido>
+          <ValorIss>49.28</ValorIss>
+          <BaseCalculo>2464</BaseCalculo>
+          <Aliquota>0.02</Aliquota>
+          <ValorLiquidoNfse>2441.83</ValorLiquidoNfse>
+        </Valores>
+        <ItemListaServico>1602</ItemListaServico>
+        <CodigoTributacaoMunicipio>160202</CodigoTributacaoMunicipio>
+        <Discriminacao>Serviços prestados por condutores autônomos de táxi......:2.464,00
+          Dispensa da retencao da CSLL conforme o art. 39 da Lei 10.865/2004.
+          Servico nao sujeito a retencao de PIS e COFINS conforme Lei 10.833/2003
+          combinada com o IN nr 381/2003 e nao contida no RIR /99 Art 647
+          Conforme lei 12.649/2012 as cooperativas ficam isentas do PIS e da COFINS sobre os valores devidos aos
+          cooperados
+          BASE IRRF.........: 2.464,00
+          PARTE TRIBUTAVEL..: 1.478,40
+          VALOR IRRF........: 22,17
+          CODIGO DO CLIENTE.: [ 004219 ] VENCIMENTO..: 24/09/2018
+          PROCON-RJ - TEL 151 - RUA DA AJUDA, 5 - CENTRO - RIO DE JANEIRO - CEP - 20040-000
+          CODECON ALERJ - TEL 0800 282 7060 - RUA DA ALFANDEGA, 8 - TERREO- CENTRO - RIO DE JANEIRO
+        </Discriminacao>
+        <CodigoMunicipio>3304557</CodigoMunicipio>
+      </Servico>
+      <PrestadorServico>
+        <IdentificacaoPrestador>
+          <Cnpj>30921357000173</Cnpj>
+          <InscricaoMunicipal>982989</InscricaoMunicipal>
+        </IdentificacaoPrestador>
+        <RazaoSocial>COOPATAXI COOP DE CONS E TRAB DOS MOT AUT DE TAXI DO MUN DO RIO DE JANEIRO LTDA</RazaoSocial>
+        <NomeFantasia>COOPATAXI</NomeFantasia>
+        <Endereco>
+          <Endereco>RUA HERCULANO PENA 667</Endereco>
+          <Numero>667</Numero>
+          <Bairro>CAVALCANTI</Bairro>
+          <CodigoMunicipio>3304557</CodigoMunicipio>
+          <Uf>RJ</Uf>
+          <Cep>21381410</Cep>
+        </Endereco>
+        <Contato>
+          <Telefone>32884343</Telefone>
+          <Email>faturamento@coopataxi.com.br</Email>
+        </Contato>
+      </PrestadorServico>
+      <TomadorServico>
+        <IdentificacaoTomador>
+          <CpfCnpj>
+            <Cnpj>03597703000137</Cnpj>
+          </CpfCnpj>
+          <InscricaoMunicipal>2764032</InscricaoMunicipal>
+        </IdentificacaoTomador>
+        <RazaoSocial>SITA INC DO BRASIL LTDA</RazaoSocial>
+        <Endereco>
+          <Endereco>AVN RIO BRANCO 53, SAL 801 802 901 E 902</Endereco>
+          <Numero>53</Numero>
+          <Complemento>SAL 801 802 901 E 902</Complemento>
+          <Bairro>CENTRO</Bairro>
+          <CodigoMunicipio>3304557</CodigoMunicipio>
+          <Uf>RJ</Uf>
+          <Cep>20090004</Cep>
+        </Endereco>
+        <Contato>
+          <Telefone>2132637215</Telefone>
+          <Email>invoices-brazil@sita.aero</Email>
+        </Contato>
+      </TomadorServico>
+      <OrgaoGerador>
+        <CodigoMunicipio>3304557</CodigoMunicipio>
+        <Uf>RJ</Uf>
+      </OrgaoGerador>
+    </InfNfse>
+  </Nfse>
+</CompNfse>
+
