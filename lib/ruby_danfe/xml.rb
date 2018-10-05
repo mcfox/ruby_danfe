@@ -26,6 +26,8 @@ module RubyDanfe
     def render
       if @xml.at_css('infNFe/ide')
         RubyDanfe.render @xml.to_s, :danfe
+      elsif @xml.at_css('InfNfse/Numero')
+        RubyDanfe.render @xml.to_s, :danfse
       else
         if @xml.at_css('CTeOS')
           RubyDanfe.render @xml.to_s, :dacteos
