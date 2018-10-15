@@ -54,6 +54,25 @@ describe RubyDanfe::Descricao do
     Nokogiri::XML(xml)
   end
 
+  let(:xml_veicProd) do
+    xml = <<-eos
+    <det nItem="1">
+      <prod>
+        <xProd>MOTOCICLETA</xProd>
+        <veicProd>
+          <chassi>32A1SF354S6FASD213ASD5</chassi>
+          <xCor>PRETA</xCor>
+          <nMotor>DSA5DA-321503</nMotor>
+          <anoMod>2018</anoMod>
+          <anoFab>2018</anoFab>
+        </veicProd>
+      </prod>
+    </det>
+    eos
+
+    Nokogiri::XML(xml)
+  end
+
   let(:xml_IFC_ST_infAdProd) do
     xml = <<-eos
     <det nItem="1">
@@ -107,6 +126,19 @@ describe RubyDanfe::Descricao do
         string += LINEBREAK
         string += "Informações adicionais do produto"
         expect(RubyDanfe::Descricao.generate(xml_infAdProd)).to eq string
+      end
+    end
+
+    context "when have veicProd" do
+      it "returns product + veicProd" do
+        string = "MOTOCICLETA"
+        string += LINEBREAK
+        string += "Chassi: 32A1SF354S6FASD213ASD5 "
+        string += "Motor: DSA5DA-321503 "
+        string += "AnoFab: 2018 "
+        string += "AnoMod: 2018 "
+        string += "Cor: PRETA"
+        expect(RubyDanfe::Descricao.generate(xml_veicProd)).to eq string        
       end
     end
 
