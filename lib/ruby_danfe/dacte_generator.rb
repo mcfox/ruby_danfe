@@ -434,23 +434,29 @@ module RubyDanfe
       #informações relativas ao Imposto
       @pdf.ibox 0.40, 20.49, 0.25, 17.42, '', 'INFORMAÇÕES RELATIVAS AO IMPOSTO', { :align => :left, :size => 7, :border => 0, :style => :bold }
       if !@xml['imp/ICMS/ICMS00'].eql?("")
-         cst = '00 - Tributação Normal ICMS'
-         tipoIcms = 'ICMS00'
+        cst = '00 - Tributação Normal ICMS'
+        tipoIcms = 'ICMS00'
       elsif !@xml['imp/ICMS/ICMS20'].eql?("")
-         cst = '20 - Tributação com BC reduzida do ICMS'
-         tipoIcms = 'ICMS20'
+        cst = '20 - Tributação com BC reduzida do ICMS'
+        tipoIcms = 'ICMS20'
       elsif !@xml['imp/ICMS/ICMS45'].eql?("")
-         cst = '40 - ICMS Isenção;  41 - ICMS não tributada;  51 - ICMS diferido'
-         tipoIcms = 'ICMS45'
+        if @xml['imp/ICMS/ICMS45/CST'].eql?("51")
+          cst = '51 - ICMS diferido'
+        elsif @xml['imp/ICMS/ICMS45/CST'].eql?("41")
+          cst = '41 - ICMS não tributada'
+        else 
+          cst = '40 - ICMS Isenção'
+        end
+        tipoIcms = 'ICMS45'
       elsif !@xml['imp/ICMS/ICMS60'].eql?("")
-         cst = '60 - ICMS cobrado anteriormente por Substituição Tributária'
-         tipoIcms = 'ICMS60'
+        cst = '60 - ICMS cobrado anteriormente por Substituição Tributária'
+        tipoIcms = 'ICMS60'
       elsif !@xml['imp/ICMS/ICMS90'].eql?("")
-         cst = '90 - ICMS outros'
-         tipoIcms = 'ICMS90'
+        cst = '90 - ICMS outros'
+        tipoIcms = 'ICMS90'
       elsif !@xml['imp/ICMS/ICMSSN'].eql?("")
-         cst = 'Simples Nacional'
-         tipoIcms = 'ICMSSN'
+        cst = 'Simples Nacional'
+        tipoIcms = 'ICMSSN'
       else
         cst = '90 - ICMS outros'
         tipoIcms = 'ICMSOutraUF'
