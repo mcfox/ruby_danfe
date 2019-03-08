@@ -79,8 +79,7 @@ module RubyDanfe
       formated_cpf = ""
 
       if not (string.empty? || string.size != 11)
-        formated_cpf = string[0,2] + '.' + string[2,3] + '.' + string[5,3] +
-                        '/' + string[8,4] + '-' + string[12,2]
+        formated_cpf = string[0,3] + '.' + string[3,3] + '.' + string[6,3] + '-' + string[9,2]
       end
 
       formated_cpf
@@ -109,6 +108,12 @@ module RubyDanfe
       end
 
       formated_fone
+    end
+
+    def self.format_car_plate(string)
+      formated_car_plate = ""
+
+      formated_car_plate = string[0,3] + "-" + string[3,6] if !string.eql?('')
     end
 
     private
