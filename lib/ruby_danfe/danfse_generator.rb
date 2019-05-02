@@ -89,7 +89,7 @@ module RubyDanfe
       @pdf.ibox 0.85, 3.46,  7.17,  25.07, "Alíquota", @xml['Servico/Valores/Aliquota']
       @pdf.inumeric 0.85, 3.46,  10.63, 25.07, "Valor do ISS", @xml['Servico/Valores/ValorIss']
       @pdf.inumeric 0.85, 6.73,  14.09, 25.07, "Crédito", @xml['InfNfse/ValorCredito']
-      @pdf.ibox 0.85, 10.38, 0.25,  25.92, "Muncípio da Prestação do Serviço", municipios[@xml['Servico/CodigoMunicipio']], :style => :bold
+      @pdf.ibox 0.85, 10.38, 0.25,  25.92, "Muncípio da Prestação do Serviço", municipios[@xml['OrgaoGerador/CodigoMunicipio']], :style => :bold
       @pdf.ibox 0.85, 10.19, 10.63, 25.92, "Número Inscrição da Obra", @xml['DadosConstrucaoCivil/CodigoObra'], :style => :bold
     end
 
