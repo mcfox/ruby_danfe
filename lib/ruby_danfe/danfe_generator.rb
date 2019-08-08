@@ -115,6 +115,22 @@ module RubyDanfe
         @pdf.inumeric 0.85, 1.25, x + 0.70, y + 0.40, '', det.css('vDup').text, { :size => 6, :border => 0 }
         x = x + 2.30
       end
+
+      @xml.collect('xmlns', 'fat') do |det|
+        @pdf.ibox 0.85, 2.12, x, y, '', 'Núm.:', { :size => 4, :border => 0, :style => :italic }
+        @pdf.ibox 0.85, 2.12, x + 0.70, y, '', det.css('nFat').text, { :size => 4, :border => 0 }
+
+        @pdf.ibox 0.85, 2.12, x, y + 0.20, '', 'vOrig.: R$', { :size => 4, :border => 0, :style => :italic }
+        @pdf.inumeric 0.85, 1.25, x + 0.70, y + 0.18, '', det.css('vOrig').text, { :size => 4, :border => 0 }
+
+        @pdf.ibox 0.85, 2.12, x, y + 0.40, '', 'vDesc: R$', { :size => 4, :border => 0, :style => :italic }
+        @pdf.inumeric 0.85, 1.25, x + 0.70, y + 0.36, '', det.css('vDesc').text, { :size => 4, :border => 0 }
+
+        @pdf.ibox 0.85, 2.12, x, y + 0.55, '', 'vLiq: R$', { :size => 4, :border => 0, :style => :italic }
+        @pdf.inumeric 0.85, 1.25, x + 0.70, y + 0.54, '', det.css('vLiq').text, { :size => 4, :border => 0 }
+
+        x = x + 2.30
+      end
     end
 
     def render_calculo_do_imposto
@@ -209,7 +225,7 @@ module RubyDanfe
       @pdf.ititle 0.42, 10.00, 0.25, 24.64, "CÁLCULO DO ISSQN"
 
       @pdf.ibox 0.85, 5.08, 0.25, 25.06, "INSCRIÇÃO MUNICIPAL", @xml['emit/IM']
-      @pdf.ibox 0.85, 5.08, 5.33, 25.06, "VALOR TOTAL DOS SERVIÇOS", @xml['total/vServ'].empty? ? @xml['total/ISSQNtot/vServ'] : @xml['total/vServ']  
+      @pdf.ibox 0.85, 5.08, 5.33, 25.06, "VALOR TOTAL DOS SERVIÇOS", @xml['total/vServ'].empty? ? @xml['total/ISSQNtot/vServ'] : @xml['total/vServ']
       @pdf.ibox 0.85, 5.08, 10.41, 25.06, "BASE DE CÁLCULO DO ISSQN", @xml['total/vBCISS'].empty? ? @xml['total/ISSQNtot/vBC'] : @xml['total/vBCISS']
       @pdf.ibox 0.85, 5.28, 15.49, 25.06, "VALOR DO ISSQN", @xml['total/ISSTot'].empty? ? @xml['total/ISSQNtot/vISS'] : @xml['total/ISSTot']
     end
@@ -253,7 +269,7 @@ module RubyDanfe
           "UF: " + @xml['entrega/UF'] + " " +
           "País: Brasil"
       end
-      
+
       if @xml['infAdic/infAdFisco'] != ""
         info_adicional += "\n#{@xml['infAdic/infAdFisco']}"
       end
