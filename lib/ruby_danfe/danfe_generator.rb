@@ -340,6 +340,10 @@ module RubyDanfe
         "1 - Por conta do destinatário/remetente"
       when '2'
         "2 - Por conta de terceiros"
+      when '3'
+        "3 - Remetente (Transp. Próprio)"
+      when '4'
+        "4 - Remetente (Transp.Dest)"
       when '9'
         "9 - Sem frete"
       else
