@@ -337,9 +337,9 @@ module RubyDanfe
     def descricao_modalidade_frete(modalidade)
       case modalidade
       when '1'
-        "1 - Por conta do destinatário/remetente"
+        "1 - Destinatário (FOB)"
       when '2'
-        "2 - Por conta de terceiros"
+        "2 - Terceiros"
       when '3'
         "3 - Remetente (Transp. Próprio)"
       when '4'
@@ -347,7 +347,7 @@ module RubyDanfe
       when '9'
         "9 - Sem frete"
       else
-        "0 - Por conta do emitente"
+        "0 - Remetente(CIF)"
       end
     end
   end
