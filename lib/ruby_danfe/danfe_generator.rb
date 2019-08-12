@@ -85,6 +85,7 @@ module RubyDanfe
       @pdf.ibox 0.85, 12.32, 0.25, 8.58, "NOME/RAZÃO SOCIAL", @xml['dest/xNome']
       @pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", @xml['dest/CNPJ'] if @xml['dest/CNPJ'] != ''
       @pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF", @xml['dest/CPF'] if @xml['dest/CPF'] != ''
+      @pdf.ibox 0.85, 5.33, 12.57, 8.58, "CNPJ/CPF/Passaporte", @xml['dest/idEstrang'] if @xml['dest/idEstrang'] != ''
       @pdf.ibox 0.85, 2.92, 17.90, 8.58, "DATA DA EMISSÃO", (not @xml['ide/dEmi'].empty?) ? Helper.format_date(@xml['ide/dEmi']) : Helper.format_date(@xml['ide/dhEmi']) , {:align => :right}
       @pdf.ibox 0.85, 10.16, 0.25, 9.43, "ENDEREÇO", @xml['enderDest/xLgr'] + " " + @xml['enderDest/nro']
       @pdf.ibox 0.85, 4.83, 10.41, 9.43, "BAIRRO", @xml['enderDest/xBairro']
