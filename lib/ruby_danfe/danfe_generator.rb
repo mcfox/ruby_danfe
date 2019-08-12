@@ -339,15 +339,15 @@ module RubyDanfe
       when '1'
         "1 - Destinatário (FOB)"
       when '2'
-        "2 - Terceiros"
+        "2- Terceiros"
       when '3'
-        "3 - Remetente (Transp. Próprio)"
+        "3- Remetente (Transp. Próprio)"
       when '4'
-        "4 - Remetente (Transp.Dest)"
+        "4- Remetente (Transp.Dest)"
       when '9'
         "9 - Sem frete"
       else
-        "0 - Remetente(CIF)"
+        "0 - Remetente (CIF)"
       end
     end
   end
