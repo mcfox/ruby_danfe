@@ -433,6 +433,7 @@ module RubyDanfe
     def render_impostos
       #informações relativas ao Imposto
       @pdf.ibox 0.40, 20.49, 0.25, 17.42, '', 'INFORMAÇÕES RELATIVAS AO IMPOSTO', { :align => :left, :size => 7, :border => 0, :style => :bold }
+      complemento = ''
       if !@xml['imp/ICMS/ICMS00'].eql?("")
          cst = '00 - Tributação Normal ICMS'
          tipoIcms = 'ICMS00'
@@ -445,6 +446,7 @@ module RubyDanfe
       elsif !@xml['imp/ICMS/ICMS60'].eql?("")
          cst = '60 - ICMS cobrado anteriormente por Substituição Tributária'
          tipoIcms = 'ICMS60'
+         complemento = 'STRet'
       elsif !@xml['imp/ICMS/ICMS90'].eql?("")
          cst = '90 - ICMS outros'
          tipoIcms = 'ICMS90'
@@ -456,11 +458,11 @@ module RubyDanfe
         tipoIcms = 'ICMSOutraUF'
       end
       @pdf.ibox 0.90, 10.00, 0.25, 17.83, 'SITUAÇÃO TRIBUTÁRIA', cst, { :size => 7, :style => :bold }
-      @pdf.inumeric 0.90, 3.00, 10.25, 17.83, 'BASE DE CÁLCULO', @xml['imp/ICMS/'+ tipoIcms + '/vBC'], { :size => 7, :style => :bold }
-      @pdf.inumeric 0.90, 1.00, 13.25, 17.83, 'AL. ICMS', @xml[('imp/ICMS/' + tipoIcms + '/pICMS')], { :size => 7, :style => :bold }
+      @pdf.inumeric 0.90, 3.00, 10.25, 17.83, 'BASE DE CÁLCULO', @xml['imp/ICMS/'+ tipoIcms + '/vBC'+ complemento], { :size => 7, :style => :bold }
+      @pdf.inumeric 0.90, 1.00, 13.25, 17.83, 'AL. ICMS', @xml['imp/ICMS/' + tipoIcms + '/pICMS'+ complemento], { :size => 7, :style => :bold }
       @pdf.inumeric 0.90, 3.00, 14.25, 17.83, 'VALOR ICMS', @xml['imp/ICMS/' +  tipoIcms + '/vICMS'],{ :size => 7, :style => :bold }
       @pdf.inumeric 0.90, 2.00, 17.25, 17.83, '% RED.BC.CALC.', @xml['imp/ICMS/' + tipoIcms + '/pRedBC'], { :size => 7, :style => :bold }
-      @pdf.inumeric 0.90, 1.49, 19.25, 17.83, 'ICMS ST.', @xml['imp/ICMS/' + tipoIcms + '/pRedBC'], { :size => 7, :style => :bold }
+      @pdf.inumeric 0.90, 1.49, 19.25, 17.83, 'ICMS ST.', @xml['imp/ICMS/' + tipoIcms + '/vICMS'+ complemento], { :size => 7, :style => :bold }
     end
 
     def render_documentos_originarios
