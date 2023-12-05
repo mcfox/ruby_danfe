@@ -17,6 +17,17 @@ module RubyDanfe
         descricao += "FCI: #{det.css('prod/nFCI').text}"
       end
 
+      if need_veicProd(det)
+        veicProd = det.css('veicProd')
+
+        descricao += LINEBREAK
+        descricao += "Chassi: #{veicProd.css('chassi').text} "
+        descricao += "Motor: #{veicProd.css('nMotor').text} "
+        descricao += "AnoFab: #{veicProd.css('anoFab').text} "
+        descricao += "AnoMod: #{veicProd.css('anoMod').text} "
+        descricao += "Cor: #{veicProd.css('xCor').text}"
+      end
+
       if need_st(det)
         descricao += LINEBREAK
         descricao += "ST: MVA: #{det.css('ICMS/*/pMVAST').text}% "
@@ -35,6 +46,10 @@ module RubyDanfe
 
     def self.need_fci(det)
       !det.css('prod/nFCI').text.empty?
+    end
+
+    def self.need_veicProd(det)
+      !det.css('prod/veicProd').text.empty?
     end
 
     def self.need_st(det)
