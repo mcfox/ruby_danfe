@@ -75,6 +75,16 @@ module RubyDanfe
       formated_time
     end
 
+    def self.format_cpf(string)
+      formated_cpf = ""
+
+      if not (string.empty? || string.size != 11)
+        formated_cpf = string[0,3] + '.' + string[3,3] + '.' + string[6,3] + '-' + string[9,2]
+      end
+
+      formated_cpf
+    end
+
     def self.format_cnpj(string)
       formated_cnpj = ""
 
@@ -84,6 +94,26 @@ module RubyDanfe
       end
 
       formated_cnpj
+    end
+
+    def self.format_fone(string)
+      formated_fone = ""
+
+      unless string.eql?('')
+        if string.size > 8
+          formated_fone = "("+ string[0,2] + ") " + string[2,4] + '-' + string[6,4]
+        else
+          formated_fone = string[0,4] + "-" + string[4,4]
+        end
+      end
+
+      formated_fone
+    end
+
+    def self.format_car_plate(string)
+      formated_car_plate = ""
+
+      formated_car_plate = string[0,3] + "-" + string[3,6] if !string.eql?('')
     end
 
     private

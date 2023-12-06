@@ -42,6 +42,7 @@ module RubyDanfe
           when :dacte then DacteGenerator.new(xml)
           when :danfse then DanfseGenerator.new(xml)
           when :dacteos then DacteosGenerator.new(xml)
+          when :damdfe then DamdfeGenerator.new(xml)
           else raise "unknown type #{type}"
         end
       generator.generatePDF
