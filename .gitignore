@@ -1,7 +1,6 @@
 .idea
+pkg
+coverage
 .DS_store
 *sublime-*
-Gemfile.lock
-pkg
 *.pdf
-coverage

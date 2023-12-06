@@ -13,7 +13,7 @@ module RubyDanfe
 
     private
       def file
-        File.exists?("config/ruby_danfe.yml") ? File.open("config/ruby_danfe.yml").read : ""
+        File.exist?("config/ruby_danfe.yml") ? File.open("config/ruby_danfe.yml").read : ""
       end
 
       def config_yaml_load
